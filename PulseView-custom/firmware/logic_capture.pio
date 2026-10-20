@@ -1,0 +1,10 @@
+.program logic_capture
+; clk_sys=100 MHz. IN (3 cycles) + JMP (1 cycle) = four cycles/sample.
+; The CPU preloads X with round_up(sample_count,4)-1 before enabling the SM.
+.wrap_target
+sample:
+    in pins, 8 [2]
+    jmp x-- sample
+done:
+    jmp done
+.wrap

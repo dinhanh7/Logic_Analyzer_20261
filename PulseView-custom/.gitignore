@@ -1,0 +1,7 @@
+.deps/
+.local/
+build/
+third_party/
+__pycache__/
+*.sr
+*.raw

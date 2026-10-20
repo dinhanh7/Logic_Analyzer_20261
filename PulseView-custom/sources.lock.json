@@ -1,0 +1,22 @@
+{
+  "libsigrok": {
+    "url": "https://github.com/sigrokproject/libsigrok.git",
+    "commit": "0bc2487778e660f4d3116729b6f4aee2b1996bb0"
+  },
+  "libsigrokdecode": {
+    "url": "https://github.com/sigrokproject/libsigrokdecode.git",
+    "commit": "71f451443029322d57376214c330b518efd84f88"
+  },
+  "sigrok-cli": {
+    "url": "https://github.com/sigrokproject/sigrok-cli.git",
+    "commit": "f44dd91347e7ac797cefc23162b9fcf0b7329f1f"
+  },
+  "pulseview": {
+    "url": "https://github.com/sigrokproject/pulseview.git",
+    "commit": "af02198741b4e57c9f9b796bd5e6c0f2ae9f2f2b"
+  },
+  "pico-sdk": {
+    "url": "https://github.com/raspberrypi/pico-sdk.git",
+    "commit": "a1438dff1d38bd9c65dbd693f0e5db4b9ae91779"
+  }
+}
