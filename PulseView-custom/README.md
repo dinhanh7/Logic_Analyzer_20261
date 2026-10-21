@@ -96,6 +96,26 @@ Giới hạn cần nói trong báo cáo: firmware chỉ chờ trigger trong mộ
 mẫu, tức 10,49 ms ở 25 MHz hay 262 ms ở 1 MHz. Trigger không xuất hiện trong vùng này
 thì thiết bị trả lỗi `no trigger`.
 
+## Trigger từ PulseView / sigrok-cli
+
+Driver đã hỗ trợ đặt trigger qua các option chuẩn của libsigrok, nên không còn
+phải dùng host tool riêng:
+
+```bash
+# trigger cạnh lên trên CH0, giữ 25 % phiên mẫu trước điểm bắt
+./scripts/run-sigrok-cli.sh -d rp2350-la:conn=/dev/ttyACM0 \
+    --config samplerate=25m --config triggersource=CH0 \
+    --config triggerslope=rising --config horiz_triggerpos=0.25 \
+    --samples 100000 -o capture.sr
+
+# trigger mẫu bit: giá trị 0x5A, mặt nạ 0x0F
+./scripts/run-sigrok-cli.sh -d rp2350-la:conn=/dev/ttyACM0 \
+    --config triggerpattern=0x5a/0x0f --samples 100000 -o capture.sr
+```
+
+Không đặt trigger thì vẫn dùng đường capture manual như trước. Chi tiết giao thức ở
+[protocol/PROTOCOL.md](protocol/PROTOCOL.md).
+
 ## Chạy trên máy hiện tại
 
 Stack đã được build vào `.local/`; toolchain phục vụ build đang nằm trong `.deps/`. Dùng các script bên dưới để nạp đúng thư viện custom thay vì libsigrok của hệ điều hành.
