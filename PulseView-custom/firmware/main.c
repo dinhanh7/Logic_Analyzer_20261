@@ -44,7 +44,6 @@ static uint32_t trigger_abs;     /* absolute sample index of the trigger */
 static bool trigger_found;
 static uint32_t scan_pos;        /* samples already handed to the matcher */
 static const uint8_t *tx_base;   /* first sample to send */
-static uint32_t tx_count;        /* samples to send */
 
 static void send_frame(uint8_t type, const uint8_t *p, size_t n)
 {
@@ -70,6 +69,15 @@ static void abort_capture(void)
     capturing = sending = false;
     trigger_found = false;
     scan_pos = 0;
+}
+
+/* True when the capture lost timing: the PIO FIFO overflowed or the DMA hit a
+ * bus error. Both mean the samples in memory cannot be trusted. */
+static bool capture_faulted(void)
+{
+    return (pio->fdebug & (1u << (PIO_FDEBUG_RXSTALL_LSB + sm))) ||
+           (dma_hw->ch[dma_ch].ctrl_trig &
+            (DMA_CH0_CTRL_TRIG_READ_ERROR_BITS | DMA_CH0_CTRL_TRIG_WRITE_ERROR_BITS));
 }
 
 /* Samples already written by the DMA, minus the in-flight margin. */
@@ -111,7 +119,6 @@ static void start_capture(void)
     trigger_found = false;
     scan_pos = 0;
     tx_base = (const uint8_t *)samples;
-    tx_count = count;
     pio_sm_set_enabled(pio, sm, true);
 }
 
@@ -215,8 +222,7 @@ static void capture_task(void)
                 /* The PIO stops after the last requested word. RXSTALL cannot
                  * come from extra samples after DMA completion, so it signals
                  * lost timing. */
-                if ((pio->fdebug & (1u << (PIO_FDEBUG_RXSTALL_LSB + sm))) ||
-                    (dma_hw->ch[dma_ch].ctrl_trig & (DMA_CH0_CTRL_TRIG_READ_ERROR_BITS | DMA_CH0_CTRL_TRIG_WRITE_ERROR_BITS))) {
+                if (capture_faulted()) {
                     configured = false; error("capture FIFO stall/DMA error"); return;
                 }
                 start_sending(count, LAR2_NO_TRIGGER, 0, 0);
@@ -230,11 +236,16 @@ static void capture_task(void)
                     dma_channel_abort(dma_ch);
                     pio_sm_clear_fifos(pio, sm);
                     capturing = false;
+                    /* A stalled FIFO or a DMA bus error means the window in
+                     * memory is not trustworthy, so report it instead of
+                     * sending damaged samples. */
+                    if (capture_faulted()) {
+                        configured = false; error("capture FIFO stall/DMA error"); return;
+                    }
                     /* The window is contiguous in the linear capture region:
                      * pretrigger samples before the trigger plus post samples
                      * after it. The trigger sits at offset pretrigger. */
                     tx_base = (const uint8_t *)samples + (trigger_abs - pretrigger);
-                    tx_count = count;
                     start_sending(count, pretrigger, pretrigger, LAR2_INFO_TRIGGER_FOUND);
                 } else if (dma_done) {
                     pio_sm_set_enabled(pio, sm, false); capturing = false;
@@ -247,13 +258,13 @@ static void capture_task(void)
         }
     }
     if (sending) {
-        uint32_t n = tx_count - sent;
+        uint32_t n = count - sent;
         if (n > LAR2_MAX_PAYLOAD) n = LAR2_MAX_PAYLOAD;
         if (n) {
             crc = lar2_crc_update(crc, tx_base + sent, n);
             send_frame(LAR2_SAMPLES, (const uint8_t *)(tx_base + sent), n); sent += n;
         } else {
-            uint8_t end[8]; lar2_put32(end, tx_count); lar2_put32(end + 4, ~crc);
+            uint8_t end[8]; lar2_put32(end, count); lar2_put32(end + 4, ~crc);
             send_frame(LAR2_END, end, sizeof(end)); sending = false;
         }
     }

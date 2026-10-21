@@ -16,8 +16,7 @@ import time
 import zlib
 
 from lar2 import (ACK, ARM, CAPS, CONFIG, END, ERROR, GET_CAPS, HELLO, ID, INFO,
-                  MAX_PAYLOAD, MAX_SAMPLES, RATES, SAMPLES, Parser,
-                  config_payload, frame)
+                  MAX_SAMPLES, SAMPLES, Parser, config_payload, frame)
 
 TRIGGER_MANUAL, TRIGGER_EDGE, TRIGGER_PATTERN = 0, 1, 2
 EDGE_RISING, EDGE_FALLING = 0, 1
@@ -25,7 +24,6 @@ NO_TRIGGER = 0xffffffff
 
 
 def open_port(path):
-    import fcntl
     fd = os.open(path, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
     attrs = termios.tcgetattr(fd)
     attrs[0] &= ~(termios.IGNBRK | termios.BRKINT | termios.PARMRK | termios.ISTRIP
@@ -103,7 +101,7 @@ class Device:
         if kind != ACK:
             raise RuntimeError('expected ACK, got 0x%02x' % kind)
 
-    def capture(self, count, rate, timeout=60.0):
+    def capture(self, timeout=60.0):
         """Read one capture and return (samples, info dict)."""
         deadline = time.time() + timeout
         kind, seq, payload = self._read(deadline)
@@ -189,7 +187,7 @@ def main():
             raise SystemExit('pre-trigger must be smaller than count')
         dev.configure(rate, args.count, int(args.mask, 0), pre, trigger)
         dev.arm()
-        samples, info = dev.capture(args.count, rate, args.timeout)
+        samples, info = dev.capture(args.timeout)
     finally:
         dev.close()
 

@@ -27,8 +27,7 @@ class TriggerHostTests(unittest.TestCase):
                           kwargs.get('mask', 0xff), kwargs.get('pre', 0),
                           kwargs.get('trigger'))
             dev.arm()
-            samples, info = dev.capture(kwargs.get('count', 2000),
-                                        kwargs.get('rate', 1000000))
+            samples, info = dev.capture()
         finally:
             dev.close()
         return board, caps, samples, info
