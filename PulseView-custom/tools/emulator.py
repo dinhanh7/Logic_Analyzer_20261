@@ -74,10 +74,10 @@ class Emulator:
             trigger_index=0xffffffff
             if trigger is not None:
                 # Mirror the firmware: the trigger is only accepted once the
-                # pre-trigger buffer is full, the window is [T-pre, T+post).
-                history=pattern(pre,rate,self.mode) if pre else b''
-                stream=history+data
-                hit=find_trigger(stream,pre,len(stream),trigger)
+                # pre-trigger buffer is full, and the delivered window is
+                # [T-pre, T-pre+count) so the trigger sits at offset pre.
+                stream=pattern(pre+count+count,rate,self.mode)
+                hit=find_trigger(stream,pre,pre+count,trigger)
                 if hit is None:
                     self.queue(ERROR,b'no trigger'); return
                 trigger_index=pre

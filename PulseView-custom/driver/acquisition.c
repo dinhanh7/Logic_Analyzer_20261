@@ -13,7 +13,14 @@ static int handle_frame(const struct sr_dev_inst *sdi)
     switch (f[5]) {
     case LAR2_INFO:
         if (d->have_info || n!=24 || lar2_u64(p)!=d->rate || lar2_u32(p+8)!=d->limit ||
-            lar2_u32(p+12)!=LAR2_NO_TRIGGER || lar2_u32(p+16)!=0 || p[20]!=8 || p[21]!=1 || p[22]!=d->mask || p[23]!=0)
+            p[20]!=8 || p[21]!=1 || p[22]!=d->mask)
+            return SR_ERR_DATA;
+        /* A capture without a trigger reports the reserved index, a capture
+         * with a trigger reports where the event sits inside the window. */
+        d->trigger_index=lar2_u32(p+12);
+        if (d->trigger_index!=LAR2_NO_TRIGGER && d->trigger_index>=d->limit)
+            return SR_ERR_DATA;
+        if (d->trigger_index==LAR2_NO_TRIGGER && d->trig_mode!=LAR2_TRIGGER_MANUAL)
             return SR_ERR_DATA;
         d->have_info=TRUE;
         { struct sr_config c={.key=SR_CONF_SAMPLERATE,.data=g_variant_ref_sink(g_variant_new_uint64(d->rate))};
@@ -22,13 +29,35 @@ static int handle_frame(const struct sr_dev_inst *sdi)
           int r=sr_session_send(sdi,&packet);
           g_slist_free(meta.config); g_variant_unref(c.data); if (r!=SR_OK) return r; }
         break;
-    case LAR2_SAMPLES:
+    case LAR2_SAMPLES: {
         if (!d->have_info || !n || n>d->limit-d->received) return SR_ERR_DATA;
-        { struct sr_datafeed_logic logic={.length=n,.unitsize=1,.data=(void *)p};
-          struct sr_datafeed_packet packet={.type=SR_DF_LOGIC,.payload=&logic};
-          if (sr_session_send(sdi,&packet)!=SR_OK) return SR_ERR; }
-        d->received+=n; d->data_crc=lar2_crc_update(d->data_crc,p,n);
-        break;
+        const uint8_t *data=p; uint32_t left=n;
+        /* The frontend marks the trigger where the trigger packet arrives, so
+         * the sample stream is split at the trigger position. */
+        if (d->trigger_index!=LAR2_NO_TRIGGER && !d->trigger_sent) {
+            uint32_t before=(d->trigger_index>d->received)?d->trigger_index-d->received:0;
+            if (before>left) before=left;
+            if (before) {
+                struct sr_datafeed_logic logic={.length=before,.unitsize=1,.data=(void *)data};
+                struct sr_datafeed_packet packet={.type=SR_DF_LOGIC,.payload=&logic};
+                if (sr_session_send(sdi,&packet)!=SR_OK) return SR_ERR;
+                d->received+=before; d->data_crc=lar2_crc_update(d->data_crc,data,before);
+                data+=before; left-=before;
+            }
+            if (d->received==d->trigger_index) {
+                struct sr_datafeed_packet packet={.type=SR_DF_TRIGGER,.payload=NULL};
+                if (sr_session_send(sdi,&packet)!=SR_OK) return SR_ERR;
+                d->trigger_sent=TRUE;
+                sr_info("Trigger at sample %u of %u.",d->trigger_index,d->limit);
+            }
+        }
+        if (left) {
+            struct sr_datafeed_logic logic={.length=left,.unitsize=1,.data=(void *)data};
+            struct sr_datafeed_packet packet={.type=SR_DF_LOGIC,.payload=&logic};
+            if (sr_session_send(sdi,&packet)!=SR_OK) return SR_ERR;
+            d->received+=left; d->data_crc=lar2_crc_update(d->data_crc,data,left);
+        }
+        break; }
     case LAR2_END:
         if (!d->have_info || n!=8 || lar2_u32(p)!=d->received || d->received!=d->limit || lar2_u32(p+4)!=~d->data_crc)
             return SR_ERR_DATA;

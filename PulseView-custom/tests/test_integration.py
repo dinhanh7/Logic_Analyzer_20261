@@ -65,6 +65,30 @@ class DriverTests(unittest.TestCase):
             p=subprocess.run([str(ROOT/'scripts/capture.sh'),d.path,str(path),'1m','2049'],capture_output=True,text=True,timeout=15)
             self.assertNotEqual(p.returncode,0)
             self.assertFalse(path.exists())
+    def test_triggered_capture_reports_the_trigger(self):
+        """A triggered capture must deliver the samples and mark the trigger
+        position, and the data must still match the emulator stream."""
+        with tempfile.TemporaryDirectory() as tmp, Emulator() as d:
+            path=Path(tmp)/'trig.sr'
+            args=[CLI,'-l','4','-d','rp2350-la:conn='+d.path,'--config','samplerate=25000000',
+                  '--config','triggersource=CH0','--config','triggerslope=rising',
+                  '--config','horiz_triggerpos=0.25','--samples','4096','-o',str(path)]
+            p=subprocess.run(args,text=True,capture_output=True,timeout=15)
+            self.assertEqual(p.returncode,0,p.stderr)
+            self.assertIn('Capture verified:',p.stderr)
+            self.assertIn('Trigger at sample',p.stderr)
+            data,meta=self.read_samples(path)
+            self.assertEqual(len(data),4096)
+    def test_triggered_capture_pattern(self):
+        """The pattern trigger path must also work end to end."""
+        with tempfile.TemporaryDirectory() as tmp, Emulator() as d:
+            path=Path(tmp)/'pat.sr'
+            args=[CLI,'-l','4','-d','rp2350-la:conn='+d.path,'--config','samplerate=25000000',
+                  '--config','triggerpattern=0x5a/0x0f','--samples','4096','-o',str(path)]
+            p=subprocess.run(args,text=True,capture_output=True,timeout=15)
+            self.assertEqual(p.returncode,0,p.stderr)
+            self.assertIn('Capture verified:',p.stderr)
+            self.assertIn('Trigger at sample',p.stderr)
     def test_uart_decoder(self):
         with tempfile.TemporaryDirectory() as tmp, Emulator(mode='uart') as d:
             path=Path(tmp)/'uart.sr'; p=self.capture(d,path,10000,1000000)

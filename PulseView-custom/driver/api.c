@@ -7,7 +7,11 @@ static const uint32_t drvopts[]={SR_CONF_LOGIC_ANALYZER};
 static const uint32_t devopts[]={
     SR_CONF_SAMPLERATE|SR_CONF_GET|SR_CONF_SET|SR_CONF_LIST,
     SR_CONF_LIMIT_SAMPLES|SR_CONF_GET|SR_CONF_SET|SR_CONF_LIST,
-    SR_CONF_NUM_LOGIC_CHANNELS|SR_CONF_GET
+    SR_CONF_NUM_LOGIC_CHANNELS|SR_CONF_GET,
+    SR_CONF_TRIGGER_SOURCE|SR_CONF_GET|SR_CONF_SET,
+    SR_CONF_TRIGGER_SLOPE|SR_CONF_GET|SR_CONF_SET,
+    SR_CONF_TRIGGER_PATTERN|SR_CONF_GET|SR_CONF_SET,
+    SR_CONF_HORIZ_TRIGGERPOS|SR_CONF_GET|SR_CONF_SET
 };
 static void clear_private(struct dev_context *d) { if (d->fd>=0) close(d->fd); g_free(d->path); }
 static int dev_clear(const struct sr_dev_driver *di) { return std_dev_clear_with_callback(di,(std_dev_clear_callback)clear_private); }
@@ -47,6 +51,18 @@ static int config_get(uint32_t key,GVariant **data,const struct sr_dev_inst *sdi
     case SR_CONF_SAMPLERATE: *data=g_variant_new_uint64(d->rate); break;
     case SR_CONF_LIMIT_SAMPLES: *data=g_variant_new_uint64(d->limit); break;
     case SR_CONF_NUM_LOGIC_CHANNELS: *data=g_variant_new_int32(8); break;
+    case SR_CONF_TRIGGER_SOURCE:
+        *data=d->trig_channel?g_variant_new_string("CH0"):g_variant_new_string("");
+        break;
+    case SR_CONF_TRIGGER_SLOPE:
+        *data=g_variant_new_string(d->trig_edge?"falling":"rising");
+        break;
+    case SR_CONF_TRIGGER_PATTERN:
+        *data=g_variant_new_string("");
+        break;
+    case SR_CONF_HORIZ_TRIGGERPOS:
+        *data=g_variant_new_double(d->horiz_triggerpos);
+        break;
     default: return SR_ERR_NA;
     }
     return SR_OK;
@@ -56,6 +72,42 @@ static int config_set(uint32_t key,GVariant *data,const struct sr_dev_inst *sdi,
     struct dev_context *d=sdi->priv;
     uint64_t value; (void)cg;
     if (d->active) return SR_ERR;
+    if (key==SR_CONF_TRIGGER_SOURCE) {
+        /* "CH0".."CH7", empty string means no trigger. */
+        const char *src=g_variant_get_string(data,NULL);
+        if (!src || !*src) { d->trig_mode=LAR2_TRIGGER_MANUAL; return SR_OK; }
+        if (src[0]!='C' || src[1]!='H') return SR_ERR_ARG;
+        int ch=atoi(src+2);
+        if (ch<0 || ch>7) return SR_ERR_ARG;
+        d->trig_channel=(uint8_t)ch;
+        if (d->trig_mode==LAR2_TRIGGER_MANUAL) d->trig_mode=LAR2_TRIGGER_EDGE;
+        return SR_OK;
+    }
+    if (key==SR_CONF_TRIGGER_SLOPE) {
+        const char *slope=g_variant_get_string(data,NULL);
+        if (!slope || !*slope) { d->trig_mode=LAR2_TRIGGER_MANUAL; return SR_OK; }
+        if (!g_ascii_strcasecmp(slope,"rising")) d->trig_edge=LAR2_EDGE_RISING;
+        else if (!g_ascii_strcasecmp(slope,"falling")) d->trig_edge=LAR2_EDGE_FALLING;
+        else return SR_ERR_ARG;
+        if (d->trig_mode==LAR2_TRIGGER_MANUAL) d->trig_mode=LAR2_TRIGGER_EDGE;
+        return SR_OK;
+    }
+    if (key==SR_CONF_TRIGGER_PATTERN) {
+        /* "0xVV/MM" or "0xVV"; the mask defaults to all ones. */
+        const char *pat=g_variant_get_string(data,NULL);
+        if (!pat || !*pat) { d->trig_mode=LAR2_TRIGGER_MANUAL; return SR_OK; }
+        unsigned v,m=0xff; int n=sscanf(pat,"%x/%x",&v,&m);
+        if (n<1) return SR_ERR_ARG;
+        if (n==1) m=0xff;
+        d->trig_value=(uint8_t)v; d->trig_mask=(uint8_t)m;
+        d->trig_mode=LAR2_TRIGGER_PATTERN;
+        return SR_OK;
+    }
+    if (key==SR_CONF_HORIZ_TRIGGERPOS) {
+        double pos=g_variant_get_double(data);
+        if (pos<0.0 || pos>1.0) return SR_ERR_ARG;
+        d->horiz_triggerpos=pos; return SR_OK;
+    }
     if (key!=SR_CONF_LIMIT_SAMPLES && key!=SR_CONF_SAMPLERATE) return SR_ERR_NA;
     value=g_variant_get_uint64(data);
     if (key==SR_CONF_LIMIT_SAMPLES) {
@@ -82,7 +134,7 @@ static int config_list(uint32_t key,GVariant **data,const struct sr_dev_inst *sd
 static int dev_acquisition_start(const struct sr_dev_inst *sdi)
 {
     struct dev_context *d=sdi->priv;
-    uint8_t cfg[20]={0};
+    uint8_t cfg[LAR2_CONFIG_V2_SIZE]={0};
     int ret;
     if (d->active || d->fd<0) return SR_ERR;
     if (sr_session_trigger_get(sdi->session)) { sr_err("LAR2 v1 supports manual capture only."); return SR_ERR_NA; }
@@ -93,7 +145,18 @@ static int dev_acquisition_start(const struct sr_dev_inst *sdi)
     }
     if (!d->mask) return SR_ERR_ARG;
     lar2_put64(cfg,d->rate); lar2_put32(cfg+8,d->limit); cfg[16]=d->mask;
-    if ((ret=rp2350_command(d,LAR2_CONFIG,cfg,sizeof(cfg)))!=SR_OK) return ret;
+    size_t cfglen=LAR2_CONFIG_V1_SIZE;
+    if (d->trig_mode!=LAR2_TRIGGER_MANUAL) {
+        /* Pre-trigger window: the trigger sits at the given ratio of the
+         * capture, so the waveform keeps the history before the event. */
+        uint32_t pre=(uint32_t)(d->horiz_triggerpos*(double)d->limit);
+        if (pre>=d->limit) pre=d->limit-1;
+        lar2_put32(cfg+12,pre);
+        cfg[17]=d->trig_mode; cfg[18]=d->trig_channel; cfg[19]=d->trig_edge;
+        cfg[20]=d->trig_value; cfg[21]=d->trig_mask;
+        cfglen=LAR2_CONFIG_V2_SIZE;
+    }
+    if ((ret=rp2350_command(d,LAR2_CONFIG,cfg,cfglen))!=SR_OK) return ret;
     if ((ret=rp2350_reply(d,LAR2_ACK,1000))!=SR_OK) return ret;
     if (lar2_u32(d->parser.buf+8)!=1 || d->parser.buf[12]!=LAR2_CONFIG) return SR_ERR_DATA;
     if ((ret=rp2350_command(d,LAR2_ARM,NULL,0))!=SR_OK) return ret;

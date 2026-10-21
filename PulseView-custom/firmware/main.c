@@ -21,8 +21,12 @@
 
 #define CAPTURE_WORDS (LAR2_MAX_SAMPLES / 4u)
 #define CAPTURE_BYTES (LAR2_MAX_SAMPLES)
-/* The DMA write address runs ahead of the bytes that are actually in memory:
- * the PIO FIFO can hold eight words and the DMA has one transfer in flight. */
+/* How far behind the DMA write pointer the trigger scan is allowed to read.
+ * The write address points at the next word, so one word can still be in
+ * flight; a word that is being written reads back as its previous content,
+ * which would look like a false edge to the matcher. Sixteen words of slack
+ * is far more than the one word that can be in flight, and it only delays the
+ * trigger detection by a few samples, it never shifts the trigger index. */
 #define DMA_LAG_BYTES 64u
 
 static uint32_t samples[CAPTURE_WORDS];
