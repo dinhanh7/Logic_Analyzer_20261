@@ -40,3 +40,34 @@ def pattern(count,rate,mode='counter'):
         bits.extend([1]*20)
         return bytes((0xfe if (i//100)&1 else 0)|bits[(i*115200//rate)%len(bits)] for i in range(count))
     raise ValueError(mode)
+
+TRIGGER_MANUAL,TRIGGER_EDGE,TRIGGER_PATTERN=0,1,2
+EDGE_RISING,EDGE_FALLING=0,1
+
+def config_payload(rate,count,mask,pre=0,trigger=None):
+    """Build a CONFIG payload. Without a trigger this is the v1 layout that
+    every host understands, with a trigger it is the v2 layout."""
+    if trigger is None:
+        return struct.pack('<QIIBBH',rate,count,0,mask,TRIGGER_MANUAL,0)
+    mode,channel,edge,value,pattern_mask=trigger
+    return struct.pack('<QIIBBBBBBHI',rate,count,pre,mask,mode,channel,edge,
+                       value,pattern_mask,0,0)
+
+def find_trigger(data,start,stop,trigger):
+    """Mirror of the firmware matcher, used by the emulator and the tests.
+    The trigger is only accepted from index start, which is where the
+    pre-trigger buffer ends."""
+    kind=trigger[0]
+    if kind=='pattern':
+        value=trigger[3]&trigger[4]; mask=trigger[4]
+        for i in range(start,stop):
+            if (data[i]&mask)==value: return i
+        return None
+    if kind=='edge':
+        channel,edge=trigger[1],trigger[2]; bit=1<<channel
+        for i in range(start,stop):
+            cur=data[i]&bit; prev=(data[i-1]&bit) if i else 0
+            if edge==EDGE_RISING and cur and not prev: return i
+            if edge==EDGE_FALLING and not cur and prev: return i
+        return None
+    return None

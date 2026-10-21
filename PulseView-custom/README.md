@@ -9,22 +9,27 @@ Bộ mã cho **đề tài 1**, Pico 2 / Pico 2 W (RP2350), Ubuntu Linux:
 - Giao thức LAR2 v1 có sequence, CRC từng frame, metadata và CRC toàn capture.
 - Giả lập thiết bị bằng PTY, kiểm thử trực tiếp driver C mà không cần board.
 
-Đề tài 1 chỉ yêu cầu ≥2 kênh và ≥1 kHz. Bản này có 8 kênh; các mức cấu hình là **1 kHz, 10 kHz, 100 kHz, 250 kHz, 500 kHz, 1 MHz, 5 MHz, 25 MHz**. Mức mặc định của driver là 1 MHz. Độ sâu 1–262.144 mẫu, mỗi mẫu 1 byte. Chỉ hỗ trợ **capture manual**; chưa có trigger cạnh, pattern hay pre-trigger, không stream liên tục.
+Đề tài 1 chỉ yêu cầu ≥2 kênh và ≥1 kHz. Bản này có 8 kênh; các mức cấu hình là **1 kHz, 10 kHz, 100 kHz, 250 kHz, 500 kHz, 1 MHz, 5 MHz, 25 MHz**. Mức mặc định của driver là 1 MHz. Độ sâu 1–262.144 mẫu, mỗi mẫu 1 byte.
 
-## Tiến độ thực hiện — cập nhật 21/10/2026
+Firmware v1.1 đã có thêm **trigger cạnh, trigger mẫu bit và pre-trigger** (xem "Trigger trên firmware" bên dưới). Driver `rp2350-la` vẫn dùng profile manual-only nên chưa expose trigger trong PulseView; host tool `tools/host_la.py` dùng được ngay.
+
+## Tiến độ thực hiện — cập nhật 22/10/2026
 
 **Đã chạy được toàn bộ đường kết nối trên Pico 2 W thật: PIO/DMA → RAM → USB CDC → driver `rp2350-la` → PulseView.** Đã nạp firmware, nhận diện thiết bị, capture bằng CLI, lưu file `.sr` và capture trực tiếp trong giao diện PulseView. Bước tiếp theo là đưa tín hiệu có dạng sóng đã biết vào GPIO để kiểm chứng mức logic, mapping kênh và timing.
+
+**Đợt này bổ sung trigger cho firmware** (edge, pattern, pre-trigger) theo hợp đồng LAR2 1.1, kèm host tool để chạy được không cần PulseView và bộ test host cho logic trigger. Phần trigger **chưa được kiểm chứng trên board thật**, cũng như driver chưa expose trigger trong PulseView.
 
 ### Những phần đã triển khai
 
 | Phần | Công việc đã hoàn thành |
 |---|---|
 | Firmware RP2350 | Viết firmware Pico SDK cho GP0–GP7, lấy mẫu đồng thời bằng PIO, DMA chuyển vào RAM, truyền capture qua USB CDC; có cấu hình rate/số mẫu, ARM, ABORT và kiểm tra FIFO stall/DMA error. |
+| Firmware trigger (v1.1) | Trigger cạnh, trigger mẫu bit có mặt nạ và pre-trigger. Vùng capture tuyến tính nên không rớt mẫu; CPU quét vùng capture theo thời gian thực, cửa sổ gửi đi liên tục và `trigger_index` bằng đúng số mẫu pre-trigger. CONFIG 28 byte mở rộng, CONFIG 20 byte cũ vẫn chạy. |
 | Giao thức LAR2 v1 | Chốt định dạng binary và các lệnh; triển khai codec C dùng chung firmware/driver, sequence, CRC frame, metadata và CRC toàn capture. |
 | Driver libsigrok | Viết driver C `rp2350-la`, đăng ký vào hệ thống build; nhận capability từ board, tạo CH0–CH7, cấu hình capture và đưa dữ liệu vào session libsigrok. |
 | PulseView custom | Build PulseView với libsigrok custom và libsigrokdecode; sửa tiêu đề cửa sổ, tạo launcher chọn Pico. Waveform, cursor và decoder dùng chức năng có sẵn của PulseView/sigrok. |
 | Công cụ sử dụng | Tạo script tải nguồn đúng commit, tích hợp driver, build, kiểm tra quyền serial, mở PulseView/CLI và lưu capture chỉ khi đủ mẫu, đúng CRC. |
-| Kiểm thử | Viết emulator PTY và codec Python độc lập; kiểm thử driver C với dữ liệu chia nhỏ, cấu hình sai, CRC sai, mất frame, metadata sai và truyền thiếu dữ liệu. |
+| Kiểm thử | Viết emulator PTY và codec Python độc lập; kiểm thử driver C với dữ liệu chia nhỏ, cấu hình sai, CRC sai, mất frame, metadata sai và truyền thiếu dữ liệu. Thêm test C cho logic trigger (đối chiếu với tham chiếu naive, đo throughput) và test host cho đường trigger qua `host_la.py`. |
 
 Mã nguồn, script và tài liệu nằm trong thư mục này. Binary host đã build ở `.local/`; firmware UF2 cho Pico 2 và Pico 2 W nằm trong `build/firmware-pico2/` và `build/firmware-pico2_w/`. **Chỉ Pico 2 W đã được nạp và thử trên board thật; bản Pico 2 mới được kiểm tra biên dịch.**
 
@@ -56,7 +61,40 @@ Bằng chứng tại workspace hiện tại:
 2. Đo chu kỳ, độ rộng xung và độ lệch giữa các kênh; đối chiếu oscilloscope/LA tham chiếu ở các rate sử dụng. **Capture đủ mẫu và đúng CRC tại cấu hình 25 MHz chưa chứng minh độ chính xác timing 25 MHz trên mạch thật.**
 3. Capture và decode UART từ GPIO thật, sau đó thử SPI/I²C. Hiện mới kiểm thử UART bằng dữ liệu giả lập; chưa xác minh decoder với các bus thật của hệ thống.
 4. Thiết kế, mô phỏng và kiểm chứng mạch đệm/bảo vệ đầu vào theo đề bài; ghi phạm vi bảo vệ và ảnh hưởng tới dạng xung trong báo cáo. Phần mềm không thay thế hạng mục phần cứng này.
-5. Nếu mở rộng: bổ sung trigger cạnh/pattern, pre-trigger hoặc hỗ trợ Windows. Các chức năng này chưa được triển khai trong bản hiện tại.
+5. **Kiểm chứng trigger trên board thật**: đưa xung chuẩn vào CH0, đo `trigger index` bằng `tools/host_la.py` và đối chiếu với vị trí cạnh thật. Chưa có phép thử này.
+6. Nếu mở rộng: expose trigger trong driver để PulseView dùng được, thêm pre-trigger vòng đệm để chờ trigger lâu hơn, hoặc hỗ trợ Windows.
+
+## Trigger trên firmware (v1.1)
+
+Firmware chấp nhận CONFIG 28 byte thay vì 20 byte để bật trigger. Host cũ gửi CONFIG 20
+byte vẫn chạy capture manual như cũ, nên driver `rp2350-la` không phải sửa gì.
+
+- **Trigger cạnh**: sườn lên hoặc sườn xuống trên một kênh.
+- **Trigger mẫu bit**: `(sample & mask) == value`, có bit don't-care.
+- **Pre-trigger**: số mẫu giữ lại trước thời điểm bắt, 0 ≤ pre < count. Cửa sổ gửi đi
+  luôn dài đúng `count` mẫu và điểm bắt nằm ở chỉ số `pre` trong cửa sổ đó.
+
+Cách chạy từ máy tính, không cần PulseView:
+
+```bash
+# capture manual (giống driver)
+python3 tools/host_la.py --port /dev/ttyACM0 --rate 1m --count 100000 --out cap.bin
+
+# bắt theo sườn lên của CH0, giữ lại 20.000 mẫu trước thời điểm bắt
+python3 tools/host_la.py --port /dev/ttyACM0 --rate 1m --count 100000 --pre 20000 \
+    --trigger edge:0:rise --out cap.bin
+
+# bắt theo mẫu bit: giá trị 0x5a, mặt nạ 0x0f (bit cao không quan tâm)
+python3 tools/host_la.py --port /dev/ttyACM0 --rate 1m --count 100000 --pre 20000 \
+    --trigger pattern:0x5a:0x0f --out cap.bin
+```
+
+Lệnh in ra `trigger index`, `pre-trigger samples` và kiểm tra CRC toàn capture; file
+`.bin` là dữ liệu thô một byte một mẫu, bit n là kênh n, đúng bố cục PulseView nhận.
+
+Giới hạn cần nói trong báo cáo: firmware chỉ chờ trigger trong một vùng capture 262.144
+mẫu, tức 10,49 ms ở 25 MHz hay 262 ms ở 1 MHz. Trigger không xuất hiện trong vùng này
+thì thiết bị trả lỗi `no trigger`.
 
 ## Chạy trên máy hiện tại
 
@@ -165,9 +203,10 @@ Driver hiện dùng POSIX `termios/poll` cho CDC trên Linux (PTY test cũng dù
 
 - `driver/`: mã driver được duy trì; `scripts/integrate.py` chép vào libsigrok và thêm build registration.
 - `protocol/lar2.h`, [protocol/PROTOCOL.md](protocol/PROTOCOL.md): codec C và hợp đồng binary.
+- `protocol/trigger_match.h`: logic so khớp trigger, dùng chung cho firmware và test host.
 - `firmware/`: Pico SDK, PIO, DMA, TinyUSB CDC; cùng firmware dùng cho Pico 2/2 W.
 - `patches/`: thay đổi tiêu đề PulseView; giao tiếp phần cứng luôn đi qua libsigrok.
-- `tools/`, `tests/`: codec Python độc lập, giả lập và kiểm thử driver.
+- `tools/`, `tests/`: codec Python độc lập, giả lập, host tool `host_la.py` và kiểm thử driver.
 - `scripts/`: build, launch, kiểm tra quyền và capture đã xác minh.
 
 Mã tùy chỉnh: GPL-3.0-or-later, xem [LICENSE](LICENSE). PulseView upstream theo GPL-2.0-or-later; giữ thông tin tác giả và giấy phép của từng dự án khi phân phối. Nguồn chính thức: [libsigrok](https://github.com/sigrokproject/libsigrok), [PulseView](https://github.com/sigrokproject/pulseview), [libsigrokdecode](https://github.com/sigrokproject/libsigrokdecode), [Pico SDK](https://github.com/raspberrypi/pico-sdk). Phiên bản đã pin và phạm vi thay đổi xem [THIRD_PARTY.md](THIRD_PARTY.md).
