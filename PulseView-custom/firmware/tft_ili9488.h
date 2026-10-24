@@ -10,7 +10,6 @@ void tft_init(void);
 void tft_fill_color(uint16_t color);
 void tft_fill_rect(int x, int y, int w, int h, uint16_t color);
 void tft_test_pattern(void);
+void tft_draw_image(int x, int y, int w, int h, const uint16_t *data);
 
 #endif
-
-void tft_draw_image(int x, int y, int w, int h, const uint16_t *data);

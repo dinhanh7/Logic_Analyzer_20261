@@ -51,15 +51,21 @@ static int config_get(uint32_t key,GVariant **data,const struct sr_dev_inst *sdi
     case SR_CONF_SAMPLERATE: *data=g_variant_new_uint64(d->rate); break;
     case SR_CONF_LIMIT_SAMPLES: *data=g_variant_new_uint64(d->limit); break;
     case SR_CONF_NUM_LOGIC_CHANNELS: *data=g_variant_new_int32(8); break;
-    case SR_CONF_TRIGGER_SOURCE:
-        *data=d->trig_channel?g_variant_new_string("CH0"):g_variant_new_string("");
-        break;
+    case SR_CONF_TRIGGER_SOURCE: {
+        char name[8];
+        if (d->trig_mode==LAR2_TRIGGER_MANUAL) *data=g_variant_new_string("");
+        else { g_snprintf(name,sizeof(name),"CH%d",d->trig_channel); *data=g_variant_new_string(name); }
+        break; }
     case SR_CONF_TRIGGER_SLOPE:
         *data=g_variant_new_string(d->trig_edge?"falling":"rising");
         break;
-    case SR_CONF_TRIGGER_PATTERN:
-        *data=g_variant_new_string("");
-        break;
+    case SR_CONF_TRIGGER_PATTERN: {
+        char pat[16];
+        if (d->trig_mode==LAR2_TRIGGER_PATTERN)
+            g_snprintf(pat,sizeof(pat),"0x%02x/0x%02x",d->trig_value,d->trig_mask);
+        else pat[0]='\0';
+        *data=g_variant_new_string(pat);
+        break; }
     case SR_CONF_HORIZ_TRIGGERPOS:
         *data=g_variant_new_double(d->horiz_triggerpos);
         break;
@@ -163,6 +169,7 @@ static int dev_acquisition_start(const struct sr_dev_inst *sdi)
     if ((ret=rp2350_reply(d,LAR2_ACK,1000))!=SR_OK) return ret;
     if (lar2_u32(d->parser.buf+8)!=1 || d->parser.buf[12]!=LAR2_ARM) return SR_ERR_DATA;
     d->received=0; d->data_crc=~0u; d->have_info=d->complete=FALSE;
+    d->trigger_index=LAR2_NO_TRIGGER; d->trigger_sent=FALSE;
     d->deadline=g_get_monotonic_time()+5000000+(gint64)(d->limit*1000000/d->rate);
     if ((ret=std_session_send_df_header(sdi))!=SR_OK) return ret;
     d->active=TRUE;

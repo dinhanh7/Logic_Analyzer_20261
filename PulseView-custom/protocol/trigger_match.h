@@ -93,7 +93,7 @@ static inline int lar2_trigger_match(const uint8_t *buf, uint32_t from, uint32_t
     if (mode == LAR2_TRIGGER_PATTERN)
         return lar2_match_pattern(buf, from, to, value, mask, hit);
     if (mode == LAR2_TRIGGER_EDGE)
-        return lar2_match_edge(buf, from, to, channel, edge == LAR2_EDGE_FALLING, hit);
+        return lar2_match_edge(buf, from, to, channel, edge == LAR2_EDGE_RISING, hit);
     return 0;
 }
 
