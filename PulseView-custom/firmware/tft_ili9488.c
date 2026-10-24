@@ -105,3 +105,17 @@ void tft_test_pattern(void) {
     for (int i = 0; i < 8; i++)
         tft_fill_rect(i * bar_w, 0, bar_w, TFT_HEIGHT, colors[i]);
 }
+
+void tft_draw_image(int x, int y, int w, int h, const uint16_t *data) {
+    if (x + w > TFT_WIDTH) w = TFT_WIDTH - x;
+    if (y + h > TFT_HEIGHT) h = TFT_HEIGHT - y;
+    if (w <= 0 || h <= 0) return;
+    tft_set_window(x, y, x + w - 1, y + h - 1);
+    gpio_put(TFT_PIN_DC, 1);
+    gpio_put(TFT_PIN_CS, 0);
+    for (int i = 0; i < w * h; i++) {
+        uint8_t buf[2] = { (uint8_t)(data[i] >> 8), (uint8_t)(data[i] & 0xFF) };
+        spi_write_blocking(TFT_SPI_PORT, buf, 2);
+    }
+    gpio_put(TFT_PIN_CS, 1);
+}
