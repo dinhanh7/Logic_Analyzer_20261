@@ -17,6 +17,7 @@
 #include "tusb.h"
 #include "logic_capture.pio.h"
 #include "lar2.h"
+#include "tft_ili9488.h"
 #include "trigger_match.h"
 
 #define CAPTURE_WORDS (LAR2_MAX_SAMPLES / 4u)
@@ -277,6 +278,8 @@ static void capture_task(void)
 int main(void)
 {
     set_sys_clock_khz(100000, true);
+    tft_init();
+    tft_test_pattern();
     stdio_init_all();
     for (uint i = 0; i < 8; i++) { pio_gpio_init(pio, i); gpio_disable_pulls(i); }
     sm = pio_claim_unused_sm(pio, true);
