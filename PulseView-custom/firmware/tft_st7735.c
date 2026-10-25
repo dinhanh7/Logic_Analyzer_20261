@@ -44,7 +44,7 @@ static void tft_reset(void) {
 }
 
 void tft_init(void) {
-    spi_init(TFT_SPI_PORT, 40000000);
+    spi_init(TFT_SPI_PORT, 20000000);
     gpio_set_function(TFT_PIN_SCK, GPIO_FUNC_SPI);
     gpio_set_function(TFT_PIN_MOSI, GPIO_FUNC_SPI);
 
@@ -57,8 +57,24 @@ void tft_init(void) {
 
     tft_write_cmd(0x01); sleep_ms(150);   /* SWRESET */
     tft_write_cmd(0x11); sleep_ms(120);   /* SLPOUT */
-    tft_write_cmd(0x3A); tft_write_data8(0x05); /* COLMOD RGB565 */
-    tft_write_cmd(0x36); tft_write_data8(0x08); /* MADCTL */
+    tft_write_cmd(0xB1);                   /* FRMCTR1 - frame rate */
+    tft_write_data8(0x01); tft_write_data8(0x2C); tft_write_data8(0x2D);
+    tft_write_cmd(0xB4);                   /* INVCTR - inversion control */
+    tft_write_data8(0x07);
+    tft_write_cmd(0xC0);                   /* PWCTR1 - power control 1 */
+    tft_write_data8(0xA2); tft_write_data8(0x02); tft_write_data8(0x84);
+    tft_write_cmd(0xC1);                   /* PWCTR2 - power control 2 */
+    tft_write_data8(0xC5);
+    tft_write_cmd(0xC2);                   /* PWCTR3 - power control 3 */
+    tft_write_data8(0x0A); tft_write_data8(0x00);
+    tft_write_cmd(0xC3);                   /* PWCTR4 - power control 4 */
+    tft_write_data8(0x8A); tft_write_data8(0x2A);
+    tft_write_cmd(0xC4);                   /* PWCTR5 - power control 5 */
+    tft_write_data8(0x8A); tft_write_data8(0xEE);
+    tft_write_cmd(0xC5);                   /* VMCTR1 - VCOM control */
+    tft_write_data8(0x0E);
+    tft_write_cmd(0x36); tft_write_data8(0x00); /* MADCTL: RGB mode */
+    tft_write_cmd(0x3A); tft_write_data8(0x05); /* COLMOD: RGB565 */
     tft_write_cmd(0x29); sleep_ms(100);   /* DISPON */
 }
 

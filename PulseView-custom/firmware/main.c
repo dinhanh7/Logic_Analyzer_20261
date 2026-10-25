@@ -280,10 +280,7 @@ int main(void)
 {
     set_sys_clock_khz(100000, true);
     tft_init();
-    tft_fill_color(0x0000);
-    tft_draw_image((TFT_WIDTH - TEST_IMG_W) / 2,
-                    (TFT_HEIGHT - TEST_IMG_H) / 2,
-                    TEST_IMG_W, TEST_IMG_H, test_image);
+    tft_fill_color(0xF800);  /* full red - test RGB/BGR */
     stdio_init_all();
     for (uint i = 0; i < 8; i++) { pio_gpio_init(pio, i); gpio_disable_pulls(i); }
     sm = pio_claim_unused_sm(pio, true);
