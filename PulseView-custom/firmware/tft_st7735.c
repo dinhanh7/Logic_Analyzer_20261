@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
-#include "tft_ili9488.h"
+#include "tft_st7735.h"
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "hardware/gpio.h"
@@ -57,18 +57,18 @@ void tft_init(void) {
 
     tft_write_cmd(0x01); sleep_ms(150);   /* SWRESET */
     tft_write_cmd(0x11); sleep_ms(120);   /* SLPOUT */
-    tft_write_cmd(0x3A); tft_write_data8(0x55); /* COLMOD RGB565 */
+    tft_write_cmd(0x3A); tft_write_data8(0x05); /* COLMOD RGB565 */
     tft_write_cmd(0x36); tft_write_data8(0x08); /* MADCTL */
     tft_write_cmd(0x29); sleep_ms(100);   /* DISPON */
 }
 
 static void tft_set_window(int x0, int y0, int x1, int y1) {
     tft_write_cmd(0x2A);
-    tft_write_data8(x0 >> 8); tft_write_data8(x0 & 0xFF);
-    tft_write_data8(x1 >> 8); tft_write_data8(x1 & 0xFF);
+    tft_write_data8(0x00); tft_write_data8(x0);
+    tft_write_data8(0x00); tft_write_data8(x1);
     tft_write_cmd(0x2B);
-    tft_write_data8(y0 >> 8); tft_write_data8(y0 & 0xFF);
-    tft_write_data8(y1 >> 8); tft_write_data8(y1 & 0xFF);
+    tft_write_data8(0x00); tft_write_data8(y0);
+    tft_write_data8(0x00); tft_write_data8(y1);
     tft_write_cmd(0x2C);
 }
 
@@ -99,13 +99,6 @@ void tft_fill_rect(int x, int y, int w, int h, uint16_t color) {
     gpio_put(TFT_PIN_CS, 1);
 }
 
-void tft_test_pattern(void) {
-    int bar_w = TFT_WIDTH / 8;
-    uint16_t colors[] = { 0xF800, 0x07E0, 0x001F, 0xFFE0, 0xF81F, 0x07FF, 0xFFFF, 0x0000 };
-    for (int i = 0; i < 8; i++)
-        tft_fill_rect(i * bar_w, 0, bar_w, TFT_HEIGHT, colors[i]);
-}
-
 void tft_draw_image(int x, int y, int w, int h, const uint16_t *data) {
     if (x + w > TFT_WIDTH) w = TFT_WIDTH - x;
     if (y + h > TFT_HEIGHT) h = TFT_HEIGHT - y;
@@ -118,4 +111,11 @@ void tft_draw_image(int x, int y, int w, int h, const uint16_t *data) {
         spi_write_blocking(TFT_SPI_PORT, buf, 2);
     }
     gpio_put(TFT_PIN_CS, 1);
+}
+
+void tft_test_pattern(void) {
+    int bar_w = TFT_WIDTH / 8;
+    uint16_t colors[] = { 0xF800, 0x07E0, 0x001F, 0xFFE0, 0xF81F, 0x07FF, 0xFFFF, 0x0000 };
+    for (int i = 0; i < 8; i++)
+        tft_fill_rect(i * bar_w, 0, bar_w, TFT_HEIGHT, colors[i]);
 }

@@ -17,7 +17,7 @@
 #include "tusb.h"
 #include "logic_capture.pio.h"
 #include "lar2.h"
-#include "tft_ili9488.h"
+#include "tft_st7735.h"
 #include "test_image.h"
 #include "trigger_match.h"
 

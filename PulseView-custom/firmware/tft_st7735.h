@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
-#ifndef TFT_ILI9488_H
-#define TFT_ILI9488_H
+#ifndef TFT_ST7735_H
+#define TFT_ST7735_H
 #include <stdint.h>
 
-#define TFT_WIDTH  320
-#define TFT_HEIGHT 480
+#define TFT_WIDTH  128
+#define TFT_HEIGHT 160
 
 void tft_init(void);
 void tft_fill_color(uint16_t color);
