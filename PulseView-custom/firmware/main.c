@@ -16,6 +16,7 @@
 #include "hardware/dma.h"
 #include "hardware/pio.h"
 #include "hardware/flash.h"
+#include "hardware/regs/addressmap.h"
 #include "hardware/sync.h"
 #include "tusb.h"
 #include "logic_capture.pio.h"
@@ -50,18 +51,22 @@ static int dma_ch;
 static uint8_t trig_mode = LAR2_TRIGGER_MANUAL;
 static uint8_t trig_channel, trig_edge, trig_value, trig_mask;
 static uint32_t pretrigger, trigger_abs;
+static uint32_t estimated_baud;
 static bool trigger_found;
 static uint32_t scan_pos;
 static const uint8_t *tx_base;
+
+/* Forward declarations for decode functions. */
+static void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate);
+static void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate);
+static void decode_spi(const uint8_t *buf, uint32_t len, uint32_t rate);
 
 /* On-device decode results (displayed on TFT). */
 static char decode_buf[128];
 static bool decode_ready;
 
 /* Signature comparator: golden reference stored in flash. */
-static uint32_t golden_samples[CAPTURE_WORDS];
-static uint32_t golden_count;
-static bool has_golden;
+/* placeholder - removed */
 
 /* Flash session header. */
 typedef struct {
@@ -101,6 +106,7 @@ static void abort_capture(void)
     capturing = sending = false;
     trigger_found = false;
     scan_pos = 0;
+    estimated_baud = 0;
 }
 
 static bool capture_faulted(void)
@@ -144,8 +150,50 @@ static void start_capture(void)
     capturing = true;
     trigger_found = false;
     scan_pos = 0;
+    estimated_baud = 0;
     tx_base = (const uint8_t *)samples;
     pio_sm_set_enabled(pio, sm, true);
+}
+
+/* Estimate UART baud rate from available samples (shortest pulse width). */
+static uint32_t estimate_baud(const uint8_t *buf, uint32_t from, uint32_t to)
+{
+    uint32_t min_pulse = 1000000;
+    uint32_t last = from;
+    for (uint32_t i = from + 1; i < to; i++) {
+        if ((buf[i] & 1) != (buf[i - 1] & 1)) {
+            uint32_t width = i - last;
+            if (width >= 3 && width < min_pulse) min_pulse = width;
+            last = i;
+        }
+    }
+    if (min_pulse == 1000000 || min_pulse == 0) return 0;
+    return (rate / min_pulse);
+}
+
+static bool find_uart_byte(const uint8_t *buf, uint32_t from, uint32_t to,
+                          uint32_t baud_samples, uint8_t target, uint32_t *hit)
+{
+    uint32_t i = from, half = baud_samples / 2;
+    while (i + 8 * baud_samples < to) {
+        while (i < to && (buf[i] & 1)) i++;
+        if (i >= to) break;
+        if (i + 2 >= to || (buf[i + 1] & 1) || (buf[i + 2] & 1)) { i++; continue; }
+        uint32_t mid = i + baud_samples + half;
+        if (mid + 8 * baud_samples > to) break;
+        uint8_t byte = 0;
+        for (int b = 0; b < 8; b++) {
+            uint32_t sample = mid + b * baud_samples;
+            if (sample >= to) break;
+            if (buf[sample] & 1) byte |= (1 << b);
+        }
+        uint32_t stop = mid + 8 * baud_samples;
+        if (stop < to && (buf[stop] & 1) && byte == target) {
+            *hit = i; return true;
+        }
+        i = mid + 8 * baud_samples;
+    }
+    return false;
 }
 
 static void trigger_scan(void)
@@ -158,8 +206,18 @@ static void trigger_scan(void)
     if (from < pretrigger) from = pretrigger;
     if (from < prod) {
         uint32_t hit;
-        if (lar2_trigger_match((const uint8_t *)samples, from, prod, trig_mode,
-                               trig_channel, trig_edge, trig_value, trig_mask, &hit)) {
+        if (trig_mode == LAR2_TRIGGER_UART) {
+            if (estimated_baud == 0 && prod >= pretrigger)
+                estimated_baud = estimate_baud((const uint8_t *)samples, pretrigger, prod);
+            if (estimated_baud > 0) {
+                uint32_t baud_samples = rate / estimated_baud;
+                if (baud_samples > 0 && find_uart_byte((const uint8_t *)samples, from, prod,
+                                                      baud_samples, trig_value, &hit)) {
+                    trigger_found = true; trigger_abs = hit;
+                }
+            }
+        } else if (lar2_trigger_match((const uint8_t *)samples, from, prod, trig_mode,
+                                      trig_channel, trig_edge, trig_value, trig_mask, &hit)) {
             trigger_found = true;
             trigger_abs = hit;
         }
@@ -212,6 +270,8 @@ static void command(void)
                 if (trig_channel > 7 || trig_edge > 1) { error("invalid config"); break; }
             } else if (trig_mode == LAR2_TRIGGER_PATTERN) {
                 if (trig_channel > 7) { error("invalid config"); break; }
+            } else if (trig_mode == 3) {
+                /* UART byte trigger: trig_value = target byte */
             } else { error("invalid config"); break; }
             if (pretrigger >= count) { error("invalid config"); break; }
         }
@@ -243,6 +303,7 @@ static void capture_task(void)
             if (dma_done) {
                 pio_sm_set_enabled(pio, sm, false); capturing = false;
                 if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
+                decode_uart((const uint8_t *)samples, count, (uint32_t)rate);
                 start_sending(count, LAR2_NO_TRIGGER, 0, 0);
             }
         } else {
@@ -255,6 +316,7 @@ static void capture_task(void)
                     pio_sm_clear_fifos(pio, sm);
                     capturing = false;
                     if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
+                    decode_uart(tx_base, count, (uint32_t)rate);
                     tx_base = (const uint8_t *)samples + (trigger_abs - pretrigger);
                     start_sending(count, pretrigger, pretrigger, LAR2_INFO_TRIGGER_FOUND);
                 } else if (dma_done) {
@@ -280,18 +342,24 @@ static void capture_task(void)
     }
 }
 
-/* ---------- On-device decode (UART/I2C) ---------- */
+/* ---------- On-device decode (UART/I2C/SPI) ---------- */
+/* Max samples to decode per call to avoid long blocking. */
+#define DECODE_MAX_SAMPLES 65536
+
 static void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate)
 {
-    /* Simple UART decoder: idle-high, start bit, 8 data bits, 1 stop bit.
-     * Measures the shortest pulse width to estimate the baud rate. */
+    /* Glitch filter: ignore transitions shorter than 3 samples. */
     uint32_t min_pulse = UINT32_MAX;
-    uint32_t last = 0;
-    for (uint32_t i = 1; i < len; i++) {
-        if ((buf[i] & 1) != (buf[i-1] & 1)) {
-            uint32_t width = i - last;
-            if (width < min_pulse) min_pulse = width;
-            last = i;
+    uint32_t last_edge = 0;
+    bool in_transition = false;
+    uint32_t pulse_start = 0;
+
+    /* First pass: find shortest reliable pulse width. */
+    for (uint32_t i = 1; i < len && i < DECODE_MAX_SAMPLES; i++) {
+        if ((buf[i] & 1) != (buf[i - 1] & 1)) {
+            uint32_t width = i - last_edge;
+            if (width >= 3 && width < min_pulse) min_pulse = width;
+            last_edge = i;
         }
     }
     if (min_pulse == 0 || min_pulse == UINT32_MAX) {
@@ -299,35 +367,148 @@ static void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate)
         decode_ready = true; return;
     }
     uint32_t baud = rate / min_pulse;
-    /* Decode bytes */
+    /* Clamp baud to reasonable range. */
+    if (baud < 300) baud = 300;
+    if (baud > 1000000) baud = 1000000;
+
+    /* Decode bytes: find start bit (falling edge), sample at mid-point. */
     uint32_t i = 0;
     char out[64]; out[0] = '\0';
     int pos = 0;
-    while (i < len && pos < 60) {
-        /* Find start bit (falling edge on CH0) */
-        while (i < len && (buf[i] & 1)) i++;
-        if (i >= len) break;
+    while (i < len && i < DECODE_MAX_SAMPLES && pos < 60) {
+        /* Find start bit (high-to-low transition on CH0). */
+        while (i < len && i < DECODE_MAX_SAMPLES && (buf[i] & 1)) i++;
+        if (i >= len || i >= DECODE_MAX_SAMPLES) break;
+        /* Verify it's a real start bit: at least 3 low samples. */
+        if (i + 3 >= len || i + 3 >= DECODE_MAX_SAMPLES) break;
+        if ((buf[i + 1] & 1) || (buf[i + 2] & 1)) { i++; continue; }
+
         uint32_t bit_width = min_pulse;
         uint32_t mid = i + bit_width + bit_width / 2;
+        if (mid >= len || mid >= DECODE_MAX_SAMPLES) break;
         uint8_t byte = 0;
+        bool valid = true;
         for (int b = 0; b < 8; b++) {
             uint32_t sample = mid + b * bit_width;
-            if (sample >= len) break;
+            if (sample >= len || sample >= DECODE_MAX_SAMPLES) { valid = false; break; }
             if (buf[sample] & 1) byte |= (1 << b);
         }
-        if (byte >= 32 && byte < 127) out[pos++] = (char)byte;
-        else out[pos++] = '?';
-        i = mid + 8 * bit_width + bit_width / 2;
+        if (!valid) break;
+        /* Check stop bit. */
+        uint32_t stop_sample = mid + 8 * bit_width;
+        if (stop_sample < len && stop_sample < DECODE_MAX_SAMPLES && (buf[stop_sample] & 1)) {
+            if (byte >= 32 && byte < 127) out[pos++] = (char)byte;
+            else out[pos++] = '?';
+        }
+        i = mid + 9 * bit_width;
     }
     out[pos] = '\0';
-    snprintf(decode_buf, sizeof(decode_buf), "UART %u bps: %s", baud, out);
+    snprintf(decode_buf, sizeof(decode_buf), "UART %lu bps: %s", (unsigned long)baud, out);
     decode_ready = true;
 }
 
 static void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate)
 {
     /* I2C decoder: SCL=CH0, SDA=CH1. Decode address, register, data. */
-    snprintf(decode_buf, sizeof(decode_buf), "I2C: %u bytes decoded", len / 10);
+    if (len == 0 || len < 20) {
+        snprintf(decode_buf, sizeof(decode_buf), "I2C: no data");
+        decode_ready = true; return;
+    }
+    uint32_t limit = len < DECODE_MAX_SAMPLES ? len : DECODE_MAX_SAMPLES;
+    char out[80]; out[0] = '\0';
+    int pos = 0;
+
+    /* Find START conditions: SDA falls while SCL is high. */
+    uint32_t idx = 1;
+    while (idx < limit && pos < 70) {
+        /* Find START */
+        while (idx < limit - 1 && !((buf[idx] & 1) && !(buf[idx] & 2) && (buf[idx-1] & 2))) {
+            idx++;
+        }
+        if (idx >= limit - 1) break;
+        idx++; /* skip START point */
+
+        /* Read 8 data bits + 1 ACK, repeated */
+        int bytes_read = 0;
+        while (bytes_read < 4 && idx < limit - 9) {
+            uint8_t byte = 0;
+            for (int b = 0; b < 8; b++) {
+                /* Wait for SCL rising edge. */
+                while (idx < limit && !( (buf[idx] & 1) && !(buf[idx-1] & 1) )) idx++;
+                if (idx >= limit) break;
+                idx++;
+                if (buf[idx-1] & 2) byte |= (1 << (7 - b));
+            }
+            /* Read ACK (9th clock). */
+            while (idx < limit && !( (buf[idx] & 1) && !(buf[idx-1] & 1) )) idx++;
+            if (idx >= limit) break;
+            int ack = !(buf[idx] & 2); /* ACK = SDA low */
+            idx++;
+
+            if (pos < 74) {
+                pos += snprintf(out + pos, 74 - pos, "%s0x%02X%s ", bytes_read == 0 ? "A:" : bytes_read == 1 ? "R:" : "D:", byte, ack ? "" : "[NACK]");
+            }
+            bytes_read++;
+            /* Check for STOP (SDA rises while SCL high). */
+            if (idx < limit - 1 && (buf[idx] & 1) && (buf[idx] & 2) && !(buf[idx-1] & 2)) {
+                break;
+            }
+        }
+        if (bytes_read > 0) {
+            snprintf(decode_buf, sizeof(decode_buf), "I2C: %s", out);
+            decode_ready = true;
+            return;
+        }
+    }
+    snprintf(decode_buf, sizeof(decode_buf), "I2C: no transaction found");
+    decode_ready = true;
+}
+
+static void decode_spi(const uint8_t *buf, uint32_t len, uint32_t rate)
+{
+    /* SPI decoder: CS=CH0, SCK=CH1, MOSI=CH2, MISO=CH3.
+     * Byte is sampled on SCK rising edge, CS must be low. */
+    if (len == 0 || len < 20) {
+        snprintf(decode_buf, sizeof(decode_buf), "SPI: no data");
+        decode_ready = true; return;
+    }
+    uint32_t limit = len < DECODE_MAX_SAMPLES ? len : DECODE_MAX_SAMPLES;
+    char out[80]; out[0] = '\0';
+    int pos = 0;
+
+    uint32_t idx = 0;
+    while (idx < limit && pos < 70) {
+        /* Find CS low (CH0 = 0). */
+        while (idx < limit && (buf[idx] & 1)) idx++;
+        if (idx >= limit) break;
+        /* Find first SCK rising edge while CS is low. */
+        while (idx < limit && (buf[idx] & 2)) idx++;
+        while (idx < limit - 1 && !((buf[idx] & 2) && !(buf[idx-1] & 2) && !(buf[idx] & 1))) idx++;
+        if (idx >= limit - 1) break;
+
+        /* Read 8 bits on SCK rising edges. */
+        uint8_t byte = 0;
+        int bits = 0;
+        uint32_t prev_idx = idx;
+        while (bits < 8 && idx < limit) {
+            if ((buf[idx] & 2) && !(buf[idx-1] & 2) && !(buf[idx] & 1)) {
+                if (buf[idx] & 4) byte |= (1 << (7 - bits));
+                bits++;
+                prev_idx = idx;
+            }
+            idx++;
+        }
+        if (bits == 8) {
+            pos += snprintf(out + pos, 78 - pos, "0x%02X ", byte);
+        }
+        /* Wait for CS high (end of transaction). */
+        while (idx < limit && !(buf[idx] & 1)) idx++;
+    }
+    if (pos > 0) {
+        snprintf(decode_buf, sizeof(decode_buf), "SPI: %s", out);
+    } else {
+        snprintf(decode_buf, sizeof(decode_buf), "SPI: no transaction found");
+    }
     decode_ready = true;
 }
 
@@ -336,27 +517,26 @@ static void flash_save_session(uint32_t sample_count, uint64_t sample_rate,
                               uint32_t channel_mask, uint32_t trigger_index,
                               uint32_t pretrigger, uint8_t trigger_mode)
 {
-    /* Find an empty slot or overwrite the oldest. */
-    uint32_t slot = 0;  /* simplified: always slot 0 */
-    uint32_t offset = FLASH_STORAGE_BASE + slot * (FLASH_SECTOR_BYTES * 4);
+    uint32_t sector = (trigger_index >= pretrigger) ? 0 : 0;  /* simplified: slot 0 */
+    uint32_t offset = FLASH_STORAGE_BASE + sector * (FLASH_SECTOR_BYTES * 4);
     session_header_t hdr = { SESSION_MAGIC, sample_count, sample_rate, channel_mask,
                              trigger_index, pretrigger, trigger_mode, {0} };
-    /* Erase sector first */
     uint32_t ints = save_and_disable_interrupts();
     flash_range_erase(offset, FLASH_SECTOR_BYTES);
-    /* Write header + samples */
+    /* Write header (aligned to page boundary). */
     uint8_t page[FLASH_PAGE_BYTES];
     memcpy(page, &hdr, sizeof(hdr));
+    memset(page + sizeof(hdr), 0, FLASH_PAGE_BYTES - sizeof(hdr));
     flash_range_program(offset, page, FLASH_PAGE_BYTES);
-    /* Write samples in pages */
-    uint32_t total_bytes = sample_count;
-    uint32_t src = 0;
-    for (uint32_t i = 0; i < total_bytes; i += FLASH_PAGE_BYTES) {
-        uint32_t chunk = total_bytes - i;
+    /* Write samples at next sector boundary. */
+    uint32_t samples_offset = offset + FLASH_SECTOR_BYTES;
+    uint32_t src_offset = (trigger_index >= pretrigger) ? (trigger_abs - pretrigger) : 0;
+    for (uint32_t i = 0; i < sample_count; i += FLASH_PAGE_BYTES) {
+        uint32_t chunk = sample_count - i;
         if (chunk > FLASH_PAGE_BYTES) chunk = FLASH_PAGE_BYTES;
-        memcpy(page, (uint8_t *)samples + (trigger_abs - pretrigger) + i, chunk);
+        memcpy(page, (uint8_t *)samples + src_offset + i, chunk);
         memset(page + chunk, 0, FLASH_PAGE_BYTES - chunk);
-        flash_range_program(offset + FLASH_PAGE_BYTES + i, page, FLASH_PAGE_BYTES);
+        flash_range_program(samples_offset + i, page, FLASH_PAGE_BYTES);
     }
     restore_interrupts(ints);
 }
@@ -367,8 +547,8 @@ static void flash_load_session(uint32_t slot)
     session_header_t hdr;
     memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof(hdr));
     if (hdr.magic != SESSION_MAGIC) return;
-    /* Load samples into buffer */
-    memcpy(samples, (void *)(XIP_BASE + offset + FLASH_PAGE_BYTES), hdr.sample_count);
+    uint32_t samples_offset = offset + FLASH_SECTOR_BYTES;
+    memcpy(samples, (void *)(XIP_BASE + samples_offset), hdr.sample_count);
     rate = hdr.sample_rate;
     count = hdr.sample_count;
     mask = hdr.channel_mask;
@@ -376,34 +556,73 @@ static void flash_load_session(uint32_t slot)
 }
 
 /* ---------- Signature comparator ---------- */
+/* Golden buffer reduced to 64K samples (64 KB) to fit in SRAM. */
+static uint32_t golden_samples[16384];  /* 64K samples = 64 KB */
+static uint32_t golden_count;
+static bool has_golden;
+static uint32_t golden_tolerance = 0;  /* configurable: 0-1000 samples */
+
 static int compare_with_golden(void)
 {
-    if (!has_golden) return -1;
+    if (!has_golden) { snprintf(decode_buf, sizeof(decode_buf), "SIG: no golden ref"); decode_ready = true; return -1; }
+    uint32_t capture_words = (count + 3) / 4;
+    if (capture_words > CAPTURE_WORDS) capture_words = CAPTURE_WORDS;
+    uint32_t compare_words = capture_words < golden_count ? capture_words : golden_count;
     uint32_t mismatches = 0;
     uint32_t first_mismatch = 0;
-    for (uint32_t i = 0; i < count && i < golden_count; i++) {
+    for (uint32_t i = 0; i < compare_words; i++) {
         if (samples[i] != golden_samples[i]) {
-            if (mismatches == 0) first_mismatch = i;
+            if (mismatches == 0) first_mismatch = i * 4;
             mismatches++;
         }
     }
-    if (mismatches == 0) {
-        snprintf(decode_buf, sizeof(decode_buf), "SIG: MATCH (%u samples)", count);
+    if (mismatches <= golden_tolerance) {
+        snprintf(decode_buf, sizeof(decode_buf), "SIG: MATCH (%u mismatches <= %u tol, %u samples)", mismatches, golden_tolerance, compare_words * 4);
     } else {
-        snprintf(decode_buf, sizeof(decode_buf), "SIG: MISMATCH %u/%u at sample %u",
-                 mismatches, count, first_mismatch);
+        snprintf(decode_buf, sizeof(decode_buf), "SIG: MISMATCH %u/%u samples at sample %u", mismatches, compare_words * 4, first_mismatch);
     }
     decode_ready = true;
     return (int)mismatches;
 }
 
-/* ---------- Capture diff ---------- */
-static int diff_captures(const uint32_t *a, const uint32_t *b, uint32_t n, uint32_t *first_diff)
+static void save_golden(void)
 {
-    for (uint32_t i = 0; i < n; i++) {
-        if (a[i] != b[i]) { *first_diff = i; return 1; }
+    uint32_t words = (count + 3) / 4;
+    if (words > 16384) words = 16384;
+    for (uint32_t i = 0; i < words; i++) golden_samples[i] = samples[i];
+    golden_count = words;
+    has_golden = true;
+}
+
+/* ---------- Capture diff ---------- */
+/* Compare two sessions from flash by loading each into samples buffer alternately. */
+static int diff_with_loaded_session(uint32_t slot)
+{
+    /* Load session from flash into a temporary buffer (reuse golden buffer). */
+    uint32_t offset = FLASH_STORAGE_BASE + slot * (FLASH_SECTOR_BYTES * 4);
+    session_header_t hdr;
+    memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof(hdr));
+    if (hdr.magic != SESSION_MAGIC) return -1;
+    uint32_t limit_samples = count < hdr.sample_count ? count : hdr.sample_count;
+    uint32_t limit_words = (limit_samples + 3) / 4;
+    if (limit_words > 16384) limit_words = 16384;
+    /* Load from flash into golden buffer temporarily. */
+    uint32_t samples_offset = offset + FLASH_SECTOR_BYTES;
+    memcpy(golden_samples, (void *)(XIP_BASE + samples_offset), limit_words * sizeof(uint32_t));
+    /* Compare current samples with loaded session. */
+    uint32_t first_diff = 0;
+    int found = 0;
+    for (uint32_t i = 0; i < limit_words; i++) {
+        if (samples[i] != golden_samples[i]) { first_diff = i; found = 1; break; }
     }
-    return 0;
+    if (!found) {
+        snprintf(decode_buf, sizeof(decode_buf), "DIFF: identical");
+    } else {
+        snprintf(decode_buf, sizeof(decode_buf), "DIFF: first mismatch at sample %u (A=0x%08X B=0x%08X)",
+                 first_diff * 4, samples[first_diff], golden_samples[first_diff]);
+    }
+    decode_ready = true;
+    return found;
 }
 
 /* ---------- main ---------- */
@@ -434,11 +653,8 @@ int main(void)
                 if (r == 1) { command(); break; }
             }
             capture_task();
-            /* On-device decode: run after capture completes. */
-            if (!capturing && decode_ready) {
-                /* Display decode result on TFT (simple text at bottom). */
-                decode_ready = false;
-            }
+            /* On-device decode result is in decode_buf; could draw to TFT here. */
+            decode_ready = false;
         }
         connected = now; tight_loop_contents();
     }

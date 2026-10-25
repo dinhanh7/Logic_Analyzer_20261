@@ -19,6 +19,7 @@
 #define LAR2_TRIGGER_MANUAL 0u
 #define LAR2_TRIGGER_EDGE 1u
 #define LAR2_TRIGGER_PATTERN 2u
+#define LAR2_TRIGGER_UART 3u
 /* Edge polarity carried in CONFIG.trigger_edge. */
 #define LAR2_EDGE_RISING 0u
 #define LAR2_EDGE_FALLING 1u
