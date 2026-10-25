@@ -316,8 +316,9 @@ static void capture_task(void)
                     pio_sm_clear_fifos(pio, sm);
                     capturing = false;
                     if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
-                    decode_uart(tx_base, count, (uint32_t)rate);
                     tx_base = (const uint8_t *)samples + (trigger_abs - pretrigger);
+                    /* Decode runs on the exact window that will be sent below. */
+                    decode_uart(tx_base, count, (uint32_t)rate);
                     start_sending(count, pretrigger, pretrigger, LAR2_INFO_TRIGGER_FOUND);
                 } else if (dma_done) {
                     pio_sm_set_enabled(pio, sm, false); capturing = false;
@@ -351,8 +352,6 @@ static void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate)
     /* Glitch filter: ignore transitions shorter than 3 samples. */
     uint32_t min_pulse = UINT32_MAX;
     uint32_t last_edge = 0;
-    bool in_transition = false;
-    uint32_t pulse_start = 0;
 
     /* First pass: find shortest reliable pulse width. */
     for (uint32_t i = 1; i < len && i < DECODE_MAX_SAMPLES; i++) {
