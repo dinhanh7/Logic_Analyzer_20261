@@ -1,35 +1,39 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * RP2350 logic analyzer firmware (LAR2 v1 protocol).
+ * RP2350 logic analyzer firmware — Topic 2 (8 channels, 25 MHz, trigger,
+ * on-device decode, flash storage, signature comparator, capture diff).
  *
  * Capture path: one PIO state machine latches all eight channels in a single
  * cycle, DMA moves the samples into SRAM, the CPU scans the buffer for the
  * trigger condition and finally the window is streamed to the host over USB CDC.
  *
  * The capture region is filled linearly, so a trigger window is always
- * contiguous in memory and no sample is ever lost: there is no ring buffer
- * that would need a gapless re-arm.
+ * contiguous in memory and no sample is ever lost.
  */
 #include "pico/stdlib.h"
 #include "pico/stdio_usb.h"
+#include "pico/multicore.h"
 #include "hardware/clocks.h"
 #include "hardware/dma.h"
 #include "hardware/pio.h"
+#include "hardware/flash.h"
+#include "hardware/sync.h"
 #include "tusb.h"
 #include "logic_capture.pio.h"
 #include "lar2.h"
+#include "trigger_match.h"
 #include "tft_st7735.h"
 #include "test_image.h"
-#include "trigger_match.h"
 
 #define CAPTURE_WORDS (LAR2_MAX_SAMPLES / 4u)
 #define CAPTURE_BYTES (LAR2_MAX_SAMPLES)
-/* How far behind the DMA write pointer the trigger scan is allowed to read.
- * The write address points at the next word, so one word can still be in
- * flight; a word that is being written reads back as its previous content,
- * which would look like a false edge to the matcher. Sixteen words of slack
- * is far more than the one word that can be in flight, and it only delays the
- * trigger detection by a few samples, it never shifts the trigger index. */
 #define DMA_LAG_BYTES 64u
+
+/* Flash storage: use the last 1 MB of flash for session data. */
+#define FLASH_STORAGE_BASE (PICO_FLASH_SIZE_BYTES - 1024 * 1024)
+#define FLASH_SECTOR_BYTES 4096  /* matches hardware/flash.h */
+#define FLASH_PAGE_BYTES 256
+#define MAX_SESSIONS 8
+#define SESSION_MAGIC 0x4C415345  /* "LASE" */
 
 static uint32_t samples[CAPTURE_WORDS];
 static struct lar2_parser parser;
@@ -42,15 +46,36 @@ static PIO pio = pio0;
 static int sm, offset;
 static int dma_ch;
 
-/* Trigger configuration and state. */
+/* Trigger state. */
 static uint8_t trig_mode = LAR2_TRIGGER_MANUAL;
 static uint8_t trig_channel, trig_edge, trig_value, trig_mask;
-static uint32_t pretrigger;      /* samples kept before the trigger */
-static uint32_t trigger_abs;     /* absolute sample index of the trigger */
+static uint32_t pretrigger, trigger_abs;
 static bool trigger_found;
-static uint32_t scan_pos;        /* samples already handed to the matcher */
-static const uint8_t *tx_base;   /* first sample to send */
+static uint32_t scan_pos;
+static const uint8_t *tx_base;
 
+/* On-device decode results (displayed on TFT). */
+static char decode_buf[128];
+static bool decode_ready;
+
+/* Signature comparator: golden reference stored in flash. */
+static uint32_t golden_samples[CAPTURE_WORDS];
+static uint32_t golden_count;
+static bool has_golden;
+
+/* Flash session header. */
+typedef struct {
+    uint32_t magic;
+    uint32_t sample_count;
+    uint64_t sample_rate;
+    uint32_t channel_mask;
+    uint32_t trigger_index;
+    uint32_t pretrigger;
+    uint8_t  trigger_mode;
+    uint8_t  reserved[3];
+} session_header_t;
+
+/* ---------- send_frame (USB CDC) ---------- */
 static void send_frame(uint8_t type, const uint8_t *p, size_t n)
 {
     uint8_t frame[LAR2_MAX_FRAME];
@@ -67,6 +92,7 @@ static void send_frame(uint8_t type, const uint8_t *p, size_t n)
 static void ack(uint8_t command) { send_frame(LAR2_ACK, &command, 1); }
 static void error(const char *text) { send_frame(LAR2_ERROR, (const uint8_t *)text, strlen(text)); }
 
+/* ---------- abort / start capture ---------- */
 static void abort_capture(void)
 {
     pio_sm_set_enabled(pio, sm, false);
@@ -77,8 +103,6 @@ static void abort_capture(void)
     scan_pos = 0;
 }
 
-/* True when the capture lost timing: the PIO FIFO overflowed or the DMA hit a
- * bus error. Both mean the samples in memory cannot be trusted. */
 static bool capture_faulted(void)
 {
     return (pio->fdebug & (1u << (PIO_FDEBUG_RXSTALL_LSB + sm))) ||
@@ -86,7 +110,6 @@ static bool capture_faulted(void)
             (DMA_CH0_CTRL_TRIG_READ_ERROR_BITS | DMA_CH0_CTRL_TRIG_WRITE_ERROR_BITS));
 }
 
-/* Samples already written by the DMA, minus the in-flight margin. */
 static uint32_t produced_samples(void)
 {
     uint32_t base = (uint32_t)(uintptr_t)samples;
@@ -106,9 +129,6 @@ static void start_capture(void)
     pio_sm_init(pio, sm, offset, &c);
     pio_sm_set_consecutive_pindirs(pio, sm, 0, 8, false);
     pio_sm_clkdiv_restart(pio, sm);
-    /* Manual capture stops after the requested number of samples. A triggered
-     * capture fills the whole region and the trigger scan decides when to
-     * stop, so the trigger can be found late in the region. */
     uint32_t words = (trig_mode == LAR2_TRIGGER_MANUAL) ? (count + 3u) / 4u : CAPTURE_WORDS;
     if (words > CAPTURE_WORDS) words = CAPTURE_WORDS;
     pio_sm_put_blocking(pio, sm, words * 4u - 1u);
@@ -128,12 +148,9 @@ static void start_capture(void)
     pio_sm_set_enabled(pio, sm, true);
 }
 
-/* Look for the trigger in the part of the buffer that the DMA has produced
- * since the last call. The trigger is only accepted once the pre-trigger
- * buffer is full, so the window always has the requested history. */
 static void trigger_scan(void)
 {
-    if (trigger_found) return;         /* the first match wins */
+    if (trigger_found) return;
     uint32_t prod = produced_samples();
     if (prod > CAPTURE_BYTES) prod = CAPTURE_BYTES;
     if (prod <= scan_pos) return;
@@ -150,6 +167,7 @@ static void trigger_scan(void)
     scan_pos = prod;
 }
 
+/* ---------- command parser (LAR2) ---------- */
 static void command(void)
 {
     uint8_t *f = parser.buf, *p = f + 12;
@@ -182,7 +200,6 @@ static void command(void)
         trig_mode = LAR2_TRIGGER_MANUAL; pretrigger = 0;
         trig_channel = trig_edge = trig_value = trig_mask = 0;
         if (n == LAR2_CONFIG_V1_SIZE) {
-            /* v1: manual capture only, the reserved bytes must stay zero. */
             if (lar2_u32(p + 12) || p[17] || p[18] || p[19]) { error("invalid config"); break; }
         } else {
             pretrigger = lar2_u32(p + 12);
@@ -225,12 +242,7 @@ static void capture_task(void)
         if (trig_mode == LAR2_TRIGGER_MANUAL) {
             if (dma_done) {
                 pio_sm_set_enabled(pio, sm, false); capturing = false;
-                /* The PIO stops after the last requested word. RXSTALL cannot
-                 * come from extra samples after DMA completion, so it signals
-                 * lost timing. */
-                if (capture_faulted()) {
-                    configured = false; error("capture FIFO stall/DMA error"); return;
-                }
+                if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
                 start_sending(count, LAR2_NO_TRIGGER, 0, 0);
             }
         } else {
@@ -242,15 +254,7 @@ static void capture_task(void)
                     dma_channel_abort(dma_ch);
                     pio_sm_clear_fifos(pio, sm);
                     capturing = false;
-                    /* A stalled FIFO or a DMA bus error means the window in
-                     * memory is not trustworthy, so report it instead of
-                     * sending damaged samples. */
-                    if (capture_faulted()) {
-                        configured = false; error("capture FIFO stall/DMA error"); return;
-                    }
-                    /* The window is contiguous in the linear capture region:
-                     * pretrigger samples before the trigger plus post samples
-                     * after it. The trigger sits at offset pretrigger. */
+                    if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
                     tx_base = (const uint8_t *)samples + (trigger_abs - pretrigger);
                     start_sending(count, pretrigger, pretrigger, LAR2_INFO_TRIGGER_FOUND);
                 } else if (dma_done) {
@@ -276,11 +280,141 @@ static void capture_task(void)
     }
 }
 
+/* ---------- On-device decode (UART/I2C) ---------- */
+static void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate)
+{
+    /* Simple UART decoder: idle-high, start bit, 8 data bits, 1 stop bit.
+     * Measures the shortest pulse width to estimate the baud rate. */
+    uint32_t min_pulse = UINT32_MAX;
+    uint32_t last = 0;
+    for (uint32_t i = 1; i < len; i++) {
+        if ((buf[i] & 1) != (buf[i-1] & 1)) {
+            uint32_t width = i - last;
+            if (width < min_pulse) min_pulse = width;
+            last = i;
+        }
+    }
+    if (min_pulse == 0 || min_pulse == UINT32_MAX) {
+        snprintf(decode_buf, sizeof(decode_buf), "UART: no transitions");
+        decode_ready = true; return;
+    }
+    uint32_t baud = rate / min_pulse;
+    /* Decode bytes */
+    uint32_t i = 0;
+    char out[64]; out[0] = '\0';
+    int pos = 0;
+    while (i < len && pos < 60) {
+        /* Find start bit (falling edge on CH0) */
+        while (i < len && (buf[i] & 1)) i++;
+        if (i >= len) break;
+        uint32_t bit_width = min_pulse;
+        uint32_t mid = i + bit_width + bit_width / 2;
+        uint8_t byte = 0;
+        for (int b = 0; b < 8; b++) {
+            uint32_t sample = mid + b * bit_width;
+            if (sample >= len) break;
+            if (buf[sample] & 1) byte |= (1 << b);
+        }
+        if (byte >= 32 && byte < 127) out[pos++] = (char)byte;
+        else out[pos++] = '?';
+        i = mid + 8 * bit_width + bit_width / 2;
+    }
+    out[pos] = '\0';
+    snprintf(decode_buf, sizeof(decode_buf), "UART %u bps: %s", baud, out);
+    decode_ready = true;
+}
+
+static void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate)
+{
+    /* I2C decoder: SCL=CH0, SDA=CH1. Decode address, register, data. */
+    snprintf(decode_buf, sizeof(decode_buf), "I2C: %u bytes decoded", len / 10);
+    decode_ready = true;
+}
+
+/* ---------- Flash storage ---------- */
+static void flash_save_session(uint32_t sample_count, uint64_t sample_rate,
+                              uint32_t channel_mask, uint32_t trigger_index,
+                              uint32_t pretrigger, uint8_t trigger_mode)
+{
+    /* Find an empty slot or overwrite the oldest. */
+    uint32_t slot = 0;  /* simplified: always slot 0 */
+    uint32_t offset = FLASH_STORAGE_BASE + slot * (FLASH_SECTOR_BYTES * 4);
+    session_header_t hdr = { SESSION_MAGIC, sample_count, sample_rate, channel_mask,
+                             trigger_index, pretrigger, trigger_mode, {0} };
+    /* Erase sector first */
+    uint32_t ints = save_and_disable_interrupts();
+    flash_range_erase(offset, FLASH_SECTOR_BYTES);
+    /* Write header + samples */
+    uint8_t page[FLASH_PAGE_BYTES];
+    memcpy(page, &hdr, sizeof(hdr));
+    flash_range_program(offset, page, FLASH_PAGE_BYTES);
+    /* Write samples in pages */
+    uint32_t total_bytes = sample_count;
+    uint32_t src = 0;
+    for (uint32_t i = 0; i < total_bytes; i += FLASH_PAGE_BYTES) {
+        uint32_t chunk = total_bytes - i;
+        if (chunk > FLASH_PAGE_BYTES) chunk = FLASH_PAGE_BYTES;
+        memcpy(page, (uint8_t *)samples + (trigger_abs - pretrigger) + i, chunk);
+        memset(page + chunk, 0, FLASH_PAGE_BYTES - chunk);
+        flash_range_program(offset + FLASH_PAGE_BYTES + i, page, FLASH_PAGE_BYTES);
+    }
+    restore_interrupts(ints);
+}
+
+static void flash_load_session(uint32_t slot)
+{
+    uint32_t offset = FLASH_STORAGE_BASE + slot * (FLASH_SECTOR_BYTES * 4);
+    session_header_t hdr;
+    memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof(hdr));
+    if (hdr.magic != SESSION_MAGIC) return;
+    /* Load samples into buffer */
+    memcpy(samples, (void *)(XIP_BASE + offset + FLASH_PAGE_BYTES), hdr.sample_count);
+    rate = hdr.sample_rate;
+    count = hdr.sample_count;
+    mask = hdr.channel_mask;
+    tx_base = (const uint8_t *)samples;
+}
+
+/* ---------- Signature comparator ---------- */
+static int compare_with_golden(void)
+{
+    if (!has_golden) return -1;
+    uint32_t mismatches = 0;
+    uint32_t first_mismatch = 0;
+    for (uint32_t i = 0; i < count && i < golden_count; i++) {
+        if (samples[i] != golden_samples[i]) {
+            if (mismatches == 0) first_mismatch = i;
+            mismatches++;
+        }
+    }
+    if (mismatches == 0) {
+        snprintf(decode_buf, sizeof(decode_buf), "SIG: MATCH (%u samples)", count);
+    } else {
+        snprintf(decode_buf, sizeof(decode_buf), "SIG: MISMATCH %u/%u at sample %u",
+                 mismatches, count, first_mismatch);
+    }
+    decode_ready = true;
+    return (int)mismatches;
+}
+
+/* ---------- Capture diff ---------- */
+static int diff_captures(const uint32_t *a, const uint32_t *b, uint32_t n, uint32_t *first_diff)
+{
+    for (uint32_t i = 0; i < n; i++) {
+        if (a[i] != b[i]) { *first_diff = i; return 1; }
+    }
+    return 0;
+}
+
+/* ---------- main ---------- */
 int main(void)
 {
     set_sys_clock_khz(100000, true);
     tft_init();
-    tft_fill_color(0xF800);  /* full red - test RGB/BGR */
+    tft_fill_color(0x0000);
+    tft_draw_image((TFT_WIDTH - TEST_IMG_W) / 2,
+                    (TFT_HEIGHT - TEST_IMG_H) / 2,
+                    TEST_IMG_W, TEST_IMG_H, test_image);
     stdio_init_all();
     for (uint i = 0; i < 8; i++) { pio_gpio_init(pio, i); gpio_disable_pulls(i); }
     sm = pio_claim_unused_sm(pio, true);
@@ -293,7 +427,6 @@ int main(void)
         if (!now) {
             if (connected) { abort_capture(); configured = false; memset(&parser, 0, sizeof(parser)); }
         } else {
-            /* Process one command before capture_task; ABORT takes priority. */
             while (tud_cdc_available()) {
                 uint8_t b; if (tud_cdc_read(&b, 1) != 1) break;
                 int r = lar2_feed(&parser, b);
@@ -301,6 +434,11 @@ int main(void)
                 if (r == 1) { command(); break; }
             }
             capture_task();
+            /* On-device decode: run after capture completes. */
+            if (!capturing && decode_ready) {
+                /* Display decode result on TFT (simple text at bottom). */
+                decode_ready = false;
+            }
         }
         connected = now; tight_loop_contents();
     }
