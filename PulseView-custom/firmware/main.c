@@ -22,6 +22,7 @@
 #include "logic_capture.pio.h"
 #include "lar2.h"
 #include "trigger_match.h"
+#include "decoders.h"
 #include "tft_st7735.h"
 #include "test_image.h"
 
@@ -56,14 +57,26 @@ static bool trigger_found;
 static uint32_t scan_pos;
 static const uint8_t *tx_base;
 
-/* Forward declarations for decode functions. */
-static void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate);
-static void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate);
-static void decode_spi(const uint8_t *buf, uint32_t len, uint32_t rate);
+/* On-device decode results (displayed on TFT / returned via ANALYZE). */
+static char decode_buf[512];
+static size_t decode_len;
 
-/* On-device decode results (displayed on TFT). */
-static char decode_buf[128];
-static bool decode_ready;
+/* Forward declarations for flash/sig/diff functions. */
+static void flash_save_session(uint32_t sample_count, uint64_t sample_rate,
+                               uint32_t channel_mask, uint32_t trigger_index,
+                               uint32_t pretrigger, uint8_t trigger_mode);
+static void flash_load_session(uint32_t slot);
+static void save_golden(void);
+static int compare_with_golden(void);
+static int diff_with_loaded_session(uint32_t slot);
+static void start_sending(uint32_t sample_count, uint32_t trigger_index,
+                          uint32_t pre, uint8_t flags);
+
+/* Global variables used in command() before their definition. */
+static uint32_t golden_tolerance = 0;
+static uint32_t golden_samples[16384];
+static uint32_t golden_count;
+static bool has_golden;
 
 /* Signature comparator: golden reference stored in flash. */
 /* placeholder - removed */
@@ -280,6 +293,59 @@ static void command(void)
     case LAR2_ARM:
         if (n || !configured) { error("not configured"); break; }
         ack(type); start_capture(); break;
+    case LAR2_ANALYZE: {
+        if (n != LAR2_ANALYZE_SIZE) { error("analyze length"); break; }
+        uint8_t op = p[0];
+        uint16_t arg = lar2_u16(p + 1);
+        uint16_t arg2 = lar2_u16(p + 3);
+        uint32_t arg32 = lar2_u32(p + 4);
+        uint8_t result[8] = { LAR2_RESULT_OK, 0, 0, 0, 0, 0, 0, 0 };
+        switch (op) {
+        case LAR2_ANALYZE_DECODE:
+            decode_len = 0;
+            la_text t; la_text_init(&t, decode_buf, sizeof(decode_buf));
+            decoders_run((const uint8_t *)samples, count, (uint32_t)rate,
+                         arg, arg32, &t);
+            decode_len = t.len;
+            send_frame(LAR2_RESULT, (const uint8_t *)decode_buf, decode_len);
+            break;
+        case LAR2_ANALYZE_SAVE:
+            flash_save_session(count, rate, mask, pretrigger, pretrigger, trig_mode);
+            result[0] = LAR2_RESULT_OK; send_frame(LAR2_RESULT, result, 1);
+            break;
+        case LAR2_ANALYZE_LOAD:
+            flash_load_session(arg);
+            start_sending(count, LAR2_NO_TRIGGER, 0, 0);
+            break;
+        case LAR2_ANALYZE_SIG_SAVE:
+            save_golden();
+            result[0] = LAR2_RESULT_OK; send_frame(LAR2_RESULT, result, 1);
+            break;
+        case LAR2_ANALYZE_SIG_COMPARE: {
+            golden_tolerance = arg2;
+            compare_with_golden();
+            send_frame(LAR2_RESULT, (const uint8_t *)decode_buf, decode_len);
+            break;
+        }
+        case LAR2_ANALYZE_DIFF:
+            diff_with_loaded_session(arg);
+            send_frame(LAR2_RESULT, (const uint8_t *)decode_buf, decode_len);
+            break;
+        case LAR2_ANALYZE_SESSION: {
+            uint32_t offset = FLASH_STORAGE_BASE + arg * (FLASH_SECTOR_BYTES * 4);
+            session_header_t hdr;
+            memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof(hdr));
+            send_frame(LAR2_RESULT, (const uint8_t *)&hdr, sizeof(hdr));
+            break;
+        }
+        case LAR2_ANALYZE_REPLAY:
+            start_sending(count, LAR2_NO_TRIGGER, 0, 0);
+            break;
+        default:
+            result[0] = LAR2_RESULT_ERROR; send_frame(LAR2_RESULT, result, 1);
+        }
+        break;
+    }
     default: error("unknown command");
     }
 }
@@ -303,7 +369,11 @@ static void capture_task(void)
             if (dma_done) {
                 pio_sm_set_enabled(pio, sm, false); capturing = false;
                 if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
-                decode_uart((const uint8_t *)samples, count, (uint32_t)rate);
+                decode_len = 0;
+                la_text t; la_text_init(&t, decode_buf, sizeof(decode_buf));
+                decoders_run((const uint8_t *)samples, count, (uint32_t)rate,
+                             LAR2_PROTO_ALL, 0, &t);
+                decode_len = t.len;
                 start_sending(count, LAR2_NO_TRIGGER, 0, 0);
             }
         } else {
@@ -318,7 +388,11 @@ static void capture_task(void)
                     if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
                     tx_base = (const uint8_t *)samples + (trigger_abs - pretrigger);
                     /* Decode runs on the exact window that will be sent below. */
-                    decode_uart(tx_base, count, (uint32_t)rate);
+                    decode_len = 0;
+                    la_text t; la_text_init(&t, decode_buf, sizeof(decode_buf));
+                    decoders_run(tx_base, count, (uint32_t)rate,
+                                 LAR2_PROTO_ALL, 0, &t);
+                    decode_len = t.len;
                     start_sending(count, pretrigger, pretrigger, LAR2_INFO_TRIGGER_FOUND);
                 } else if (dma_done) {
                     pio_sm_set_enabled(pio, sm, false); capturing = false;
@@ -341,174 +415,6 @@ static void capture_task(void)
             send_frame(LAR2_END, end, sizeof(end)); sending = false;
         }
     }
-}
-
-/* ---------- On-device decode (UART/I2C/SPI) ---------- */
-/* Max samples to decode per call to avoid long blocking. */
-#define DECODE_MAX_SAMPLES 65536
-
-static void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate)
-{
-    /* Glitch filter: ignore transitions shorter than 3 samples. */
-    uint32_t min_pulse = UINT32_MAX;
-    uint32_t last_edge = 0;
-
-    /* First pass: find shortest reliable pulse width. */
-    for (uint32_t i = 1; i < len && i < DECODE_MAX_SAMPLES; i++) {
-        if ((buf[i] & 1) != (buf[i - 1] & 1)) {
-            uint32_t width = i - last_edge;
-            if (width >= 3 && width < min_pulse) min_pulse = width;
-            last_edge = i;
-        }
-    }
-    if (min_pulse == 0 || min_pulse == UINT32_MAX) {
-        snprintf(decode_buf, sizeof(decode_buf), "UART: no transitions");
-        decode_ready = true; return;
-    }
-    uint32_t baud = rate / min_pulse;
-    /* Clamp baud to reasonable range. */
-    if (baud < 300) baud = 300;
-    if (baud > 1000000) baud = 1000000;
-
-    /* Decode bytes: find start bit (falling edge), sample at mid-point. */
-    uint32_t i = 0;
-    char out[64]; out[0] = '\0';
-    int pos = 0;
-    while (i < len && i < DECODE_MAX_SAMPLES && pos < 60) {
-        /* Find start bit (high-to-low transition on CH0). */
-        while (i < len && i < DECODE_MAX_SAMPLES && (buf[i] & 1)) i++;
-        if (i >= len || i >= DECODE_MAX_SAMPLES) break;
-        /* Verify it's a real start bit: at least 3 low samples. */
-        if (i + 3 >= len || i + 3 >= DECODE_MAX_SAMPLES) break;
-        if ((buf[i + 1] & 1) || (buf[i + 2] & 1)) { i++; continue; }
-
-        uint32_t bit_width = min_pulse;
-        uint32_t mid = i + bit_width + bit_width / 2;
-        if (mid >= len || mid >= DECODE_MAX_SAMPLES) break;
-        uint8_t byte = 0;
-        bool valid = true;
-        for (int b = 0; b < 8; b++) {
-            uint32_t sample = mid + b * bit_width;
-            if (sample >= len || sample >= DECODE_MAX_SAMPLES) { valid = false; break; }
-            if (buf[sample] & 1) byte |= (1 << b);
-        }
-        if (!valid) break;
-        /* Check stop bit. */
-        uint32_t stop_sample = mid + 8 * bit_width;
-        if (stop_sample < len && stop_sample < DECODE_MAX_SAMPLES && (buf[stop_sample] & 1)) {
-            if (byte >= 32 && byte < 127) out[pos++] = (char)byte;
-            else out[pos++] = '?';
-        }
-        i = mid + 9 * bit_width;
-    }
-    out[pos] = '\0';
-    snprintf(decode_buf, sizeof(decode_buf), "UART %lu bps: %s", (unsigned long)baud, out);
-    decode_ready = true;
-}
-
-static void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate)
-{
-    /* I2C decoder: SCL=CH0, SDA=CH1. Decode address, register, data. */
-    if (len == 0 || len < 20) {
-        snprintf(decode_buf, sizeof(decode_buf), "I2C: no data");
-        decode_ready = true; return;
-    }
-    uint32_t limit = len < DECODE_MAX_SAMPLES ? len : DECODE_MAX_SAMPLES;
-    char out[80]; out[0] = '\0';
-    int pos = 0;
-
-    /* Find START conditions: SDA falls while SCL is high. */
-    uint32_t idx = 1;
-    while (idx < limit && pos < 70) {
-        /* Find START */
-        while (idx < limit - 1 && !((buf[idx] & 1) && !(buf[idx] & 2) && (buf[idx-1] & 2))) {
-            idx++;
-        }
-        if (idx >= limit - 1) break;
-        idx++; /* skip START point */
-
-        /* Read 8 data bits + 1 ACK, repeated */
-        int bytes_read = 0;
-        while (bytes_read < 4 && idx < limit - 9) {
-            uint8_t byte = 0;
-            for (int b = 0; b < 8; b++) {
-                /* Wait for SCL rising edge. */
-                while (idx < limit && !( (buf[idx] & 1) && !(buf[idx-1] & 1) )) idx++;
-                if (idx >= limit) break;
-                idx++;
-                if (buf[idx-1] & 2) byte |= (1 << (7 - b));
-            }
-            /* Read ACK (9th clock). */
-            while (idx < limit && !( (buf[idx] & 1) && !(buf[idx-1] & 1) )) idx++;
-            if (idx >= limit) break;
-            int ack = !(buf[idx] & 2); /* ACK = SDA low */
-            idx++;
-
-            if (pos < 74) {
-                pos += snprintf(out + pos, 74 - pos, "%s0x%02X%s ", bytes_read == 0 ? "A:" : bytes_read == 1 ? "R:" : "D:", byte, ack ? "" : "[NACK]");
-            }
-            bytes_read++;
-            /* Check for STOP (SDA rises while SCL high). */
-            if (idx < limit - 1 && (buf[idx] & 1) && (buf[idx] & 2) && !(buf[idx-1] & 2)) {
-                break;
-            }
-        }
-        if (bytes_read > 0) {
-            snprintf(decode_buf, sizeof(decode_buf), "I2C: %s", out);
-            decode_ready = true;
-            return;
-        }
-    }
-    snprintf(decode_buf, sizeof(decode_buf), "I2C: no transaction found");
-    decode_ready = true;
-}
-
-static void decode_spi(const uint8_t *buf, uint32_t len, uint32_t rate)
-{
-    /* SPI decoder: CS=CH0, SCK=CH1, MOSI=CH2, MISO=CH3.
-     * Byte is sampled on SCK rising edge, CS must be low. */
-    if (len == 0 || len < 20) {
-        snprintf(decode_buf, sizeof(decode_buf), "SPI: no data");
-        decode_ready = true; return;
-    }
-    uint32_t limit = len < DECODE_MAX_SAMPLES ? len : DECODE_MAX_SAMPLES;
-    char out[80]; out[0] = '\0';
-    int pos = 0;
-
-    uint32_t idx = 0;
-    while (idx < limit && pos < 70) {
-        /* Find CS low (CH0 = 0). */
-        while (idx < limit && (buf[idx] & 1)) idx++;
-        if (idx >= limit) break;
-        /* Find first SCK rising edge while CS is low. */
-        while (idx < limit && (buf[idx] & 2)) idx++;
-        while (idx < limit - 1 && !((buf[idx] & 2) && !(buf[idx-1] & 2) && !(buf[idx] & 1))) idx++;
-        if (idx >= limit - 1) break;
-
-        /* Read 8 bits on SCK rising edges. */
-        uint8_t byte = 0;
-        int bits = 0;
-        uint32_t prev_idx = idx;
-        while (bits < 8 && idx < limit) {
-            if ((buf[idx] & 2) && !(buf[idx-1] & 2) && !(buf[idx] & 1)) {
-                if (buf[idx] & 4) byte |= (1 << (7 - bits));
-                bits++;
-                prev_idx = idx;
-            }
-            idx++;
-        }
-        if (bits == 8) {
-            pos += snprintf(out + pos, 78 - pos, "0x%02X ", byte);
-        }
-        /* Wait for CS high (end of transaction). */
-        while (idx < limit && !(buf[idx] & 1)) idx++;
-    }
-    if (pos > 0) {
-        snprintf(decode_buf, sizeof(decode_buf), "SPI: %s", out);
-    } else {
-        snprintf(decode_buf, sizeof(decode_buf), "SPI: no transaction found");
-    }
-    decode_ready = true;
 }
 
 /* ---------- Flash storage ---------- */
@@ -556,14 +462,10 @@ static void flash_load_session(uint32_t slot)
 
 /* ---------- Signature comparator ---------- */
 /* Golden buffer reduced to 64K samples (64 KB) to fit in SRAM. */
-static uint32_t golden_samples[16384];  /* 64K samples = 64 KB */
-static uint32_t golden_count;
-static bool has_golden;
-static uint32_t golden_tolerance = 0;  /* configurable: 0-1000 samples */
 
 static int compare_with_golden(void)
 {
-    if (!has_golden) { snprintf(decode_buf, sizeof(decode_buf), "SIG: no golden ref"); decode_ready = true; return -1; }
+    if (!has_golden) { snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "SIG: no golden ref"); return -1; }
     uint32_t capture_words = (count + 3) / 4;
     if (capture_words > CAPTURE_WORDS) capture_words = CAPTURE_WORDS;
     uint32_t compare_words = capture_words < golden_count ? capture_words : golden_count;
@@ -576,11 +478,10 @@ static int compare_with_golden(void)
         }
     }
     if (mismatches <= golden_tolerance) {
-        snprintf(decode_buf, sizeof(decode_buf), "SIG: MATCH (%u mismatches <= %u tol, %u samples)", mismatches, golden_tolerance, compare_words * 4);
+        snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "SIG: MATCH (%u mismatches <= %u tol, %u samples)", mismatches, golden_tolerance, compare_words * 4);
     } else {
-        snprintf(decode_buf, sizeof(decode_buf), "SIG: MISMATCH %u/%u samples at sample %u", mismatches, compare_words * 4, first_mismatch);
+        snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "SIG: MISMATCH %u/%u samples at sample %u", mismatches, compare_words * 4, first_mismatch);
     }
-    decode_ready = true;
     return (int)mismatches;
 }
 
@@ -615,12 +516,11 @@ static int diff_with_loaded_session(uint32_t slot)
         if (samples[i] != golden_samples[i]) { first_diff = i; found = 1; break; }
     }
     if (!found) {
-        snprintf(decode_buf, sizeof(decode_buf), "DIFF: identical");
+        snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "DIFF: identical");
     } else {
-        snprintf(decode_buf, sizeof(decode_buf), "DIFF: first mismatch at sample %u (A=0x%08X B=0x%08X)",
+        snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "DIFF: first mismatch at sample %u (A=0x%08X B=0x%08X)",
                  first_diff * 4, samples[first_diff], golden_samples[first_diff]);
     }
-    decode_ready = true;
     return found;
 }
 
@@ -652,8 +552,6 @@ int main(void)
                 if (r == 1) { command(); break; }
             }
             capture_task();
-            /* On-device decode result is in decode_buf; could draw to TFT here. */
-            decode_ready = false;
         }
         connected = now; tight_loop_contents();
     }

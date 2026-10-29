@@ -1,13 +1,33 @@
 #!/usr/bin/env python3
-"""Independent LAR2 v1 codec (standard library only)."""
+"""Independent LAR2 v1.2 codec (standard library only)."""
 import struct
 import zlib
 MAGIC=b'LAR2'
 MAX_PAYLOAD=1024
 MAX_SAMPLES=262144
 RATES=(1000,10000,100000,250000,500000,1000000,5000000,25000000)
-HELLO,GET_CAPS,CONFIG,ARM,ABORT=range(1,6)
-ID,CAPS,ACK,INFO,SAMPLES,END,ERROR=0x81,0x82,0x83,0x90,0x91,0x92,0xff
+HELLO,GET_CAPS,CONFIG,ARM,ABORT,ANALYZE=range(1,7)
+ID,CAPS,ACK,INFO,SAMPLES,END,RESULT,ERROR=0x81,0x82,0x83,0x90,0x91,0x92,0x93,0xff
+
+ANALYZE_DECODE=0
+ANALYZE_SAVE=1
+ANALYZE_LOAD=2
+ANALYZE_SIG_SAVE=3
+ANALYZE_SIG_COMPARE=4
+ANALYZE_DIFF=5
+ANALYZE_SESSION=6
+ANALYZE_REPLAY=7
+ANALYZE_SIZE=8
+
+PROTO_UART=0x01
+PROTO_I2C=0x02
+PROTO_SPI=0x04
+PROTO_CAN=0x08
+PROTO_ALL=0x0f
+
+RESULT_OK=0
+RESULT_ERROR=1
+RESULT_ABSENT=2
 
 def frame(kind,seq,payload=b''):
     if len(payload)>MAX_PAYLOAD: raise ValueError('payload too large')
@@ -71,3 +91,7 @@ def find_trigger(data,start,stop,trigger):
             if edge==EDGE_FALLING and not cur and prev: return i
         return None
     return None
+
+def analyze_payload(op, arg=0, arg2=0, arg32=0):
+    """Build an ANALYZE payload (8 bytes)."""
+    return struct.pack('<BBHII', op, arg, arg2, arg32)

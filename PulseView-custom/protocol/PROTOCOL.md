@@ -1,4 +1,4 @@
-# LAR2 v1 — hợp đồng firmware / libsigrok
+# LAR2 v1.2 — hợp đồng firmware / libsigrok
 
 Tất cả số nhiều byte đều **little-endian**, không truyền struct C trực tiếp.
 USB CDC 115200/8N1, không flow control, DTR=1. Baud chỉ để cấu hình CDC, không quyết định tốc độ mẫu hay tốc độ USB. Không trộn debug text vào CDC.
@@ -25,16 +25,93 @@ Mỗi hướng có sequence riêng, tăng cho **mọi** frame, quay vòng 65535�
 |---|---|---|
 | `0x01` | HELLO | rỗng |
 | `0x02` | GET_CAPS | rỗng |
-| `0x03` | CONFIG | 20 byte, mô tả dưới |
+| `0x03` | CONFIG | 20 byte (v1) / 28 byte (v2), mô tả dưới |
 | `0x04` | ARM | rỗng; yêu cầu CONFIG hợp lệ |
 | `0x05` | ABORT | rỗng; hợp lệ cả khi đang capture/truyền |
+| `0x06` | ANALYZE | 8 byte (op, arg, arg2, arg32), xem dưới |
 | `0x81` | ID | chuỗi UTF-8 không NUL, bắt đầu `RP2350-LA` |
 | `0x82` | CAPS | số kênh, đơn vị mẫu, tính năng, buffer, danh sách rate |
 | `0x83` | ACK | 1 byte: type command vừa xử lý |
 | `0x90` | CAPTURE_INFO | 24 byte |
 | `0x91` | SAMPLES | 1…1024 byte trạng thái GPIO theo thứ tự thời gian |
 | `0x92` | CAPTURE_END | `u32 sample_count`, `u32 crc32(samples)` |
+| `0x93` | RESULT | payload tùy loại ANALYZE (kết quả decode, status, v.v.) |
 | `0xff` | ERROR | chuỗi lỗi UTF-8 ngắn, không NUL |
+
+HELLO → ID; GET_CAPS → CAPS; CONFIG/ARM/ABORT → ACK hoặc ERROR. ARM ACK phải đi trước INFO. Firmware còn phục vụ ABORT trong lúc DMA chạy và giữa các sample chunk. Không có ACK từ PC cho sample chunk.
+
+### ANALYZE (8 byte payload)
+
+| Offset | Kiểu | Ý nghĩa |
+|---|---|---|
+| 0 | u8 | operation (`op`) |
+| 1 | u16 | `arg` (slot, protocol mask, v.v.) |
+| 3 | u16 | `arg2` (tolerance, v.v.) |
+| 5 | u32 | `arg32` (baud rate cho decode, v.v.) |
+
+Các giá trị `op` hợp lệ:
+
+| op | Tên | arg | arg2 | arg32 | Mô tả |
+|---|---|---|---|---|---|
+| 0 | DECODE | protocol mask | 0 | baud (0=auto) | Chạy decoder on-device. Trả về text qua RESULT. |
+| 1 | SAVE | slot | 0 | 0 | Lưu phiên capture hiện tại vào flash. |
+| 2 | LOAD | slot | 0 | 0 | Nạp phiên từ flash, stream lại qua SAMPLES. |
+| 3 | SIG_SAVE | 0 | 0 | 0 | Lưu buffer hiện tại làm golden reference. |
+| 4 | SIG_COMPARE | 0 | tolerated mismatches | 0 | So sánh buffer hiện tại với golden ref. |
+| 5 | DIFF | slot | 0 | 0 | So sánh buffer hiện tại với phiên trong flash. |
+| 6 | SESSION | slot | 0 | 0 | Đọc header phiên từ flash (trả về qua RESULT). |
+| 7 | REPLAY | 0 | 0 | 0 | Stream lại cửa sổ capture hiện tại (không ACK). |
+
+### RESULT
+
+Payload tùy thuộc vào `op` của ANALYZE tương ứng:
+- `DECODE`: text UTF-8, kết quả decode (UART/I2C/SPI/CAN).
+- `SAVE/LOAD/SIG_SAVE`: 1 byte status (`RESULT_OK=0`, `RESULT_ERROR=1`, `RESULT_ABSENT=2`).
+- `SIG_COMPARE`: text UTF-8 (MATCH/MISMATCH).
+- `DIFF`: text UTF-8 (first mismatch hoặc "identical").
+- `SESSION`: struct `session_header_t` (24 byte).
+- `REPLAY`: stream SAMPLES + END như capture bình thường.
+
+### CAPS
+
+| Offset | Kiểu | Giá trị v1 |
+|---|---|---|
+| 0 | u8 | channel_count=8 |
+| 1 | u8 | sample_unit_size=1 |
+| 2 | u16 | feature_flags=0: manual only |
+| 4 | u32 | max_samples=262144 |
+| 8 | u32 | rate_count=8 |
+| 12 | u64[rate_count] | 1000,10000,100000,250000,500000,1000000,5000000,25000000 Hz |
+
+`feature_flags` vẫn bằng 0 để driver v1 cũ tiếp tục kết nối được. Firmware có hỗ trợ
+trigger được phát hiện qua hậu tố `+trg` trong chuỗi ID (xem mục "Nhận dạng tính năng").
+Firmware có hỗ trợ ANALYZE được phát hiện qua hậu tố `+an` trong chuỗi ID.
+
+### CONFIG (20 byte v1, 28 byte v2)
+
+v1 giữ nguyên như cũ, host cũ gửi 20 byte thì firmware coi là capture manual.
+
+| Offset | Kiểu | v1 | v2 |
+|---|---|---|---|
+| 0 | u64 | sample_rate_hz, phải thuộc CAPS | như v1 |
+| 8 | u32 | sample_count, 1…max_samples | như v1 |
+| 12 | u32 | pretrigger_count=0 | pretrigger_count, 0 ≤ pre < count |
+| 16 | u8 | channel_mask, khác 0 | như v1 |
+| 17 | u8 | trigger_mode=0 (manual) | trigger_mode |
+| 18 | u8 | reserved=0 | trigger_channel (0…7) |
+| 19 | u8 | reserved=0 | trigger_edge (0 = sườn lên, 1 = sườn xuống) |
+| 20 | u8 | — | pattern_value |
+| 21 | u8 | — | pattern_mask |
+| 22 | u16 | — | reserved=0 |
+| 24 | u32 | — | reserved=0 |
+
+Tổng v2 = 28 byte. Firmware nhận cả hai kích thước: 20 byte là manual, 28 byte là
+bản có trigger. Driver v1 gửi 20 byte nên không bị ảnh hưởng.
+
+`trigger_mode`: 0 = manual, 1 = edge, 2 = pattern, 3 = UART byte.
+Mẫu: `(sample & pattern_mask) == (pattern_value & pattern_mask)`. Bit n của sample là
+kênh n. Firmware tự mask `pattern_value`, nên host gửi giá trị chưa mask vẫn cho
+kết quả mong muốn.
 
 HELLO → ID; GET_CAPS → CAPS; CONFIG/ARM/ABORT → ACK hoặc ERROR. ARM ACK phải đi trước INFO. Firmware còn phục vụ ABORT trong lúc DMA chạy và giữa các sample chunk. Không có ACK từ PC cho sample chunk.
 

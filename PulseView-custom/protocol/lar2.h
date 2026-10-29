@@ -26,16 +26,43 @@
 /* CAPTURE_INFO flags. */
 #define LAR2_INFO_TRIGGER_FOUND 0x01u
 #define LAR2_INFO_CAPTURE_ERROR 0x02u
+
+/* LAR2 v1.2: ANALYZE runs a job on the last capture and answers with RESULT.
+ * The payload is 8 bytes: op, arg, arg2 (u16), arg32 (u32). */
+#define LAR2_ANALYZE_SIZE 8u
+#define LAR2_ANALYZE_DECODE      0u  /* arg = protocol mask, arg32 = baud (0 = auto) */
+#define LAR2_ANALYZE_SAVE        1u  /* arg = slot */
+#define LAR2_ANALYZE_LOAD        2u  /* arg = slot */
+#define LAR2_ANALYZE_SIG_SAVE    3u
+#define LAR2_ANALYZE_SIG_COMPARE 4u  /* arg2 = tolerated mismatching samples */
+#define LAR2_ANALYZE_DIFF        5u  /* arg = slot */
+#define LAR2_ANALYZE_SESSION     6u  /* arg = slot */
+#define LAR2_ANALYZE_REPLAY      7u  /* stream the current window, no ACK */
+
+/* Protocol selection bits for LAR2_ANALYZE_DECODE. */
+#define LAR2_PROTO_UART 0x01u
+#define LAR2_PROTO_I2C  0x02u
+#define LAR2_PROTO_SPI  0x04u
+#define LAR2_PROTO_CAN  0x08u
+#define LAR2_PROTO_ALL  0x0fu
+
+/* RESULT status byte. */
+#define LAR2_RESULT_OK     0u
+#define LAR2_RESULT_ERROR  1u
+#define LAR2_RESULT_ABSENT 2u
+
 /* Board identity. The host checks the "RP2350-LA" prefix and a minimum
  * length, so the suffix may advertise firmware features. */
-#define LAR2_BOARD_ID "RP2350-LA/1.1+trg"
+#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an"
 static const uint64_t lar2_rates[LAR2_RATE_COUNT] = {
     1000, 10000, 100000, 250000, 500000, 1000000, 5000000, 25000000
 };
 enum lar2_type {
     LAR2_HELLO=1, LAR2_GET_CAPS=2, LAR2_CONFIG=3, LAR2_ARM=4, LAR2_ABORT=5,
+    LAR2_ANALYZE=6,
     LAR2_ID=0x81, LAR2_CAPS=0x82, LAR2_ACK=0x83,
-    LAR2_INFO=0x90, LAR2_SAMPLES=0x91, LAR2_END=0x92, LAR2_ERROR=0xff
+    LAR2_INFO=0x90, LAR2_SAMPLES=0x91, LAR2_END=0x92, LAR2_RESULT=0x93,
+    LAR2_ERROR=0xff
 };
 static inline uint16_t lar2_u16(const uint8_t *p) { return p[0] | ((uint16_t)p[1]<<8); }
 static inline uint32_t lar2_u32(const uint8_t *p) { return lar2_u16(p) | ((uint32_t)lar2_u16(p+2)<<16); }

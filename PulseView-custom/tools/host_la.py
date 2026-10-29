@@ -16,7 +16,11 @@ import time
 import zlib
 
 from lar2 import (ACK, ARM, CAPS, CONFIG, END, ERROR, GET_CAPS, HELLO, ID, INFO,
-                  MAX_SAMPLES, SAMPLES, Parser, config_payload, frame)
+                  MAX_SAMPLES, SAMPLES, ANALYZE, RESULT,
+                  Parser, config_payload, frame, analyze_payload,
+                  ANALYZE_DECODE, ANALYZE_SAVE, ANALYZE_LOAD, ANALYZE_SIG_SAVE,
+                  ANALYZE_SIG_COMPARE, ANALYZE_DIFF, ANALYZE_SESSION, ANALYZE_REPLAY,
+                  PROTO_ALL, RESULT_OK, RESULT_ERROR, RESULT_ABSENT)
 
 TRIGGER_MANUAL, TRIGGER_EDGE, TRIGGER_PATTERN = 0, 1, 2
 EDGE_RISING, EDGE_FALLING = 0, 1
@@ -100,6 +104,39 @@ class Device:
             raise RuntimeError('ARM rejected: %s' % payload.decode('utf-8', 'replace'))
         if kind != ACK:
             raise RuntimeError('expected ACK, got 0x%02x' % kind)
+
+    def analyze(self, op, arg=0, arg2=0, arg32=0, timeout=5.0):
+        """Send ANALYZE command and return RESULT payload."""
+        payload = analyze_payload(op, arg, arg2, arg32)
+        kind, seq, resp = self.command(ANALYZE, payload, timeout=timeout)
+        if kind == ERROR:
+            raise RuntimeError('ANALYZE rejected: %s' % resp.decode('utf-8', 'replace'))
+        if kind != RESULT:
+            raise RuntimeError('expected RESULT, got 0x%02x' % kind)
+        status = resp[0] if resp else RESULT_ERROR
+        if status == RESULT_ERROR:
+            raise RuntimeError('ANALYZE error from device')
+        if status == RESULT_ABSENT:
+            return None
+        return resp[1:]
+
+    def decode(self, proto_mask=PROTO_ALL, baud=0):
+        return self.analyze(ANALYZE_DECODE, proto_mask, 0, baud)
+
+    def save_session(self, slot):
+        self.analyze(ANALYZE_SAVE, slot)
+
+    def load_session(self, slot):
+        self.analyze(ANALYZE_LOAD, slot)
+
+    def save_golden(self):
+        self.analyze(ANALYZE_SIG_SAVE)
+
+    def compare_golden(self, tolerance=0):
+        return self.analyze(ANALYZE_SIG_COMPARE, 0, tolerance)
+
+    def diff_session(self, slot):
+        return self.analyze(ANALYZE_DIFF, slot)
 
     def capture(self, timeout=60.0):
         """Read one capture and return (samples, info dict)."""

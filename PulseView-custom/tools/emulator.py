@@ -10,6 +10,9 @@ import threading
 import time
 import tty
 import zlib
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lar2 import *
 
 class Emulator:
@@ -90,6 +93,9 @@ class Emulator:
             elif self.fault=='sequence':
                 self.pending[2]=frame(SAMPLES,0x3456,data[:MAX_PAYLOAD])
             elif self.fault=='truncated': self.pending=self.pending[:2]
+        elif kind==ANALYZE:
+            # Minimal ANALYZE support for emulation
+            self.queue(RESULT, bytes([RESULT_OK]))
         else: self.queue(ERROR,b'command')
     def run(self):
         outgoing=b''
