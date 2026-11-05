@@ -1,0 +1,31 @@
+Version 4
+SymbolType CELL
+LINE Normal 0 0 0 24
+LINE Normal -12 24 12 24
+LINE Normal 0 24 -12 48
+LINE Normal -12 48 12 48
+LINE Normal 12 48 0 24
+LINE Normal 0 48 0 104
+LINE Normal -12 104 12 104
+LINE Normal 0 104 -12 128
+LINE Normal -12 128 12 128
+LINE Normal 12 128 0 104
+LINE Normal 0 128 0 160
+LINE Normal -64 80 0 80
+CIRCLE Normal -3 77 3 83
+TEXT 8 0 Left 1 2
+TEXT 8 144 Left 1 1
+TEXT -56 64 Left 1 3
+WINDOW 0 16 -32 Left 2
+WINDOW 3 16 -12 Left 2
+SYMATTR Prefix X
+SYMATTR Description BAV99 dual steering diodes: 1=GND 2=Z 3=CLAMP
+PIN 0 160 NONE 0
+PINATTR PinName 1_GND
+PINATTR SpiceOrder 1
+PIN 0 0 NONE 0
+PINATTR PinName 2_ZENER
+PINATTR SpiceOrder 2
+PIN -64 80 NONE 0
+PINATTR PinName 3_CLAMP
+PINATTR SpiceOrder 3

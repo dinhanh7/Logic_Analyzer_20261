@@ -1,0 +1,33 @@
+* Local, representative models for the ONE-CHANNEL schematic.
+* These are NOT vendor-qualified models. No thermal/damage/Ioff guarantee.
+*
+* BAV99 physical SOT-23 pin order: 1=A1, 2=K2, 3=K1/A2.
+.SUBCKT BAV99_PAIR 1 2 3
+DLO 1 3 D_BAV99_REP
+DHI 3 2 D_BAV99_REP
+.ENDS BAV99_PAIR
+.MODEL D_BAV99_REP D(Is=2.52n N=1.75 Rs=0.568 Cjo=1.5p Tt=4n Bv=100 Ibv=0.5u)
+
+* Zener: BV/IBV anchor near the datasheet 3.3V / 80mA test point.
+* Cjo=500p and Rs=2 are assumed; model does NOT bound all production parts.
+.MODEL D_BZX85C3V3_REP D(Is=1n N=1.5 Rs=2 Cjo=500p Bv=3.3 Ibv=80m)
+
+* Behavioral replacement for SN74LVC1G17DBVR.
+* Simulation port order: A Y VCC VSS (NOT package pin numbering).
+* Package mapping: A=2, Y=4, VCC=5, VSS=3; package pin 1 is NC.
+* Illustrative thresholds 2.20V rising / 1.10V falling, fixed for 3.3V VCC.
+* RC stage gives about 5ns 50%-point delay at 3.3V; not a timing spec.
+* Input 6pF and output 20ohm are assumed.
+* Does not model absolute maximum violations, thermal failure, Ioff,
+* power-up/down behavior, worst-case thresholds or real supply current.
+.SUBCKT LVC1G17_REP A Y VCC VSS
+CIN A VSS 6p
+SSTATE VCC Q A VSS SW_LVC_HYST
+RSTATE Q VSS 1Meg
+RDELAY Q QDELAY 1k
+CDELAY QDELAY VSS 7.2p
+BDRIVE DRIVE VSS V=0.5*(1+tanh((V(QDELAY,VSS)-1.65)/0.1))*V(VCC,VSS)
+ROUT DRIVE Y 20
+COUT Y VSS 5p
+.MODEL SW_LVC_HYST SW(Ron=100 Roff=1G Vt=1.65 Vh=0.55)
+.ENDS LVC1G17_REP

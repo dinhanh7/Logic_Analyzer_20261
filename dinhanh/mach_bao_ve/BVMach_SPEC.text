@@ -1,0 +1,94 @@
+================================================================================
+TÀI LIỆU ĐẶC TẢ KỸ THUẬT: MẠCH BẢO VỆ ĐẦU VÀO (INPUT PROTECTION CIRCUIT)
+DỰ ÁN: LOGIC ANALYZER 8 KÊNH DỰA TRÊN RASPBERRY PI PICO 2
+================================================================================
+
+1. MỤC ĐÍCH THIẾT KẾ
+--------------------------------------------------------------------------------
+Mạch bảo vệ đầu vào nằm giữa thiết bị cần đo (DUT) và vi điều khiển Raspberry Pi Pico 2 
+(RP2350) nhằm đảm bảo các mục tiêu sau:
+- Bảo vệ tuyệt đối: Ngăn chặn mọi hư hỏng cho chân GPIO của RP2350 (vốn chỉ chịu được 
+  mức điện áp tối đa 3.3V) khi xảy ra các sự cố quá áp, xung điện từ (ESD, sét) hoặc 
+  ngắn mạch từ phía thiết bị đo.
+- Mở rộng dải đo an toàn: Cho phép thiết bị có thể đo trực tiếp các tín hiệu logic 
+  mức cao (5V, 12V) mà không cần bộ chuyển mức bên ngoài.
+- Bảo toàn chất lượng tín hiệu: Không làm méo dạng xung, loại bỏ nhiễu biên độ nhỏ 
+  (nhờ Schmitt Trigger) và đảm bảo độ trễ lan truyền cực thấp để không ảnh hưởng đến 
+  tốc độ lấy mẫu 25 MS/s.
+- Chống trạng thái thả nổi (Floating): Đảm bảo mức logic xác định khi ngõ vào để hở.
+
+2. YÊU CẦU KỸ THUẬT KHẮT KHE (ELECTRICAL LIMITS)
+--------------------------------------------------------------------------------
+Mạch bảo vệ được thiết kế để chịu đựng các điều kiện khắc nghiệt nhất từ môi trường đo:
+- Điện áp một chiều liên tục (Continuous DC): Chịu được tối đa 12V DC liên tục.
+- Xung đột biến (Transient Pulse): Chịu được xung điện áp lên tới 200V (đỉnh) với 
+  độ rộng xung (pulse width) là 1ms mà không gây hư hỏng linh kiện.
+- Điện áp đầu ra tới vi điều khiển: Luôn được kẹp an toàn trong dải 0V đến 3.6V.
+- Băng thông tín hiệu: Đáp ứng tốt cho các tín hiệu logic tần số lên tới vài MHz.
+
+3. DANH MỤC LINH KIỆN (BILL OF MATERIALS - BOM) đảm bỏa chịu được tần số cao để có thể lấy mẫu tại 25MHz
+--------------------------------------------------------------------------------
+| Ký hiệu | Linh kiện            | Thông số / Giá trị | Vai trò trong mạch bảo vệ                   |
+|---------|----------------------|--------------------|---------------------------------------------|
+| R1      | Điện trở             | tự tính toán lí thuyêt| Hạn dòng chính, bảo vệ TVS Diode khi có xung|
+| R2      | Điện trở             | tự tính toán| Hạn dòng cho mạch kẹp logic (D3).           |
+| D2      | TVS Diode            | SMBJ12CA-HR hoặc tương đươn      | Kẹp xung điện áp cao (200V), tản năng lượng |
+| D3      | Cặp Diode Schottky   | loại BAT54S         | Kẹp mức điện áp logic về dải 0V - 3.6V.     |
+| U1      | IC Đệm               | SN74LVC1G17DBVR hoặc tương đương nếu bạn thấy phù hợp    | Schmitt Trigger: Làm sạch nhiễu, đệm tín hiệu|
+| C1      | Tụ gốm               | 100 nF             | Lọc nhiễu nguồn cấp cho U1.                 |
+
+4. NGUYÊN LÝ HOẠT ĐỘNG VÀ PHÂN TÍCH KHẢ NĂNG CHỊU ĐỰNG
+--------------------------------------------------------------------------------
+Mạch hoạt động theo cơ chế bảo vệ 3 tầng nối tiếp, được tính toán để đáp ứng đúng 
+các yêu cầu về 12V liên tục và xung 200V/1ms.
+
+TẦNG 1: BẢO VỆ QUÁ ÁP VÀ XUNG NĂNG LƯỢNG LỚN (R1 và D2)
+- Thành phần: R1 và TVS Diode D2 (SMBJ12CA).
+- Trường hợp 12V DC liên tục: D2 có điện áp Standoff (điện áp làm việc) là 12V. Ở mức 
+  12V DC, D2 gần như không dẫn (dòng rò cực nhỏ). R1 đóng vai trò là trở kháng đầu vào 
+  hạn chế dòng.
+- Trường hợp xung 200V / 1ms: Khi xung 200V xuất hiện, D2 lập tức chuyển sang trạng 
+  thái dẫn điện (breakdown) và kẹp điện áp xuống mức an toàn khoảng nào đó của linh kiên TVS bạn chọn.
+   Dòng điện xung tối đa chạy qua R1 lúc này phải làm sao để an toàn cho các linh kiên sau hoàn toàn chịu được.
+    D2 cũng tiêu tán an toàn phần năng lượng xung này.
+
+TẦNG 2: KẸP MỨC LOGIC AN TOÀN (R2 và D3)
+- Thành phần: R2 và cặp Diode Schottky D3 (BAT54S).
+- Hoạt động: Tín hiệu sau tầng 1 (dù là 12V DC hay đã bị kẹp xuống 19.9V từ xung 200V) 
+  tiếp tục đi qua R2.
+  + Nếu điện áp lớn hơn 3.3V + Vf (khoảng 3.6V): Diode phía trên của D3 dẫn, xả dòng 
+    dư thừa về nguồn 3.3V.
+  + Nếu điện áp nhỏ hơn 0V (âm): Diode phía dưới của D3 dẫn, kẹp về GND.
+- Tính toán an toàn: Với mức 12V DC đi vào, điện áp tại điểm kẹp là ~3.6V. Dòng điện 
+  chạy qua R2 là: I ... . Dòng điện này cực kỳ an toàn cho 
+  Diode BAT54S và không làm ảnh hưởng đến nguồn 3.3V của hệ thống.
+  Xem với cả trường hợp xung 200v 1ms về dòng
+
+TẦNG 3: ĐỊNH DẠNG VÀ ĐỆM TÍN HIỆU (U1)
+- Thành phần: U1 (SN74LVC1G17DBVR hoặc 1 con tương đương) - Buffer Schmitt Trigger.
+- Hoạt động: Nhận tín hiệu đã được kẹp an toàn (từ -0.3V đến 3.6V) từ tầng 2. Nhờ đặc 
+  tính Schmitt Trigger (tạo trễ hysteresis), U1 loại bỏ hoàn toàn các nhiễu gai biên độ 
+  nhỏ và tạo ra xung vuông sắc nét. Đầu ra (chân Y) luôn ở mức logic chuẩn 3.3V (High) 
+  hoặc 0V (Low), cung cấp trở kháng thấp để đưa thẳng vào chân GPIO của RP2350.
+- Tụ C1 (100nF) giúp ổn định nguồn cấp cho U1, chống nhiễu tần số cao.
+
+5. CƠ CHẾ BẢO VỆ CHỐNG "BACK-POWERING" (MẤT NGUỒN)
+--------------------------------------------------------------------------------
+Trong trường hợp thiết bị Logic Analyzer bị mất nguồn (VCC = 0V) nhưng thiết bị đo (DUT) 
+vẫn đang hoạt động và đưa tín hiệu (ví dụ 5V hoặc 12V) vào cổng đo:
+- Diode phía trên của D3 sẽ kẹp tín hiệu xuống mức 0V + Vf (khoảng 0.3V). 
+- Toàn bộ điện áp cao bị chặn lại tại D3, không thể đi vào U1 hay RP2350. 
+- Cơ chế này bảo vệ vi điều khiển không bị hỏng do dòng điện "chảy ngược" từ ngoại vi 
+  vào khi thiết bị chưa được cấp nguồn.
+
+6. TÓM TẮT THÔNG SỐ ĐẦU VÀO / ĐẦU RA (I/O SPECIFICATIONS)
+--------------------------------------------------------------------------------
+- Đầu vào (Input từ DUT):
+  + Điện áp DC tối đa: 12V.
+  + Xung đột biến tối đa: 200V / 1ms.
+  + Trở kháng đầu vào (R1 + R2).
+- Đầu ra (Output tới RP2350):
+  + Điện áp: 0V đến 3.3V (chuẩn CMOS).
+  + Dòng điện: Vài µA (an toàn tuyệt đối cho GPIO).
+  + Sườn tín hiệu: Sắc nét (nhờ Schmitt Trigger).
+================================================================================

@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device" version="24.7.17" compressed="false">
+  <diagram id="pc-pulseview" name="Khối phần mềm PC - PulseView">
+    <mxGraphModel dx="1800" dy="1250" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1250" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="&lt;b&gt;KHỐI PHẦN MỀM PC — PULSEVIEW&lt;/b&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=32;fontColor=#202b38;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="25" width="1720" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Logic Analyzer 8 kênh • Pico 2 / RP2350 • USB CDC / LAR2 v1 • driver rp2350-la" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=21;fontColor=#202b38;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="85" width="1720" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="pc" value="&lt;b&gt;MÁY TÍNH PC / UBUNTU&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf6ec;strokeColor=#659a6e;shape=swimlane;startSize=50;horizontal=1;swimlaneFillColor=#ffffff;collapsible=0;fontSize=24;align=left;spacingLeft=22;" vertex="1" parent="1">
+          <mxGeometry x="300" y="140" width="1460" height="825" as="geometry" />
+        </mxCell>
+        <mxCell id="pv" value="&lt;b&gt;PULSEVIEW — GIAO DIỆN VÀ QUẢN LÝ PHIÊN ĐO&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf6ec;strokeColor=#659a6e;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#fbfdfb;collapsible=0;fontSize=22;" vertex="1" parent="1">
+          <mxGeometry x="770" y="220" width="950" height="665" as="geometry" />
+        </mxCell>
+        <mxCell id="user" value="&lt;b&gt;Người sử dụng&lt;/b&gt;&lt;br/&gt;Cấu hình và phân tích" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#f1ebfa;strokeColor=#9579b1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="285" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="device" value="&lt;b&gt;Pico 2 / RP2350&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;PIO → DMA → RAM&lt;br/&gt;CH0…CH7&lt;br/&gt;Capture theo đợt" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf2ff;strokeColor=#6286b9;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="220" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="usb" value="&lt;b&gt;Cổng USB trên PC&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;USB CDC&lt;br/&gt;/dev/ttyACM0&lt;br/&gt;(cổng ví dụ)" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#f3f4f6;strokeColor=#929ba5;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="340" y="440" width="170" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="driver" value="&lt;b&gt;libsigrok&lt;/b&gt;&lt;br/&gt;&lt;b&gt;driver rp2350-la&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Nhận diện thiết bị&lt;br/&gt;Lệnh LAR2 v1&lt;br/&gt;Kiểm CRC / sequence&lt;br/&gt;Metadata / số mẫu" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf2ff;strokeColor=#6286b9;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="550" y="420" width="180" height="215" as="geometry" />
+        </mxCell>
+        <mxCell id="config" value="&lt;b&gt;Điều khiển capture&lt;/b&gt;&lt;br/&gt;Chọn thiết bị, kênh, Fs, số mẫu N&lt;br/&gt;Run / Stop • cấu hình theo CAPS" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#f1ebfa;strokeColor=#9579b1;fontSize=19;" vertex="1" parent="1">
+          <mxGeometry x="810" y="285" width="430" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="session" value="&lt;b&gt;Phiên đo / dữ liệu mẫu&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Nhận gói logic từ libsigrok&lt;br/&gt;Lưu mẫu trong bộ nhớ PC&lt;br/&gt;Trục thời gian: t[i] = i / Fs" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf6ec;strokeColor=#659a6e;fontSize=19;" vertex="1" parent="1">
+          <mxGeometry x="810" y="440" width="250" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="waveform" value="&lt;b&gt;Hiển thị waveform&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;8 kênh CH0…CH7&lt;br/&gt;Zoom / pan / cursor&lt;br/&gt;Đọc Δt, chu kỳ và độ rộng" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf6ec;strokeColor=#659a6e;fontSize=19;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="440" width="270" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="files" value="&lt;b&gt;Lưu / mở phiên đo&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Tệp capture .sr&lt;br/&gt;Mở lại để phân tích offline&lt;br/&gt;Giữ dữ liệu và cấu hình phiên" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#fff0db;strokeColor=#c98845;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="810" y="705" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="decoder" value="&lt;b&gt;libsigrokdecode&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;UART / SPI / I²C&lt;br/&gt;Gán kênh và tham số bus&lt;br/&gt;Giải mã từ mẫu logic" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#f1ebfa;strokeColor=#9579b1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="705" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="annotations" value="&lt;b&gt;Kết quả giải mã&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Byte / khung / địa chỉ&lt;br/&gt;Nhãn theo vị trí thời gian&lt;br/&gt;Hiển thị cùng waveform" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#f1ebfa;strokeColor=#9579b1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="705" width="270" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="user-config" value="Thao tác người dùng" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#9579b1;labelBackgroundColor=#ffffff;strokeColor=#9579b1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;dashed=1;dashPattern=8 5;" edge="1" parent="1" source="user" target="config">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="config-driver" value="Fs, N, Run / Stop" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#6286b9;labelBackgroundColor=#ffffff;strokeColor=#6286b9;exitX=0;exitY=0.75;entryX=0.5;entryY=0;dashed=1;dashPattern=8 5;" edge="1" parent="1" source="config" target="driver">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="device-usb" value="USB" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#525b65;labelBackgroundColor=#ffffff;strokeColor=#525b65;exitX=1;exitY=0.5;entryX=0;entryY=0.5;startArrow=block;startFill=1;" edge="1" parent="1" source="device" target="usb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="usb-driver" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#525b65;labelBackgroundColor=#ffffff;strokeColor=#525b65;exitX=1;exitY=0.5;entryX=0;entryY=0.5;startArrow=block;startFill=1;" edge="1" parent="1" source="usb" target="driver">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="driver-session" value="Logic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#659a6e;labelBackgroundColor=#ffffff;strokeColor=#659a6e;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="driver" target="session">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="session-wave" value="Mẫu CH0…CH7 + Fs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#659a6e;labelBackgroundColor=#ffffff;strokeColor=#659a6e;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="session" target="waveform">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="session-files" value="Lưu / mở" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#c98845;labelBackgroundColor=#ffffff;strokeColor=#c98845;exitX=0.5;exitY=1;entryX=0.5;entryY=0;startArrow=block;startFill=1;" edge="1" parent="1" source="session" target="files">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="session-decode" value="Mẫu logic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#9579b1;labelBackgroundColor=#ffffff;strokeColor=#9579b1;exitX=0.9;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="session" target="decoder">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1035" y="660" />
+              <mxPoint x="1245" y="660" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="decode-annotation" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#9579b1;labelBackgroundColor=#ffffff;strokeColor=#9579b1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="decoder" target="annotations">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="annotation-wave" value="Nhãn giải mã" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#9579b1;labelBackgroundColor=#ffffff;strokeColor=#9579b1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="annotations" target="waveform">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="config-decode" value="Tham số decoder" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#9579b1;labelBackgroundColor=#ffffff;strokeColor=#9579b1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;dashed=1;dashPattern=8 5;" edge="1" parent="1" source="config" target="decoder">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1290" y="335" />
+              <mxPoint x="1290" y="680" />
+              <mxPoint x="1245" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="driver-note" value="&lt;b&gt;Trao đổi hai chiều:&lt;/b&gt; PC gửi HELLO / GET_CAPS / CONFIG / ARM / ABORT; Pico trả thông tin thiết bị và dữ liệu capture." style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#202b38;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="330" y="905" width="1390" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-title" value="&lt;b&gt;QUY TRÌNH SỬ DỤNG&lt;/b&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="990" width="1720" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="step1" value="&lt;b&gt;1. Kết nối&lt;/b&gt;&lt;br/&gt;Chọn driver và cổng CDC" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf6ec;strokeColor=#659a6e;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1040" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="step2" value="&lt;b&gt;2. Cấu hình&lt;/b&gt;&lt;br/&gt;Chọn kênh, Fs và N" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf6ec;strokeColor=#659a6e;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="390" y="1040" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="stepedge1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#659a6e;labelBackgroundColor=#ffffff;strokeColor=#659a6e;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="step1" target="step2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="step3" value="&lt;b&gt;3. Capture&lt;/b&gt;&lt;br/&gt;Run → thu mẫu → truyền PC" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf6ec;strokeColor=#659a6e;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="740" y="1040" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="stepedge2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#659a6e;labelBackgroundColor=#ffffff;strokeColor=#659a6e;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="step2" target="step3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="step4" value="&lt;b&gt;4. Phân tích&lt;/b&gt;&lt;br/&gt;Waveform, cursor, decoder" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf6ec;strokeColor=#659a6e;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="1040" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="stepedge3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#659a6e;labelBackgroundColor=#ffffff;strokeColor=#659a6e;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="step3" target="step4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="step5" value="&lt;b&gt;5. Lưu kết quả&lt;/b&gt;&lt;br/&gt;Lưu .sr / mở lại phiên" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=20;fontColor=#202b38;align=center;verticalAlign=middle;spacing=12;strokeWidth=1.8;fillColor=#eaf6ec;strokeColor=#659a6e;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="1040" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="stepedge4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=20;strokeWidth=2.2;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=16;fontColor=#659a6e;labelBackgroundColor=#ffffff;strokeColor=#659a6e;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="step4" target="step5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mode" value="&lt;b&gt;Chế độ hiện tại:&lt;/b&gt; manual capture theo đợt; chưa có trigger cạnh/pattern, pre-trigger hoặc streaming liên tục." style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=#202b38;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1140" width="1720" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="integrity" value="&lt;b&gt;Toàn vẹn:&lt;/b&gt; xác nhận đủ mẫu và CRC toàn capture qua log “Capture verified:”; dữ liệu một phần có thể vẫn xuất hiện trong phiên khi lỗi." style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=17;fontColor=#202b38;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1177" width="1720" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="sources" value="Căn cứ: PulseView-custom/README.md • protocol/PROTOCOL.md • Tài liệu PulseView chính thức (bấm để mở)." style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=15;fontColor=#202b38;align=left;verticalAlign=middle;spacing=0;" vertex="1" parent="1" link="https://sigrok.org/doc/pulseview/0.4.2/manual.html">
+          <mxGeometry x="40" y="1215" width="1720" height="25" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

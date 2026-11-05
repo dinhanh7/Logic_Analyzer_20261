@@ -1,0 +1,35 @@
+Version 4
+SymbolType CELL
+LINE Normal 0 48 32 48
+LINE Normal 32 8 32 88
+LINE Normal 32 8 128 48
+LINE Normal 32 88 128 48
+LINE Normal 128 48 160 48
+LINE Normal 80 0 80 28
+LINE Normal 80 68 80 96
+LINE Normal 56 56 68 56
+LINE Normal 68 56 68 40
+LINE Normal 68 40 80 40
+LINE Normal 64 56 76 56
+LINE Normal 76 56 76 40
+LINE Normal 76 40 88 40
+TEXT 4 30 Left 1 A(2)
+TEXT 124 28 Left 1 Y(4)
+TEXT 84 -4 Left 1 VCC(5)
+TEXT 84 92 Left 1 GND(3)
+WINDOW 0 16 -32 Left 2
+WINDOW 3 16 -12 Left 2
+SYMATTR Prefix X
+SYMATTR Description Behavioral non-inverting Schmitt buffer, approximate SN74LVC1G17
+PIN 0 48 NONE 0
+PINATTR PinName A
+PINATTR SpiceOrder 1
+PIN 160 48 NONE 0
+PINATTR PinName Y
+PINATTR SpiceOrder 2
+PIN 80 0 NONE 0
+PINATTR PinName VCC
+PINATTR SpiceOrder 3
+PIN 80 96 NONE 0
+PINATTR PinName GND
+PINATTR SpiceOrder 4

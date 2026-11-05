@@ -1,0 +1,146 @@
+<mxGraphModel dx="1800" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1160" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+    <mxCell id="dut" value="Mạch cần đo" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=#929ba5;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+      <mxGeometry x="60" y="100" width="200" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="front" value="Khối bảo vệ đầu vào" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=23;collapsible=0;" vertex="1" parent="1">
+      <mxGeometry x="40" y="280" width="510" height="260" as="geometry"/>
+    </mxCell>
+    <mxCell id="limit" value="Hạn dòng" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="front">
+      <mxGeometry x="30" y="80" width="120" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="clamp" value="Kẹp quá áp" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="front">
+      <mxGeometry x="190" y="80" width="120" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="buffer" value="Đệm logic" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="front">
+      <mxGeometry x="350" y="80" width="130" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="mcu" value="Khối xử lý (Pico 2 / RP2350)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=23;collapsible=0;" vertex="1" parent="1">
+      <mxGeometry x="680" y="280" width="600" height="500" as="geometry"/>
+    </mxCell>
+    <mxCell id="pio" value="PIO" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="mcu">
+      <mxGeometry x="30" y="80" width="140" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="dma" value="DMA" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="mcu">
+      <mxGeometry x="230" y="80" width="140" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="sram" value="SRAM" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="mcu">
+      <mxGeometry x="430" y="80" width="140" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="cpu" value="CPU / Điều khiển" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="mcu">
+      <mxGeometry x="30" y="320" width="250" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="flash" value="Flash" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="mcu">
+      <mxGeometry x="260" y="210" width="150" height="75" as="geometry"/>
+    </mxCell>
+    <mxCell id="usb" value="USB CDC" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="mcu">
+      <mxGeometry x="430" y="320" width="140" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="pc" value="Khối phần mềm PC" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf6ec;strokeColor=#659a6e;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=23;collapsible=0;" vertex="1" parent="1">
+      <mxGeometry x="1430" y="280" width="300" height="500" as="geometry"/>
+    </mxCell>
+    <mxCell id="driver" value="Driver libsigrok" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf6ec;strokeColor=#659a6e;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="pc">
+      <mxGeometry x="30" y="320" width="240" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="pulseview" value="PulseView" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf6ec;strokeColor=#659a6e;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="pc">
+      <mxGeometry x="30" y="180" width="240" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="decoder" value="Giải mã giao thức" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf6ec;strokeColor=#659a6e;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="pc">
+      <mxGeometry x="30" y="60" width="240" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="power" value="Khối nguồn" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=23;collapsible=0;" vertex="1" parent="1">
+      <mxGeometry x="680" y="80" width="600" height="140" as="geometry"/>
+    </mxCell>
+    <mxCell id="vbus" value="Nguồn USB 5 V" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="power">
+      <mxGeometry x="20" y="55" width="180" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="regulator" value="Ổn áp 3,3 V" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="power">
+      <mxGeometry x="300" y="55" width="270" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="ui" value="Khối giao diện" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1ebfa;strokeColor=#9579b1;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=23;collapsible=0;" vertex="1" parent="1">
+      <mxGeometry x="680" y="930" width="600" height="160" as="geometry"/>
+    </mxCell>
+    <mxCell id="buttons" value="Nút bấm" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1ebfa;strokeColor=#9579b1;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="ui">
+      <mxGeometry x="30" y="55" width="220" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="oled" value="Màn hình OLED" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1ebfa;strokeColor=#9579b1;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" vertex="1" parent="ui">
+      <mxGeometry x="340" y="55" width="230" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="probe" value="CH0…CH7 / GND" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0.35;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="dut" target="limit">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="limit_clamp" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="limit" target="clamp">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="clamp_buffer" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="clamp" target="buffer">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="inputs" value="GP0…GP7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="buffer" target="pio">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="pio_dma" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="pio" target="dma">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="dma_ram" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dma" target="sram">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="cpu_pio" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0.28;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="cpu" target="pio">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="ram_usb" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="sram" target="usb">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="cpu_flash" value="QSPI" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;startArrow=block;startFill=1;exitX=0.85;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="cpu" target="flash">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="922.5" y="575"/>
+          <mxPoint x="1015" y="575"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="cpu_usb" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;startArrow=block;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="cpu" target="usb">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="usb_pc" value="USB" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;startArrow=block;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="usb" target="driver">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="driver_pulseview" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;startArrow=block;startFill=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="driver" target="pulseview">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="pulseview_decoder" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="pulseview" target="decoder">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="vbus_reg" value="5 V" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#bd6741;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#bd6741;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="vbus" target="regulator">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="reg_mcu" value="3V3 / GND" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#bd6741;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#bd6741;labelBackgroundColor=#ffffff;exitX=0.8;exitY=1;entryX=0.86;entryY=0;" edge="1" parent="1" source="regulator" target="mcu">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="reg_front" value="3V3 / GND" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#bd6741;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#bd6741;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="regulator" target="buffer">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1115" y="245"/>
+          <mxPoint x="455" y="245"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="buttons_cpu" value="GPIO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="buttons" target="cpu">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="630" y="1020"/>
+          <mxPoint x="630" y="645"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="cpu_oled" value="SPI / GPIO&lt;br&gt;3V3 / GND" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="cpu" target="oled">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="835" y="860"/>
+          <mxPoint x="1135" y="860"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+  </root>
+</mxGraphModel>

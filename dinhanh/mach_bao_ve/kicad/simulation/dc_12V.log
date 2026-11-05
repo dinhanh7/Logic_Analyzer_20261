@@ -1,0 +1,25 @@
+
+No compatibility mode selected!
+
+
+Circuit: exploratory protection model - dc_12v
+
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+
+
+Initial Transient Solution
+--------------------------
+
+Node                                   Voltage
+----                                   -------
+in                                          12
+mid                                    7.92014
+clamp                                  3.84029
+z                                      3.19178
+a                                      3.81351
+vdut#branch                        -0.00407986
+
+
+No. of Data Rows : 1008
+ngspice-36 done
+Note: can't find init file.

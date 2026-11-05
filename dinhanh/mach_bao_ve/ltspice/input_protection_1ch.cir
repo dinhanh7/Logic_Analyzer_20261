@@ -1,0 +1,27 @@
+One-channel protection - exported from the actual ASC geometry
+VIN IN 0 PULSE({VLO} {VHI} {TD} {TR} {TR} {PW} {PER})
+R6 IN MID 1k
+R7 MID CLAMP 1k
+R8 CLAMP A 330
+R9 A 0 47k
+R10 N008 OUT 33
+XD3 0 Z CLAMP BAV99_PAIR
+D4 0 Z D_BZX85C3V3_REP
+XU2 A N008 VCC 0 LVC1G17_REP
+C2 VCC 0 100n
+VCCSRC VCC 0 {VSUP}
+CLOAD OUT 0 10p
+.include protection_models.lib
+.param CASE=2 VSUP=3.3 VLOGIC=3.3 FREQ=1Meg
+.param VLO={12*(CASE==0)} VHI={12*(CASE==0)+VLOGIC*(CASE==1)+200*(CASE==2)}
+.param TD={10u-9u*(CASE==1)} TR={20n-15n*(CASE==1)}
+.param PW={(CASE==1)*(0.5/FREQ-TR)+(1-(CASE==1))*1m} PER={(CASE==1)/FREQ+(1-(CASE==1))*10m}
+.param TSTOP={(CASE==1)*(1u+10/FREQ)+(1-(CASE==1))*1.1m} TMAX={(CASE==1)/(500*FREQ)+(1-(CASE==1))*20n}
+.tran {TMAX} {TSTOP} 0 {TMAX}
+.options plotwinsize=0 method=gear maxord=1
+.meas tran A_MAX MAX V(A)
+.meas tran CLAMP_MAX MAX V(CLAMP)
+.meas tran OUT_MAX MAX V(OUT)
+.meas tran IIN_MIN MIN I(VIN)
+.save V(IN) V(CLAMP) V(A) V(OUT) I(VIN)
+.end

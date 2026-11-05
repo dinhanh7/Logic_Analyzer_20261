@@ -1,0 +1,2528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>/media/abuntu/NVME_UBUNTU/Working/20261/Logic_Analyzer_20261/dinhanh/mach_bao_ve/kicad/input_protection.kicad_sch</source>
+    <date>2026-11-05T18:07:13</date>
+    <tool>Eeschema 10.0.8</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>8-channel Logic Analyzer Input Protection</title>
+        <company>Embedded Systems - Topic 1</company>
+        <rev>A</rev>
+        <date>2026-11-05</date>
+        <source>input_protection.kicad_sch</source>
+        <comment number="1" value="Design target: +12V DC / +200V single pulse 1ms; see README for verification scope"/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C1">
+      <value>100n / 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Place immediately beside buffer pins 5 and 3</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Place immediately beside buffer pins 5 and 3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2d2cc819-2c52-4fd1-b072-7aba199f809f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C2">
+      <value>100n / 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Place immediately beside buffer pins 5 and 3</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Place immediately beside buffer pins 5 and 3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ce72c930-9239-4374-a4e9-e63af1abee8c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C3">
+      <value>100n / 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Place immediately beside buffer pins 5 and 3</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Place immediately beside buffer pins 5 and 3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6c3d55c5-67c0-42de-b007-addbb6bb2d56</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C4">
+      <value>100n / 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Place immediately beside buffer pins 5 and 3</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Place immediately beside buffer pins 5 and 3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>607456c6-a730-4d18-a533-08d0fcf7023b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C5">
+      <value>100n / 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Place immediately beside buffer pins 5 and 3</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Place immediately beside buffer pins 5 and 3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>17e8ce31-500d-4919-950b-fb600243bdc0</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C6">
+      <value>100n / 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Place immediately beside buffer pins 5 and 3</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Place immediately beside buffer pins 5 and 3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>51a87420-d84e-4a28-9b46-4f85f55d8f91</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C7">
+      <value>100n / 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Place immediately beside buffer pins 5 and 3</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Place immediately beside buffer pins 5 and 3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>09f753a2-15ef-498c-a4de-8b3051d14164</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C8">
+      <value>100n / 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Place immediately beside buffer pins 5 and 3</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Place immediately beside buffer pins 5 and 3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>81068d5a-f5be-4f9f-82da-4d0073544240</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C9">
+      <value>4u7 / 10V</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3c008a84-9fa8-4820-94d5-0a45c26f0e19</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D1">
+      <value>BAV99</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>aba5e2af-d376-4f85-a060-d835b9938f64</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D2">
+      <value>BZX85C3V3</value>
+      <footprint>Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note">3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3</field>
+        <field name="Footprint">Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value="3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5558f0f7-2972-4233-a131-625f6f92aea4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D3">
+      <value>BAV99</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c393d47d-0e98-4a12-9fcd-8907d871b0de</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D4">
+      <value>BZX85C3V3</value>
+      <footprint>Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note">3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3</field>
+        <field name="Footprint">Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value="3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fb342e28-3205-4ef7-8912-de94a567eb11</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D5">
+      <value>BAV99</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ff99f3f0-512d-4db0-9dc8-2ada7cbbe57c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D6">
+      <value>BZX85C3V3</value>
+      <footprint>Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note">3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3</field>
+        <field name="Footprint">Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value="3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2aba9182-6a3d-4597-82dd-9fab19de131d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D7">
+      <value>BAV99</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3b040e28-7be8-4e87-81d0-db4bacb4fd2a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D8">
+      <value>BZX85C3V3</value>
+      <footprint>Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note">3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3</field>
+        <field name="Footprint">Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value="3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5acd813c-0608-41f6-b6cc-fa907c36af86</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D9">
+      <value>BAV99</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b36f60e4-e3d3-45c8-9195-6d2df6ddec85</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D10">
+      <value>BZX85C3V3</value>
+      <footprint>Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note">3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3</field>
+        <field name="Footprint">Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value="3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>af3ecfef-f713-4516-a117-19ed8e50d963</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D11">
+      <value>BAV99</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1878a95d-a6bf-4e96-8046-b8dae78b0728</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D12">
+      <value>BZX85C3V3</value>
+      <footprint>Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note">3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3</field>
+        <field name="Footprint">Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value="3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ac87f739-ee56-4f90-8748-792c9319c646</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D13">
+      <value>BAV99</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6cfe56a6-2ce5-4422-98c7-b9b3ac38bfe9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D14">
+      <value>BZX85C3V3</value>
+      <footprint>Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note">3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3</field>
+        <field name="Footprint">Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value="3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a6764fda-2d3b-445e-b1a2-eb822be8caa7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D15">
+      <value>BAV99</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND, 2=Zener cathode rail, 3=CLAMP signal; low-capacitance steering pair"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>96c4d63c-3ab9-4da9-980c-2b0cc23c57f3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D16">
+      <value>BZX85C3V3</value>
+      <footprint>Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note">3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3</field>
+        <field name="Footprint">Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value="3.3V / 1.3W Zener on isolated clamp node; never connect this node to supply +3V3"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5886fd68-977c-4795-bc0f-de33d545d5ac</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J1">
+      <value>DUT INPUTS</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="Conn_01x10" description="Generic connector, single row, 01x10, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="connector"/>
+      <property name="ki_fp_filters" value="Connector*:*_1x??_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e3d519e9-3b0a-4a6e-a9d1-126b762a6093</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J2">
+      <value>PICO INTERFACE</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="Conn_01x10" description="Generic connector, single row, 01x10, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="connector"/>
+      <property name="ki_fp_filters" value="Connector*:*_1x??_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4bcbf8a4-1c55-4a26-a110-3fff156175d6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3afe1acc-d4d0-49d8-9fba-498d214c6dbf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R2">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2527c707-1721-4e6b-96a6-47a05b82744f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R3">
+      <value>330R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Limits negative input clamp current; also adds RC delay</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Limits negative input clamp current; also adds RC delay"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9b1fa332-ee65-451a-9c85-79ef11b9a4cf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R4">
+      <value>47k</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>32feed8c-eafa-4fa3-9699-9a39dc354934</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R5">
+      <value>33R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Output source termination; place near buffer Y pin</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Output source termination; place near buffer Y pin"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>29c44c51-3ea7-4904-a24b-64a084bcdc7b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R6">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2e2fae46-6353-4959-a987-59b60d0d2c9d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R7">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ae88d48f-09dc-4783-b008-96b4d2a95888</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R8">
+      <value>330R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Limits negative input clamp current; also adds RC delay</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Limits negative input clamp current; also adds RC delay"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>decbedba-43c5-481b-9d13-650aead13942</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R9">
+      <value>47k</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d15f8b6f-a0a4-44be-8c0f-41ef8adc5598</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R10">
+      <value>33R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Output source termination; place near buffer Y pin</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Output source termination; place near buffer Y pin"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f878ff60-52ad-4151-8c8b-2377123bae48</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R11">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>205dfb86-8abf-4a93-96aa-bd36f6b21a02</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R12">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>300e1882-9275-4a6c-a84f-5e94f106c991</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R13">
+      <value>330R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Limits negative input clamp current; also adds RC delay</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Limits negative input clamp current; also adds RC delay"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ee4f00fc-2b76-486b-bf4e-06b6c6e1930e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R14">
+      <value>47k</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5a2ed37b-e929-47d1-9975-ea6d55209709</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R15">
+      <value>33R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Output source termination; place near buffer Y pin</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Output source termination; place near buffer Y pin"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6c82d165-1016-4562-a9d0-0f086812fccf</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R16">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ac129509-a09e-4606-8eca-2d4649aec6f6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R17">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>75151743-e54d-4633-a0c4-27f976100d54</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R18">
+      <value>330R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Limits negative input clamp current; also adds RC delay</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Limits negative input clamp current; also adds RC delay"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>53b4a5f0-9527-4ecc-a0f3-b95ea6b135ee</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R19">
+      <value>47k</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ec432e36-093d-4f53-9e8d-3eb85feeade6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R20">
+      <value>33R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Output source termination; place near buffer Y pin</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Output source termination; place near buffer Y pin"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>190a0bb9-a61a-4768-9514-e73f12cf25c3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R21">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ed8d1503-5411-40c2-87ee-917e9e6744ac</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R22">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2122afa9-7b6b-476d-91a8-389d15cfa3e0</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R23">
+      <value>330R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Limits negative input clamp current; also adds RC delay</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Limits negative input clamp current; also adds RC delay"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a39ee360-a206-4266-844d-c743d7c89c18</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R24">
+      <value>47k</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>19962365-57d3-4bbe-813d-d0398e8371ff</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R25">
+      <value>33R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Output source termination; place near buffer Y pin</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Output source termination; place near buffer Y pin"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6086f1a6-5723-4aff-a2d3-18716e561e50</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R26">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>72037880-cc4f-465c-ba21-0628b1c07497</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R27">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ea656ac1-cb6f-4380-8c2b-757238bbb869</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R28">
+      <value>330R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Limits negative input clamp current; also adds RC delay</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Limits negative input clamp current; also adds RC delay"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>47b2e8cc-4eea-4d8c-93bf-8b26775a5ef9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R29">
+      <value>47k</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>33cc90b8-f949-4a38-9966-c89902e2dc94</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R30">
+      <value>33R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Output source termination; place near buffer Y pin</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Output source termination; place near buffer Y pin"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>14ec8924-88f4-4e2a-95bc-e91ba5262f82</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R31">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a18b0aba-fec1-404a-a33c-4914872bd118</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R32">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>221b253d-1e97-4ba6-aa3d-2a0bfe98482a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R33">
+      <value>330R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Limits negative input clamp current; also adds RC delay</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Limits negative input clamp current; also adds RC delay"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5c5bf778-25c3-45c0-aaed-7b3c10c621e4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R34">
+      <value>47k</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>97468ba3-b930-4d20-99d5-19d3cfdb9a9d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R35">
+      <value>33R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Output source termination; place near buffer Y pin</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Output source termination; place near buffer Y pin"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1a827410-8a3f-45c0-963c-020016e8e273</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R36">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d9117665-5543-4e12-be81-6bf7990b9be5</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R37">
+      <value>1k / PR02</value>
+      <footprint>Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603</field>
+        <field name="Footprint">Resistor_THT:R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Vishay PR02 Cu-lead, 2W, 1%; pulse load required; do not replace with ordinary 0603"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e1f8c864-279b-4f56-88dc-f424cc1c7968</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R38">
+      <value>330R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Limits negative input clamp current; also adds RC delay</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Limits negative input clamp current; also adds RC delay"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b88b1638-cc4a-44ce-bb92-ab400ba12716</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R39">
+      <value>47k</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ad927a7d-303f-4347-b219-a92412e3ea26</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R40">
+      <value>33R</value>
+      <footprint>Resistor_SMD:R_0603_1608Metric</footprint>
+      <fields>
+        <field name="Design_note">Output source termination; place near buffer Y pin</field>
+        <field name="Footprint">Resistor_SMD:R_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="R" description="Resistor"/>
+      <property name="Design_note" value="Output source termination; place near buffer Y pin"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>94fd4bba-23c8-43e4-87fa-cd3572ad4d22</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U1">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>13f14995-debe-4139-8fb1-9bdfca2e153e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U2">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>006d0adc-fa64-4da8-bd78-07c28722d336</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U3">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ece5b704-49d7-4ab8-bf43-4ace14f0888d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U4">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>eb8fef48-a537-463a-81b3-8e897678288b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U5">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e222e57e-9dc6-4f4d-a78d-e1b624c21997</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U6">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b6371089-4828-45c1-b82b-0ab0fc8f6a34</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U7">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b0115b4a-8eea-4fdd-a596-11de4fd4e083</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U8">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LAProtection" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="TI DBV pinout: 1=NC,2=A,3=GND,4=Y,5=VCC; 5.5V input tolerant and Ioff"/>
+      <property name="Sheetname" value="input_protection"/>
+      <property name="Sheetfile" value="input_protection.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c11418c6-7148-4c83-8f94-1e92437f2421</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="LAProtection" part="74LVC1G17">
+      <description>Single Schmitt Buffer Gate, Low-Voltage CMOS</description>
+      <docs>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</docs>
+      <footprints>
+        <fp>SOT?23*</fp>
+        <fp>SOT?553*</fp>
+        <fp>Texas?R-PDSO-G5?DCK*</fp>
+        <fp>Texas?R-PDSO-N5?DRL*</fp>
+        <fp>Texas?X2SON*0.8x0.8mm*P0.48mm*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">74LVC1G17</field>
+        <field name="Footprint"/>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description">Single Schmitt Buffer Gate, Low-Voltage CMOS</field>
+      </fields>
+      <pins>
+        <pin num="1" name="NC" type="no_connect"/>
+        <pin num="2" name="" type="input"/>
+        <pin num="3" name="GND" type="power_in"/>
+        <pin num="4" name="" type="output"/>
+        <pin num="5" name="VCC" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="LAProtection" part="BAV99">
+      <description>BAV99 High-speed switching diodes, SOT-23</description>
+      <docs>https://assets.nexperia.com/documents/data-sheet/BAV99_SER.pdf</docs>
+      <footprints>
+        <fp>SOT?23*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">BAV99</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99_SER.pdf</field>
+        <field name="Description">BAV99 High-speed switching diodes, SOT-23</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+        <pin num="3" name="K" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LAProtection" part="C">
+      <description>Unpolarized capacitor</description>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Unpolarized capacitor</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LAProtection" part="Conn_01x10">
+      <description>Generic connector, single row, 01x10, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x10</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Generic connector, single row, 01x10, script generated (kicad-library-utils/schlib/autogen/connector/)</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+        <pin num="7" name="Pin_7" type="passive"/>
+        <pin num="8" name="Pin_8" type="passive"/>
+        <pin num="9" name="Pin_9" type="passive"/>
+        <pin num="10" name="Pin_10" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LAProtection" part="D_Zener">
+      <description>Zener diode</description>
+      <footprints>
+        <fp>TO-???*</fp>
+        <fp>*_Diode_*</fp>
+        <fp>*SingleDiode*</fp>
+        <fp>D_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">D_Zener</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Zener diode</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LAProtection" part="R">
+      <description>Resistor</description>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Resistor</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="LAProtection">
+      <uri>${KIPRJMOD}/LAProtection.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="/+3V3" class="Default">
+      <node ref="C1" pin="1" pintype="passive"/>
+      <node ref="C2" pin="1" pintype="passive"/>
+      <node ref="C3" pin="1" pintype="passive"/>
+      <node ref="C4" pin="1" pintype="passive"/>
+      <node ref="C5" pin="1" pintype="passive"/>
+      <node ref="C6" pin="1" pintype="passive"/>
+      <node ref="C7" pin="1" pintype="passive"/>
+      <node ref="C8" pin="1" pintype="passive"/>
+      <node ref="C9" pin="1" pintype="passive"/>
+      <node ref="J2" pin="9" pinfunction="Pin_9_9" pintype="passive"/>
+      <node ref="U1" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U2" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U3" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U4" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U5" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U6" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U7" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U8" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+    </net>
+    <net code="2" name="/A_0" class="Default">
+      <node ref="R3" pin="2" pintype="passive"/>
+      <node ref="R4" pin="1" pintype="passive"/>
+      <node ref="U1" pin="2" pintype="input"/>
+    </net>
+    <net code="3" name="/A_1" class="Default">
+      <node ref="R8" pin="2" pintype="passive"/>
+      <node ref="R9" pin="1" pintype="passive"/>
+      <node ref="U2" pin="2" pintype="input"/>
+    </net>
+    <net code="4" name="/A_2" class="Default">
+      <node ref="R13" pin="2" pintype="passive"/>
+      <node ref="R14" pin="1" pintype="passive"/>
+      <node ref="U3" pin="2" pintype="input"/>
+    </net>
+    <net code="5" name="/A_3" class="Default">
+      <node ref="R18" pin="2" pintype="passive"/>
+      <node ref="R19" pin="1" pintype="passive"/>
+      <node ref="U4" pin="2" pintype="input"/>
+    </net>
+    <net code="6" name="/A_4" class="Default">
+      <node ref="R23" pin="2" pintype="passive"/>
+      <node ref="R24" pin="1" pintype="passive"/>
+      <node ref="U5" pin="2" pintype="input"/>
+    </net>
+    <net code="7" name="/A_5" class="Default">
+      <node ref="R28" pin="2" pintype="passive"/>
+      <node ref="R29" pin="1" pintype="passive"/>
+      <node ref="U6" pin="2" pintype="input"/>
+    </net>
+    <net code="8" name="/A_6" class="Default">
+      <node ref="R33" pin="2" pintype="passive"/>
+      <node ref="R34" pin="1" pintype="passive"/>
+      <node ref="U7" pin="2" pintype="input"/>
+    </net>
+    <net code="9" name="/A_7" class="Default">
+      <node ref="R38" pin="2" pintype="passive"/>
+      <node ref="R39" pin="1" pintype="passive"/>
+      <node ref="U8" pin="2" pintype="input"/>
+    </net>
+    <net code="10" name="/CH0_IN" class="Default">
+      <node ref="J1" pin="1" pinfunction="Pin_1_1" pintype="passive"/>
+      <node ref="R1" pin="1" pintype="passive"/>
+    </net>
+    <net code="11" name="/CH0_OUT" class="Default">
+      <node ref="J2" pin="1" pinfunction="Pin_1_1" pintype="passive"/>
+      <node ref="R5" pin="2" pintype="passive"/>
+    </net>
+    <net code="12" name="/CH1_IN" class="Default">
+      <node ref="J1" pin="2" pinfunction="Pin_2_2" pintype="passive"/>
+      <node ref="R6" pin="1" pintype="passive"/>
+    </net>
+    <net code="13" name="/CH1_OUT" class="Default">
+      <node ref="J2" pin="2" pinfunction="Pin_2_2" pintype="passive"/>
+      <node ref="R10" pin="2" pintype="passive"/>
+    </net>
+    <net code="14" name="/CH2_IN" class="Default">
+      <node ref="J1" pin="3" pinfunction="Pin_3_3" pintype="passive"/>
+      <node ref="R11" pin="1" pintype="passive"/>
+    </net>
+    <net code="15" name="/CH2_OUT" class="Default">
+      <node ref="J2" pin="3" pinfunction="Pin_3_3" pintype="passive"/>
+      <node ref="R15" pin="2" pintype="passive"/>
+    </net>
+    <net code="16" name="/CH3_IN" class="Default">
+      <node ref="J1" pin="4" pinfunction="Pin_4_4" pintype="passive"/>
+      <node ref="R16" pin="1" pintype="passive"/>
+    </net>
+    <net code="17" name="/CH3_OUT" class="Default">
+      <node ref="J2" pin="4" pinfunction="Pin_4_4" pintype="passive"/>
+      <node ref="R20" pin="2" pintype="passive"/>
+    </net>
+    <net code="18" name="/CH4_IN" class="Default">
+      <node ref="J1" pin="5" pinfunction="Pin_5_5" pintype="passive"/>
+      <node ref="R21" pin="1" pintype="passive"/>
+    </net>
+    <net code="19" name="/CH4_OUT" class="Default">
+      <node ref="J2" pin="5" pinfunction="Pin_5_5" pintype="passive"/>
+      <node ref="R25" pin="2" pintype="passive"/>
+    </net>
+    <net code="20" name="/CH5_IN" class="Default">
+      <node ref="J1" pin="6" pinfunction="Pin_6_6" pintype="passive"/>
+      <node ref="R26" pin="1" pintype="passive"/>
+    </net>
+    <net code="21" name="/CH5_OUT" class="Default">
+      <node ref="J2" pin="6" pinfunction="Pin_6_6" pintype="passive"/>
+      <node ref="R30" pin="2" pintype="passive"/>
+    </net>
+    <net code="22" name="/CH6_IN" class="Default">
+      <node ref="J1" pin="7" pinfunction="Pin_7_7" pintype="passive"/>
+      <node ref="R31" pin="1" pintype="passive"/>
+    </net>
+    <net code="23" name="/CH6_OUT" class="Default">
+      <node ref="J2" pin="7" pinfunction="Pin_7_7" pintype="passive"/>
+      <node ref="R35" pin="2" pintype="passive"/>
+    </net>
+    <net code="24" name="/CH7_IN" class="Default">
+      <node ref="J1" pin="8" pinfunction="Pin_8_8" pintype="passive"/>
+      <node ref="R36" pin="1" pintype="passive"/>
+    </net>
+    <net code="25" name="/CH7_OUT" class="Default">
+      <node ref="J2" pin="8" pinfunction="Pin_8_8" pintype="passive"/>
+      <node ref="R40" pin="2" pintype="passive"/>
+    </net>
+    <net code="26" name="/CLAMP_0" class="Default">
+      <node ref="D1" pin="3" pinfunction="K_3" pintype="passive"/>
+      <node ref="R2" pin="2" pintype="passive"/>
+      <node ref="R3" pin="1" pintype="passive"/>
+    </net>
+    <net code="27" name="/CLAMP_1" class="Default">
+      <node ref="D3" pin="3" pinfunction="K_3" pintype="passive"/>
+      <node ref="R7" pin="2" pintype="passive"/>
+      <node ref="R8" pin="1" pintype="passive"/>
+    </net>
+    <net code="28" name="/CLAMP_2" class="Default">
+      <node ref="D5" pin="3" pinfunction="K_3" pintype="passive"/>
+      <node ref="R12" pin="2" pintype="passive"/>
+      <node ref="R13" pin="1" pintype="passive"/>
+    </net>
+    <net code="29" name="/CLAMP_3" class="Default">
+      <node ref="D7" pin="3" pinfunction="K_3" pintype="passive"/>
+      <node ref="R17" pin="2" pintype="passive"/>
+      <node ref="R18" pin="1" pintype="passive"/>
+    </net>
+    <net code="30" name="/CLAMP_4" class="Default">
+      <node ref="D9" pin="3" pinfunction="K_3" pintype="passive"/>
+      <node ref="R22" pin="2" pintype="passive"/>
+      <node ref="R23" pin="1" pintype="passive"/>
+    </net>
+    <net code="31" name="/CLAMP_5" class="Default">
+      <node ref="D11" pin="3" pinfunction="K_3" pintype="passive"/>
+      <node ref="R27" pin="2" pintype="passive"/>
+      <node ref="R28" pin="1" pintype="passive"/>
+    </net>
+    <net code="32" name="/CLAMP_6" class="Default">
+      <node ref="D13" pin="3" pinfunction="K_3" pintype="passive"/>
+      <node ref="R32" pin="2" pintype="passive"/>
+      <node ref="R33" pin="1" pintype="passive"/>
+    </net>
+    <net code="33" name="/CLAMP_7" class="Default">
+      <node ref="D15" pin="3" pinfunction="K_3" pintype="passive"/>
+      <node ref="R37" pin="2" pintype="passive"/>
+      <node ref="R38" pin="1" pintype="passive"/>
+    </net>
+    <net code="34" name="/GND" class="Default">
+      <node ref="C1" pin="2" pintype="passive"/>
+      <node ref="C2" pin="2" pintype="passive"/>
+      <node ref="C3" pin="2" pintype="passive"/>
+      <node ref="C4" pin="2" pintype="passive"/>
+      <node ref="C5" pin="2" pintype="passive"/>
+      <node ref="C6" pin="2" pintype="passive"/>
+      <node ref="C7" pin="2" pintype="passive"/>
+      <node ref="C8" pin="2" pintype="passive"/>
+      <node ref="C9" pin="2" pintype="passive"/>
+      <node ref="D1" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D10" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D11" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D12" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D13" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D14" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D15" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D16" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D2" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D3" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D4" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D5" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D6" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D7" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D8" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D9" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="J1" pin="10" pinfunction="Pin_10_10" pintype="passive"/>
+      <node ref="J1" pin="9" pinfunction="Pin_9_9" pintype="passive"/>
+      <node ref="J2" pin="10" pinfunction="Pin_10_10" pintype="passive"/>
+      <node ref="R14" pin="2" pintype="passive"/>
+      <node ref="R19" pin="2" pintype="passive"/>
+      <node ref="R24" pin="2" pintype="passive"/>
+      <node ref="R29" pin="2" pintype="passive"/>
+      <node ref="R34" pin="2" pintype="passive"/>
+      <node ref="R39" pin="2" pintype="passive"/>
+      <node ref="R4" pin="2" pintype="passive"/>
+      <node ref="R9" pin="2" pintype="passive"/>
+      <node ref="U1" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U2" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U3" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U4" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U5" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U6" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U7" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U8" pin="3" pinfunction="GND_3" pintype="power_in"/>
+    </net>
+    <net code="35" name="/Z_0" class="Default">
+      <node ref="D1" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D2" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="36" name="/Z_1" class="Default">
+      <node ref="D3" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D4" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="37" name="/Z_2" class="Default">
+      <node ref="D5" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D6" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="38" name="/Z_3" class="Default">
+      <node ref="D7" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D8" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="39" name="/Z_4" class="Default">
+      <node ref="D10" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D9" pin="2" pinfunction="A_2" pintype="passive"/>
+    </net>
+    <net code="40" name="/Z_5" class="Default">
+      <node ref="D11" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D12" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="41" name="/Z_6" class="Default">
+      <node ref="D13" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D14" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="42" name="/Z_7" class="Default">
+      <node ref="D15" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D16" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="43" name="Net-(R1-Pad2)" class="Default">
+      <node ref="R1" pin="2" pintype="passive"/>
+      <node ref="R2" pin="1" pintype="passive"/>
+    </net>
+    <net code="44" name="Net-(R5-Pad1)" class="Default">
+      <node ref="R5" pin="1" pintype="passive"/>
+      <node ref="U1" pin="4" pintype="output"/>
+    </net>
+    <net code="45" name="Net-(R6-Pad2)" class="Default">
+      <node ref="R6" pin="2" pintype="passive"/>
+      <node ref="R7" pin="1" pintype="passive"/>
+    </net>
+    <net code="46" name="Net-(R10-Pad1)" class="Default">
+      <node ref="R10" pin="1" pintype="passive"/>
+      <node ref="U2" pin="4" pintype="output"/>
+    </net>
+    <net code="47" name="Net-(R11-Pad2)" class="Default">
+      <node ref="R11" pin="2" pintype="passive"/>
+      <node ref="R12" pin="1" pintype="passive"/>
+    </net>
+    <net code="48" name="Net-(R15-Pad1)" class="Default">
+      <node ref="R15" pin="1" pintype="passive"/>
+      <node ref="U3" pin="4" pintype="output"/>
+    </net>
+    <net code="49" name="Net-(R16-Pad2)" class="Default">
+      <node ref="R16" pin="2" pintype="passive"/>
+      <node ref="R17" pin="1" pintype="passive"/>
+    </net>
+    <net code="50" name="Net-(R20-Pad1)" class="Default">
+      <node ref="R20" pin="1" pintype="passive"/>
+      <node ref="U4" pin="4" pintype="output"/>
+    </net>
+    <net code="51" name="Net-(R21-Pad2)" class="Default">
+      <node ref="R21" pin="2" pintype="passive"/>
+      <node ref="R22" pin="1" pintype="passive"/>
+    </net>
+    <net code="52" name="Net-(R25-Pad1)" class="Default">
+      <node ref="R25" pin="1" pintype="passive"/>
+      <node ref="U5" pin="4" pintype="output"/>
+    </net>
+    <net code="53" name="Net-(R26-Pad2)" class="Default">
+      <node ref="R26" pin="2" pintype="passive"/>
+      <node ref="R27" pin="1" pintype="passive"/>
+    </net>
+    <net code="54" name="Net-(R30-Pad1)" class="Default">
+      <node ref="R30" pin="1" pintype="passive"/>
+      <node ref="U6" pin="4" pintype="output"/>
+    </net>
+    <net code="55" name="Net-(R31-Pad2)" class="Default">
+      <node ref="R31" pin="2" pintype="passive"/>
+      <node ref="R32" pin="1" pintype="passive"/>
+    </net>
+    <net code="56" name="Net-(R35-Pad1)" class="Default">
+      <node ref="R35" pin="1" pintype="passive"/>
+      <node ref="U7" pin="4" pintype="output"/>
+    </net>
+    <net code="57" name="Net-(R36-Pad2)" class="Default">
+      <node ref="R36" pin="2" pintype="passive"/>
+      <node ref="R37" pin="1" pintype="passive"/>
+    </net>
+    <net code="58" name="Net-(R40-Pad1)" class="Default">
+      <node ref="R40" pin="1" pintype="passive"/>
+      <node ref="U8" pin="4" pintype="output"/>
+    </net>
+    <net code="59" name="unconnected-(U1-NC-Pad1)" class="Default">
+      <node ref="U1" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="60" name="unconnected-(U2-NC-Pad1)" class="Default">
+      <node ref="U2" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="61" name="unconnected-(U3-NC-Pad1)" class="Default">
+      <node ref="U3" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="62" name="unconnected-(U4-NC-Pad1)" class="Default">
+      <node ref="U4" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="63" name="unconnected-(U5-NC-Pad1)" class="Default">
+      <node ref="U5" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="64" name="unconnected-(U6-NC-Pad1)" class="Default">
+      <node ref="U6" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="65" name="unconnected-(U7-NC-Pad1)" class="Default">
+      <node ref="U7" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="66" name="unconnected-(U8-NC-Pad1)" class="Default">
+      <node ref="U8" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+  </nets>
+</export>
