@@ -20,6 +20,7 @@ from lar2 import (ACK, ARM, CAPS, CONFIG, END, ERROR, GET_CAPS, HELLO, ID, INFO,
                   Parser, config_payload, frame, analyze_payload,
                   ANALYZE_DECODE, ANALYZE_SAVE, ANALYZE_LOAD, ANALYZE_SIG_SAVE,
                   ANALYZE_SIG_COMPARE, ANALYZE_DIFF, ANALYZE_SESSION, ANALYZE_REPLAY,
+                  ANALYZE_PINPROBE,
                   PROTO_ALL, RESULT_OK, RESULT_ERROR, RESULT_ABSENT)
 
 TRIGGER_MANUAL, TRIGGER_EDGE, TRIGGER_PATTERN = 0, 1, 2
@@ -105,9 +106,9 @@ class Device:
         if kind != ACK:
             raise RuntimeError('expected ACK, got 0x%02x' % kind)
 
-    def analyze(self, op, arg=0, arg2=0, arg32=0, timeout=5.0):
+    def analyze(self, op, arg=0, arg32=0, timeout=5.0):
         """Send ANALYZE command and return RESULT payload."""
-        payload = analyze_payload(op, arg, arg2, arg32)
+        payload = analyze_payload(op, arg, arg32)
         kind, seq, resp = self.command(ANALYZE, payload, timeout=timeout)
         if kind == ERROR:
             raise RuntimeError('ANALYZE rejected: %s' % resp.decode('utf-8', 'replace'))
@@ -121,7 +122,7 @@ class Device:
         return resp[1:]
 
     def decode(self, proto_mask=PROTO_ALL, baud=0):
-        return self.analyze(ANALYZE_DECODE, proto_mask, 0, baud)
+        return self.analyze(ANALYZE_DECODE, proto_mask, baud)
 
     def save_session(self, slot):
         self.analyze(ANALYZE_SAVE, slot)
@@ -137,6 +138,19 @@ class Device:
 
     def diff_session(self, slot):
         return self.analyze(ANALYZE_DIFF, slot)
+
+    def pinprobe(self, mode=0):
+        """Read CH0..CH7 with an internal pull applied.
+
+        mode 0 = pull-down, 1 = pull-up, 2 = float. Returns an 8 bit level
+        mask: bit set means the pad reads high. A pad that follows the pull is
+        floating; a pad that fights it is driven by something external.
+        """
+        return self.analyze(ANALYZE_PINPROBE, mode)[0]
+
+    def pinprobe_raw(self, mode=0):
+        """Same as pinprobe but returns the full diagnostic payload."""
+        return self.analyze(ANALYZE_PINPROBE, mode)
 
     def capture(self, timeout=60.0):
         """Read one capture and return (samples, info dict)."""
@@ -202,6 +216,8 @@ def main():
     ap.add_argument('--mask', default='0xff', help='channel mask, e.g. 0x0f')
     ap.add_argument('--trigger', help='edge:CH:rise|fall or pattern:VALUE[:MASK]')
     ap.add_argument('--out', help='write the raw samples to this file')
+    ap.add_argument('--pinprobe', choices=('down', 'up', 'float'),
+                    help='apply a pull to CH0..CH7, print the levels and exit')
     ap.add_argument('--timeout', type=float, default=60.0)
     args = ap.parse_args()
 
@@ -215,6 +231,17 @@ def main():
         print('caps: %d channels, max %d samples, rates %s'
               % (caps['channels'], caps['max_samples'],
                  ', '.join('%g' % r for r in caps['rates'])))
+        if args.pinprobe:
+            raw = dev.pinprobe_raw({'down': 0, 'up': 1, 'float': 2}[args.pinprobe])
+            levels = raw[0]
+            print('pull %s: CH0..CH7 = %s (0x%02x)'
+                  % (args.pinprobe,
+                     ' '.join(str((levels >> i) & 1) for i in range(8)), levels))
+            if len(raw) >= 13:
+                gpio_all, pad0, pad1 = struct.unpack_from('<III', raw, 1)
+                print('gpio_in=0x%08x pad0=0x%08x pad1=0x%08x'
+                      % (gpio_all, pad0, pad1))
+            return 0
         if rate not in caps['rates']:
             raise SystemExit('rate %d not supported by the device' % rate)
         if not 1 <= args.count <= min(caps['max_samples'], MAX_SAMPLES):

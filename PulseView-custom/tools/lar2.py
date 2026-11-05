@@ -17,6 +17,7 @@ ANALYZE_SIG_COMPARE=4
 ANALYZE_DIFF=5
 ANALYZE_SESSION=6
 ANALYZE_REPLAY=7
+ANALYZE_PINPROBE=8
 ANALYZE_SIZE=8
 
 PROTO_UART=0x01
@@ -92,6 +93,6 @@ def find_trigger(data,start,stop,trigger):
         return None
     return None
 
-def analyze_payload(op, arg=0, arg2=0, arg32=0):
-    """Build an ANALYZE payload (8 bytes)."""
-    return struct.pack('<BBHII', op, arg, arg2, arg32)
+def analyze_payload(op, arg=0, arg32=0):
+    """Build an ANALYZE payload (8 bytes): op, arg u16, arg32 u32, reserved."""
+    return struct.pack('<BHI', op, arg, arg32) + b'\x00'
