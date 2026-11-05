@@ -28,16 +28,19 @@
 #define LAR2_INFO_CAPTURE_ERROR 0x02u
 
 /* LAR2 v1.2: ANALYZE runs a job on the last capture and answers with RESULT.
- * The payload is 8 bytes: op, arg, arg2 (u16), arg32 (u32). */
+ * The payload is 8 bytes: op (u8), arg (u16), arg32 (u32), 1 reserved byte.
+ * Every field starts on its own byte boundary, no overlap. */
 #define LAR2_ANALYZE_SIZE 8u
 #define LAR2_ANALYZE_DECODE      0u  /* arg = protocol mask, arg32 = baud (0 = auto) */
 #define LAR2_ANALYZE_SAVE        1u  /* arg = slot */
 #define LAR2_ANALYZE_LOAD        2u  /* arg = slot */
 #define LAR2_ANALYZE_SIG_SAVE    3u
-#define LAR2_ANALYZE_SIG_COMPARE 4u  /* arg2 = tolerated mismatching samples */
+#define LAR2_ANALYZE_SIG_COMPARE 4u  /* arg32 = tolerated mismatching samples */
 #define LAR2_ANALYZE_DIFF        5u  /* arg = slot */
 #define LAR2_ANALYZE_SESSION     6u  /* arg = slot */
 #define LAR2_ANALYZE_REPLAY      7u  /* stream the current window, no ACK */
+#define LAR2_ANALYZE_PINPROBE    8u  /* arg = 0 pull-down, 1 pull-up, 2 float;
+                                        returns RESULT[1] = CH0..CH7 levels */
 
 /* Protocol selection bits for LAR2_ANALYZE_DECODE. */
 #define LAR2_PROTO_UART 0x01u

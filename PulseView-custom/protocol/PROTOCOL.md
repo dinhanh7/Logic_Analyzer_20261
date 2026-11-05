@@ -45,22 +45,23 @@ HELLO → ID; GET_CAPS → CAPS; CONFIG/ARM/ABORT → ACK hoặc ERROR. ARM ACK 
 | Offset | Kiểu | Ý nghĩa |
 |---|---|---|
 | 0 | u8 | operation (`op`) |
-| 1 | u16 | `arg` (slot, protocol mask, v.v.) |
-| 3 | u16 | `arg2` (tolerance, v.v.) |
-| 5 | u32 | `arg32` (baud rate cho decode, v.v.) |
+| 1 | u16 | `arg` (slot, protocol mask, probe mode, v.v.) |
+| 3 | u32 | `arg32` (baud rate cho decode, tolerance, v.v.) |
+| 7 | u8 | reserved (0) |
 
 Các giá trị `op` hợp lệ:
 
-| op | Tên | arg | arg2 | arg32 | Mô tả |
-|---|---|---|---|---|---|
-| 0 | DECODE | protocol mask | 0 | baud (0=auto) | Chạy decoder on-device. Trả về text qua RESULT. |
-| 1 | SAVE | slot | 0 | 0 | Lưu phiên capture hiện tại vào flash. |
-| 2 | LOAD | slot | 0 | 0 | Nạp phiên từ flash, stream lại qua SAMPLES. |
-| 3 | SIG_SAVE | 0 | 0 | 0 | Lưu buffer hiện tại làm golden reference. |
-| 4 | SIG_COMPARE | 0 | tolerated mismatches | 0 | So sánh buffer hiện tại với golden ref. |
-| 5 | DIFF | slot | 0 | 0 | So sánh buffer hiện tại với phiên trong flash. |
-| 6 | SESSION | slot | 0 | 0 | Đọc header phiên từ flash (trả về qua RESULT). |
-| 7 | REPLAY | 0 | 0 | 0 | Stream lại cửa sổ capture hiện tại (không ACK). |
+| op | Tên | arg | arg32 | Mô tả |
+|---|---|---|---|---|
+| 0 | DECODE | protocol mask | baud (0=auto) | Chạy decoder on-device. Trả về text qua RESULT. |
+| 1 | SAVE | slot | 0 | Lưu phiên capture hiện tại vào flash. |
+| 2 | LOAD | slot | 0 | Nạp phiên từ flash vào RAM (không stream). |
+| 3 | SIG_SAVE | 0 | 0 | Lưu buffer hiện tại làm golden reference. |
+| 4 | SIG_COMPARE | 0 | tolerated mismatches | So sánh buffer hiện tại với golden ref. |
+| 5 | DIFF | slot | 0 | So sánh buffer hiện tại với phiên trong flash. |
+| 6 | SESSION | slot | 0 | Đọc header phiên từ flash (trả về qua RESULT). |
+| 7 | REPLAY | 0 | 0 | Stream lại cửa sổ capture hiện tại (không ACK). |
+| 8 | PINPROBE | 0=pull-down, 1=pull-up, 2=float | 0 | Đọc CH0..CH7 với pull áp dụng; RESULT[1]=mức 8 bit. |
 
 ### RESULT
 
@@ -71,6 +72,7 @@ Payload tùy thuộc vào `op` của ANALYZE tương ứng:
 - `DIFF`: text UTF-8 (first mismatch hoặc "identical").
 - `SESSION`: struct `session_header_t` (24 byte).
 - `REPLAY`: stream SAMPLES + END như capture bình thường.
+- `PINPROBE`: 1 byte status + 1 byte mức 8 bit (CH0..CH7) + 12 byte chẩn đoán (gpio_in u32, pad0 u32, pad1 u32).
 
 ### CAPS
 
