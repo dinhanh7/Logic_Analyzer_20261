@@ -143,13 +143,14 @@ static int dev_acquisition_start(const struct sr_dev_inst *sdi)
     uint8_t cfg[LAR2_CONFIG_V2_SIZE]={0};
     int ret;
     if (d->active || d->fd<0) return SR_ERR;
-    if (sr_session_trigger_get(sdi->session)) { sr_err("LAR2 v1 supports manual capture only."); return SR_ERR_NA; }
+    /* LAR2 v1 supports manual capture only; ignore any session-level trigger
+     * instead of failing the whole acquisition. */
     d->mask=0;
     for (GSList *l=sdi->channels;l;l=l->next) {
         struct sr_channel *ch=l->data;
         if (ch->enabled) d->mask|=1u<<ch->index;
     }
-    if (!d->mask) return SR_ERR_ARG;
+    if (!d->mask) d->mask=0xff;  /* PulseView may start with no channel ticked */
     lar2_put64(cfg,d->rate); lar2_put32(cfg+8,d->limit); cfg[16]=d->mask;
     size_t cfglen=LAR2_CONFIG_V1_SIZE;
     if (d->trig_mode!=LAR2_TRIGGER_MANUAL) {
