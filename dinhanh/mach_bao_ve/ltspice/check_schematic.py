@@ -62,7 +62,7 @@ for item in instances:
     devices[item['InstName']]=nodes
     assert len(set(nodes))==len(nodes),f'Shorted pins: {item["InstName"]}'
 expected={
-    'VIN':['IN','0'], 'R6':['IN','MID'], 'R7':['MID','CLAMP'],
+    'VIN':['IN','0'], 'R6':['IN','CLAMP'],
     'R8':['CLAMP','A'], 'R9':['A','0'], 'XD3':['0','Z','CLAMP'],
     'D4':['0','Z'], 'C2':['VCC','0'], 'VCCSRC':['VCC','0'],
     'CLOAD':['OUT','0'],

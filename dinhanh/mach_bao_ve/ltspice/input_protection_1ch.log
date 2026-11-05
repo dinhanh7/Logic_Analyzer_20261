@@ -1,0 +1,28 @@
+LTspice 26.1.1 for Windows
+Circuit: C:\Users\WINDOWS\Documents\0.temp_github\Logic_Analyzer_20261\dinhanh\mach_bao_ve\ltspice\input_protection_1ch.net
+Start Time: Thu Nov  5 23:21:41 2026
+Options:plotwinsize=0 method=gear maxord=1
+solver = Normal
+Maximum thread count: 16
+tnom = 27
+temp = 27
+method = Gear
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.756 seconds.
+Total iterations: 94020
+
+Files loaded:
+C:\Users\WINDOWS\Documents\0.temp_github\Logic_Analyzer_20261\dinhanh\mach_bao_ve\ltspice\input_protection_1ch.net
+C:\Users\WINDOWS\AppData\Local\LTspice\lib\cmp\standard.dio
+C:\Users\WINDOWS\Documents\0.temp_github\Logic_Analyzer_20261\dinhanh\mach_bao_ve\ltspice\simulation_commands.inc
+C:\Users\WINDOWS\Documents\0.temp_github\Logic_Analyzer_20261\dinhanh\mach_bao_ve\ltspice\protection_models.lib
+
+a_max: MAX(V(A))=4.31676721573 FROM 0 TO 0.02500004
+clamp_max: MAX(V(CLAMP))=4.34707641602 FROM 0 TO 0.02500004
+out_max: MAX(V(OUT))=3.29999995232 FROM 0 TO 0.02500004
+iin_min: MIN(I(VIN))=-0.0978318676353 FROM 0 TO 0.02500004
+in_f: V(IN)=2.5 AT 0.01400005
+a_f: V(A)=1.1 AT 0.0140000739136
+out_f: V(OUT)=1.65 AT 0.0140000800101
+delay_f: OUT_F-IN_F=3.00100816853e-08
+buffer_f: OUT_F-A_F=6.09652927447e-09

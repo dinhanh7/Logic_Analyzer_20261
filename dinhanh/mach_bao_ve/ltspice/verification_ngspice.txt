@@ -1,3 +1,6 @@
+HISTORICAL RESULTS: separate CASE tests before the PWL sequence update.
+Not verification of the current 12V/20ms -> 200V/1ms -> 5V/20ms source.
+
 Cross-check of netlist extracted from ASC geometry.
 Simulator: ngspice 36, Gear maxord=1, 27 deg C. Native LTspice unavailable on host.
 Representative models only; not proof of hardware protection.

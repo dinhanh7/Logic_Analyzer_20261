@@ -16,18 +16,20 @@ DHI 3 2 D_BAV99_REP
 * Simulation port order: A Y VCC VSS (NOT package pin numbering).
 * Package mapping: A=2, Y=4, VCC=5, VSS=3; package pin 1 is NC.
 * Illustrative thresholds 2.20V rising / 1.10V falling, fixed for 3.3V VCC.
-* RC stage gives about 5ns 50%-point delay at 3.3V; not a timing spec.
+* Complementary state switches charge/discharge the RC stage symmetrically.
+* RC stage gives about 5.5ns 50%-point delay at 3.3V; not a timing spec.
 * Input 6pF and output 20ohm are assumed.
 * Does not model absolute maximum violations, thermal failure, Ioff,
 * power-up/down behavior, worst-case thresholds or real supply current.
 .SUBCKT LVC1G17_REP A Y VCC VSS
 CIN A VSS 6p
 SSTATE VCC Q A VSS SW_LVC_HYST
-RSTATE Q VSS 1Meg
+SRESET Q VSS A VSS SW_LVC_HYST_INV
 RDELAY Q QDELAY 1k
 CDELAY QDELAY VSS 7.2p
 BDRIVE DRIVE VSS V=0.5*(1+tanh((V(QDELAY,VSS)-1.65)/0.1))*V(VCC,VSS)
 ROUT DRIVE Y 20
 COUT Y VSS 5p
 .MODEL SW_LVC_HYST SW(Ron=100 Roff=1G Vt=1.65 Vh=0.55)
+.MODEL SW_LVC_HYST_INV SW(Ron=1G Roff=100 Vt=1.65 Vh=0.55)
 .ENDS LVC1G17_REP

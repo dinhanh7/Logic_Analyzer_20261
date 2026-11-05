@@ -1,0 +1,18 @@
+LTspice 26.1.1 - representative model timing verification
+Stimulus: current input_sequence.pwl; R6=2k; VCC=3.3V.
+Falling edge: first 5V falling edge, near 14.00004ms.
+Reference: VIN=2.5V falling to OUT=1.65V falling.
+
+Before fix, TMAX=1us: delay=5.1183085708us.
+Cause: CDELAY=7.2pF discharges through RSTATE=1Meg plus RDELAY=1k.
+After fix: complementary hysteretic pull-down switch, on resistance 100ohm.
+After fix, full 25.00004ms sequence, TMAX=1us:
+  VIN-to-OUT delay=30.0100816853ns.
+  A=1.1V falling to OUT=1.65V falling=6.09652927447ns.
+After fix, simulation to 14.001ms, TMAX=2ns:
+  VIN-to-OUT delay=29.9279136161ns.
+  A=1.1V falling to OUT=1.65V falling=6.10327894994ns.
+  A_MAX=4.31676721573V; OUT_MAX=3.29999995232V.
+
+These values describe the illustrative model, not guaranteed hardware timing.
+The protection resistor and input capacitances retain finite propagation delay.
