@@ -30,11 +30,18 @@
 #define CAPTURE_BYTES (LAR2_MAX_SAMPLES)
 #define DMA_LAG_BYTES 64u
 
-/* Flash storage: use the last 1 MB of flash for session data. */
+/* Flash storage: use the last 1 MB of flash for session data.
+ * Two slots of 512 KB: a slot is one header sector plus the samples, which
+ * covers the full 256 KB capture buffer. The erase range must span every
+ * byte that is programmed, otherwise the write silently lands in flash that
+ * was never erased. */
 #define FLASH_STORAGE_BASE (PICO_FLASH_SIZE_BYTES - 1024 * 1024)
 #define FLASH_SECTOR_BYTES 4096  /* matches hardware/flash.h */
 #define FLASH_PAGE_BYTES 256
-#define MAX_SESSIONS 8
+#define FLASH_SESSION_BYTES (FLASH_SECTOR_BYTES * 128)  /* 512 KB per slot */
+#define MAX_SESSIONS 2
+#define SESSION_MAX_SAMPLES (FLASH_SESSION_BYTES - FLASH_SECTOR_BYTES)
+#define SESSION_OFFSET(slot) (FLASH_STORAGE_BASE + (uint32_t)(slot) * FLASH_SESSION_BYTES)
 #define SESSION_MAGIC 0x4C415345  /* "LASE" */
 
 static uint32_t samples[CAPTURE_WORDS];
@@ -55,17 +62,24 @@ static uint32_t pretrigger, trigger_abs;
 static uint32_t estimated_baud;
 static bool trigger_found;
 static uint32_t scan_pos;
-static const uint8_t *tx_base;
+static uint32_t trigger_restarts;
+/* Delivered capture window: [win_base, win_base + win_len). For a manual
+ * capture it is the whole buffer; for a triggered capture it starts at
+ * trigger_abs - pretrigger. Every consumer (send, decode, flash, golden)
+ * must use this window, not samples[0]. */
+static const uint8_t *win_base;
+static uint32_t win_len;
 
-/* On-device decode results (displayed on TFT / returned via ANALYZE). */
+/* On-device decode results (returned via ANALYZE DECODE). */
 static char decode_buf[512];
 static size_t decode_len;
 
 /* Forward declarations for flash/sig/diff functions. */
-static void flash_save_session(uint32_t sample_count, uint64_t sample_rate,
-                               uint32_t channel_mask, uint32_t trigger_index,
-                               uint32_t pretrigger, uint8_t trigger_mode);
-static void flash_load_session(uint32_t slot);
+static void flash_save_session(uint32_t slot, uint32_t sample_count,
+                               uint64_t sample_rate, uint32_t channel_mask,
+                               uint32_t trigger_index, uint32_t pretrigger,
+                               uint8_t trigger_mode);
+static bool flash_load_session(uint32_t slot);
 static void save_golden(void);
 static int compare_with_golden(void);
 static int diff_with_loaded_session(uint32_t slot);
@@ -164,7 +178,8 @@ static void start_capture(void)
     trigger_found = false;
     scan_pos = 0;
     estimated_baud = 0;
-    tx_base = (const uint8_t *)samples;
+    win_base = (const uint8_t *)samples;
+    win_len = count;
     pio_sm_set_enabled(pio, sm, true);
 }
 
@@ -292,55 +307,83 @@ static void command(void)
     }
     case LAR2_ARM:
         if (n || !configured) { error("not configured"); break; }
+        trigger_restarts = 0;
         ack(type); start_capture(); break;
     case LAR2_ANALYZE: {
         if (n != LAR2_ANALYZE_SIZE) { error("analyze length"); break; }
         uint8_t op = p[0];
         uint16_t arg = lar2_u16(p + 1);
-        uint16_t arg2 = lar2_u16(p + 3);
-        uint32_t arg32 = lar2_u32(p + 4);
-        uint8_t result[8] = { LAR2_RESULT_OK, 0, 0, 0, 0, 0, 0, 0 };
+        uint32_t arg32 = lar2_u32(p + 3);
+        uint8_t result[16] = { LAR2_RESULT_OK, 0, 0, 0, 0, 0, 0, 0 };
         switch (op) {
         case LAR2_ANALYZE_DECODE:
             decode_len = 0;
             la_text t; la_text_init(&t, decode_buf, sizeof(decode_buf));
-            decoders_run((const uint8_t *)samples, count, (uint32_t)rate,
-                         arg, arg32, &t);
+            decoders_run(win_base, win_len, (uint32_t)rate, arg, arg32, &t);
             decode_len = t.len;
             send_frame(LAR2_RESULT, (const uint8_t *)decode_buf, decode_len);
             break;
         case LAR2_ANALYZE_SAVE:
-            flash_save_session(count, rate, mask, pretrigger, pretrigger, trig_mode);
+            if (arg >= MAX_SESSIONS) { result[0] = LAR2_RESULT_ERROR; send_frame(LAR2_RESULT, result, 1); break; }
+            flash_save_session(arg, win_len, rate, mask, pretrigger, pretrigger, trig_mode);
             result[0] = LAR2_RESULT_OK; send_frame(LAR2_RESULT, result, 1);
             break;
         case LAR2_ANALYZE_LOAD:
-            flash_load_session(arg);
-            start_sending(count, LAR2_NO_TRIGGER, 0, 0);
+            if (arg >= MAX_SESSIONS || !flash_load_session(arg)) {
+                result[0] = LAR2_RESULT_ABSENT; send_frame(LAR2_RESULT, result, 1); break;
+            }
+            result[0] = LAR2_RESULT_OK; send_frame(LAR2_RESULT, result, 1);
             break;
         case LAR2_ANALYZE_SIG_SAVE:
             save_golden();
             result[0] = LAR2_RESULT_OK; send_frame(LAR2_RESULT, result, 1);
             break;
         case LAR2_ANALYZE_SIG_COMPARE: {
-            golden_tolerance = arg2;
+            golden_tolerance = arg32;
+            decode_buf[0] = '\0';
             compare_with_golden();
+            decode_len = strlen(decode_buf);
             send_frame(LAR2_RESULT, (const uint8_t *)decode_buf, decode_len);
             break;
         }
         case LAR2_ANALYZE_DIFF:
+            decode_buf[0] = '\0';
             diff_with_loaded_session(arg);
+            decode_len = strlen(decode_buf);
             send_frame(LAR2_RESULT, (const uint8_t *)decode_buf, decode_len);
             break;
         case LAR2_ANALYZE_SESSION: {
-            uint32_t offset = FLASH_STORAGE_BASE + arg * (FLASH_SECTOR_BYTES * 4);
+            if (arg >= MAX_SESSIONS) { result[0] = LAR2_RESULT_ERROR; send_frame(LAR2_RESULT, result, 1); break; }
+            uint32_t offset = SESSION_OFFSET(arg);
             session_header_t hdr;
             memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof(hdr));
             send_frame(LAR2_RESULT, (const uint8_t *)&hdr, sizeof(hdr));
             break;
         }
         case LAR2_ANALYZE_REPLAY:
-            start_sending(count, LAR2_NO_TRIGGER, 0, 0);
+            start_sending(win_len, LAR2_NO_TRIGGER, 0, 0);
             break;
+        case LAR2_ANALYZE_PINPROBE: {
+            /* Board bring-up aid: apply an internal pull to CH0..CH7 and read
+             * the pads back. A floating input follows the pull, a driven input
+             * does not, which tells "wire missing" from "signal idle". */
+            for (uint i = 0; i < 23; i++) {
+                if (arg == 0) gpio_pull_down(i);
+                else if (arg == 1) gpio_pull_up(i);
+                else gpio_disable_pulls(i);
+            }
+            busy_wait_us_32(50);
+            uint32_t all = gpio_get_all();
+            result[0] = LAR2_RESULT_OK;
+            result[1] = (uint8_t)(all & 0xffu);
+            /* Diagnostic tail: the full GPIO word and the pad registers of
+             * CH0/CH1 show whether the pull bits are really set. */
+            lar2_put32(result + 2, all);
+            lar2_put32(result + 6, pads_bank0_hw->io[0]);
+            lar2_put32(result + 10, pads_bank0_hw->io[1]);
+            send_frame(LAR2_RESULT, result, 14);
+            break;
+        }
         default:
             result[0] = LAR2_RESULT_ERROR; send_frame(LAR2_RESULT, result, 1);
         }
@@ -369,11 +412,7 @@ static void capture_task(void)
             if (dma_done) {
                 pio_sm_set_enabled(pio, sm, false); capturing = false;
                 if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
-                decode_len = 0;
-                la_text t; la_text_init(&t, decode_buf, sizeof(decode_buf));
-                decoders_run((const uint8_t *)samples, count, (uint32_t)rate,
-                             LAR2_PROTO_ALL, 0, &t);
-                decode_len = t.len;
+                win_base = (const uint8_t *)samples; win_len = count;
                 start_sending(count, LAR2_NO_TRIGGER, 0, 0);
             }
         } else {
@@ -386,78 +425,94 @@ static void capture_task(void)
                     pio_sm_clear_fifos(pio, sm);
                     capturing = false;
                     if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
-                    tx_base = (const uint8_t *)samples + (trigger_abs - pretrigger);
-                    /* Decode runs on the exact window that will be sent below. */
-                    decode_len = 0;
-                    la_text t; la_text_init(&t, decode_buf, sizeof(decode_buf));
-                    decoders_run(tx_base, count, (uint32_t)rate,
-                                 LAR2_PROTO_ALL, 0, &t);
-                    decode_len = t.len;
+                    win_base = (const uint8_t *)samples + (trigger_abs - pretrigger);
+                    win_len = count;
                     start_sending(count, pretrigger, pretrigger, LAR2_INFO_TRIGGER_FOUND);
                 } else if (dma_done) {
-                    pio_sm_set_enabled(pio, sm, false); capturing = false;
-                    configured = false; error("trigger too late"); return;
+                    /* The trigger landed too close to the end of the window
+                     * for the post-trigger samples to fit. Start a new window
+                     * instead of failing. */
+                    if (++trigger_restarts > 2000) {
+                        pio_sm_set_enabled(pio, sm, false); capturing = false;
+                        configured = false; error("trigger too late"); return;
+                    }
+                    start_capture();
                 }
             } else if (dma_done) {
-                pio_sm_set_enabled(pio, sm, false); capturing = false;
-                configured = false; error("no trigger"); return;
+                /* The window filled before the trigger arrived. A logic
+                 * analyzer must be able to wait longer than one buffer, so
+                 * re-arm the stream and keep scanning. */
+                if (++trigger_restarts > 2000) {
+                    pio_sm_set_enabled(pio, sm, false); capturing = false;
+                    configured = false; error("no trigger"); return;
+                }
+                start_capture();
             }
         }
     }
     if (sending) {
-        uint32_t n = count - sent;
+        uint32_t n = win_len - sent;
         if (n > LAR2_MAX_PAYLOAD) n = LAR2_MAX_PAYLOAD;
         if (n) {
-            crc = lar2_crc_update(crc, tx_base + sent, n);
-            send_frame(LAR2_SAMPLES, (const uint8_t *)(tx_base + sent), n); sent += n;
+            crc = lar2_crc_update(crc, win_base + sent, n);
+            send_frame(LAR2_SAMPLES, (const uint8_t *)(win_base + sent), n); sent += n;
         } else {
-            uint8_t end[8]; lar2_put32(end, count); lar2_put32(end + 4, ~crc);
+            uint8_t end[8]; lar2_put32(end, win_len); lar2_put32(end + 4, ~crc);
             send_frame(LAR2_END, end, sizeof(end)); sending = false;
         }
     }
 }
 
 /* ---------- Flash storage ---------- */
-static void flash_save_session(uint32_t sample_count, uint64_t sample_rate,
-                              uint32_t channel_mask, uint32_t trigger_index,
-                              uint32_t pretrigger, uint8_t trigger_mode)
+static void flash_save_session(uint32_t slot, uint32_t sample_count,
+                              uint64_t sample_rate, uint32_t channel_mask,
+                              uint32_t trigger_index, uint32_t pretrigger,
+                              uint8_t trigger_mode)
 {
-    uint32_t sector = (trigger_index >= pretrigger) ? 0 : 0;  /* simplified: slot 0 */
-    uint32_t offset = FLASH_STORAGE_BASE + sector * (FLASH_SECTOR_BYTES * 4);
+    if (slot >= MAX_SESSIONS) return;
+    if (sample_count > SESSION_MAX_SAMPLES) sample_count = SESSION_MAX_SAMPLES;
+    uint32_t offset = SESSION_OFFSET(slot);
     session_header_t hdr = { SESSION_MAGIC, sample_count, sample_rate, channel_mask,
                              trigger_index, pretrigger, trigger_mode, {0} };
+    /* Erase the header sector plus every sector the samples will touch.
+     * Programming flash that was never erased silently keeps the old bits. */
+    uint32_t sample_sectors = (sample_count + FLASH_SECTOR_BYTES - 1) / FLASH_SECTOR_BYTES;
+    uint32_t span = FLASH_SECTOR_BYTES + sample_sectors * FLASH_SECTOR_BYTES;
     uint32_t ints = save_and_disable_interrupts();
-    flash_range_erase(offset, FLASH_SECTOR_BYTES);
+    flash_range_erase(offset, span);
     /* Write header (aligned to page boundary). */
     uint8_t page[FLASH_PAGE_BYTES];
     memcpy(page, &hdr, sizeof(hdr));
     memset(page + sizeof(hdr), 0, FLASH_PAGE_BYTES - sizeof(hdr));
     flash_range_program(offset, page, FLASH_PAGE_BYTES);
-    /* Write samples at next sector boundary. */
+    /* Write samples at next sector boundary, page by page. */
     uint32_t samples_offset = offset + FLASH_SECTOR_BYTES;
-    uint32_t src_offset = (trigger_index >= pretrigger) ? (trigger_abs - pretrigger) : 0;
     for (uint32_t i = 0; i < sample_count; i += FLASH_PAGE_BYTES) {
         uint32_t chunk = sample_count - i;
         if (chunk > FLASH_PAGE_BYTES) chunk = FLASH_PAGE_BYTES;
-        memcpy(page, (uint8_t *)samples + src_offset + i, chunk);
+        memcpy(page, win_base + i, chunk);
         memset(page + chunk, 0, FLASH_PAGE_BYTES - chunk);
         flash_range_program(samples_offset + i, page, FLASH_PAGE_BYTES);
     }
     restore_interrupts(ints);
 }
 
-static void flash_load_session(uint32_t slot)
+static bool flash_load_session(uint32_t slot)
 {
-    uint32_t offset = FLASH_STORAGE_BASE + slot * (FLASH_SECTOR_BYTES * 4);
+    if (slot >= MAX_SESSIONS) return false;
+    uint32_t offset = SESSION_OFFSET(slot);
     session_header_t hdr;
     memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof(hdr));
-    if (hdr.magic != SESSION_MAGIC) return;
-    uint32_t samples_offset = offset + FLASH_SECTOR_BYTES;
-    memcpy(samples, (void *)(XIP_BASE + samples_offset), hdr.sample_count);
+    if (hdr.magic != SESSION_MAGIC || hdr.sample_count == 0 ||
+        hdr.sample_count > SESSION_MAX_SAMPLES) return false;
+    memcpy(samples, (void *)(XIP_BASE + offset + FLASH_SECTOR_BYTES), hdr.sample_count);
     rate = hdr.sample_rate;
     count = hdr.sample_count;
     mask = hdr.channel_mask;
-    tx_base = (const uint8_t *)samples;
+    pretrigger = hdr.pretrigger;
+    win_base = (const uint8_t *)samples;
+    win_len = count;
+    return true;
 }
 
 /* ---------- Signature comparator ---------- */
@@ -465,31 +520,32 @@ static void flash_load_session(uint32_t slot)
 
 static int compare_with_golden(void)
 {
-    if (!has_golden) { snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "SIG: no golden ref"); return -1; }
-    uint32_t capture_words = (count + 3) / 4;
+    if (!has_golden) { snprintf(decode_buf, sizeof(decode_buf), "SIG: no golden ref"); return -1; }
+    uint32_t capture_words = (win_len + 3) / 4;
     if (capture_words > CAPTURE_WORDS) capture_words = CAPTURE_WORDS;
     uint32_t compare_words = capture_words < golden_count ? capture_words : golden_count;
     uint32_t mismatches = 0;
     uint32_t first_mismatch = 0;
+    const uint32_t *cur = (const uint32_t *)win_base;
     for (uint32_t i = 0; i < compare_words; i++) {
-        if (samples[i] != golden_samples[i]) {
+        if (cur[i] != golden_samples[i]) {
             if (mismatches == 0) first_mismatch = i * 4;
             mismatches++;
         }
     }
     if (mismatches <= golden_tolerance) {
-        snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "SIG: MATCH (%u mismatches <= %u tol, %u samples)", mismatches, golden_tolerance, compare_words * 4);
+        snprintf(decode_buf, sizeof(decode_buf), "SIG: MATCH (%u mismatches <= %u tol, %u samples)", mismatches, golden_tolerance, compare_words * 4);
     } else {
-        snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "SIG: MISMATCH %u/%u samples at sample %u", mismatches, compare_words * 4, first_mismatch);
+        snprintf(decode_buf, sizeof(decode_buf), "SIG: MISMATCH %u/%u samples at sample %u", mismatches, compare_words * 4, first_mismatch);
     }
     return (int)mismatches;
 }
 
 static void save_golden(void)
 {
-    uint32_t words = (count + 3) / 4;
+    uint32_t words = (win_len + 3) / 4;
     if (words > 16384) words = 16384;
-    for (uint32_t i = 0; i < words; i++) golden_samples[i] = samples[i];
+    memcpy(golden_samples, win_base, words * sizeof(uint32_t));
     golden_count = words;
     has_golden = true;
 }
@@ -498,28 +554,30 @@ static void save_golden(void)
 /* Compare two sessions from flash by loading each into samples buffer alternately. */
 static int diff_with_loaded_session(uint32_t slot)
 {
+    if (slot >= MAX_SESSIONS) { snprintf(decode_buf, sizeof(decode_buf), "DIFF: bad slot"); return -1; }
     /* Load session from flash into a temporary buffer (reuse golden buffer). */
-    uint32_t offset = FLASH_STORAGE_BASE + slot * (FLASH_SECTOR_BYTES * 4);
+    uint32_t offset = SESSION_OFFSET(slot);
     session_header_t hdr;
     memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof(hdr));
-    if (hdr.magic != SESSION_MAGIC) return -1;
-    uint32_t limit_samples = count < hdr.sample_count ? count : hdr.sample_count;
+    if (hdr.magic != SESSION_MAGIC) { snprintf(decode_buf, sizeof(decode_buf), "DIFF: no session in slot %u", slot); return -1; }
+    uint32_t limit_samples = win_len < hdr.sample_count ? win_len : hdr.sample_count;
     uint32_t limit_words = (limit_samples + 3) / 4;
     if (limit_words > 16384) limit_words = 16384;
     /* Load from flash into golden buffer temporarily. */
     uint32_t samples_offset = offset + FLASH_SECTOR_BYTES;
     memcpy(golden_samples, (void *)(XIP_BASE + samples_offset), limit_words * sizeof(uint32_t));
     /* Compare current samples with loaded session. */
+    const uint32_t *cur = (const uint32_t *)win_base;
     uint32_t first_diff = 0;
     int found = 0;
     for (uint32_t i = 0; i < limit_words; i++) {
-        if (samples[i] != golden_samples[i]) { first_diff = i; found = 1; break; }
+        if (cur[i] != golden_samples[i]) { first_diff = i; found = 1; break; }
     }
     if (!found) {
-        snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "DIFF: identical");
+        snprintf(decode_buf, sizeof(decode_buf), "DIFF: identical");
     } else {
-        snprintf(decode_buf + strlen(decode_buf), sizeof(decode_buf) - strlen(decode_buf), "DIFF: first mismatch at sample %u (A=0x%08X B=0x%08X)",
-                 first_diff * 4, samples[first_diff], golden_samples[first_diff]);
+        snprintf(decode_buf, sizeof(decode_buf), "DIFF: first mismatch at sample %u (A=0x%08X B=0x%08X)",
+                 first_diff * 4, cur[first_diff], golden_samples[first_diff]);
     }
     return found;
 }
