@@ -1,0 +1,4 @@
+(version 1)
+(rule "Pulse input copper spacing - prototype target"
+ (condition "A.NetName == '/IN*' || A.NetName == '/MID_*'")
+ (constraint clearance (min 0.75mm)))

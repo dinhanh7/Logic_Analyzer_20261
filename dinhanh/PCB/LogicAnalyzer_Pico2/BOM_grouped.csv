@@ -1,0 +1,31 @@
+Value,Quantity,References,Footprint_or_interface,Procurement_note
+100R,1,R47,LogicAnalyzer:R0805,0805 >=0.25W; change only after checking TFT BL circuit
+100k,1,R48,LogicAnalyzer:R0805,
+100n 10V,8,C1 C2 C3 C4 C5 C6 C7 C8,LogicAnalyzer:C0805,
+10u / 10V X7R,2,C9 C10,LogicAnalyzer:C1206,
+1k,2,R41 R42,LogicAnalyzer:R0805,
+1k PR02 2W,16,R1 R2 R6 R7 R11 R12 R16 R17 R21 R22 R26 R27 R31 R32 R36 R37,LogicAnalyzer:PR02_1k_2W_P17.78,"Vishay PR02000201001FA100 proposed; Cu-lead 2W, 1%, confirm pulse curve and supplier"
+330R,8,R3 R8 R13 R18 R23 R28 R33 R38,LogicAnalyzer:R0805,
+33R,8,R5 R10 R15 R20 R25 R30 R35 R40,LogicAnalyzer:R0805,
+47k,10,R44 R46 R4 R9 R14 R19 R24 R29 R34 R39,LogicAnalyzer:R0805,
+4k7,2,R43 R45,LogicAnalyzer:R0805,
+BACK,1,SW4,LogicAnalyzer:SW_6mm,
+BAV99,8,D1 D3 D5 D7 D9 D11 D13 D15,LogicAnalyzer:SOT23,
+BC807-40,1,Q2,LogicAnalyzer:SOT23,
+BC817-40,1,Q1,LogicAnalyzer:SOT23,
+BZX85C3V3,8,D2 D4 D6 D8 D10 D12 D14 D16,LogicAnalyzer:Zener_DO41,
+CAL OUT / GND,1,J3,LogicAnalyzer:CAL_1x02,
+DOWN,1,SW2,LogicAnalyzer:SW_6mm,
+OK,1,SW3,LogicAnalyzer:SW_6mm,
+PROBE CH0..7 / GND,1,J1,LogicAnalyzer:Probe_2x08,
+PWR,1,D17,LogicAnalyzer:LED0805,
+RESET,1,SW5,LogicAnalyzer:SW_6mm,
+SN74LVC1G17DBVR,8,U1 U2 U3 U4 U5 U6 U7 U8,LogicAnalyzer:SOT23_5,
+STATUS,1,D18,LogicAnalyzer:LED0805,
+TFT CABLE / 3V3 ONLY,1,J2,LogicAnalyzer:TFT_1x08,
+UP,1,SW1,LogicAnalyzer:SW_6mm,
+Female socket 1x20 P2.54,2,U9 socket assembly,2 rows spaced 17.78mm,Select height using actual soldered Pico male headers
+Raspberry Pi Pico 2,1,U9 plug-in module,40-pin module,User-owned board; do not buy bare RP2350
+TFT ST7735 1.8in 128x160,1,Off-board connected to J2,Labeled 8-wire cable,"Actual module pin order, BL current, mechanical fixing pending"
+Probe cable / ground clips,1,J1 accessory,2x8 P2.54 odd signal even GND,"Select connector/probe voltage rating, length and shielding"
+Test pads printed on PCB,15,TP1..TP15,1mm copper pads,No component purchase

@@ -1,0 +1,58 @@
+<mxGraphModel dx="1500" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="700" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    <mxCell id="front" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#FFE6CC;fontStyle=1;fontSize=23;collapsible=0;" value="Khối bảo vệ đầu vào" vertex="1">
+      <mxGeometry x="300" y="170" width="900" height="480" as="geometry" />
+    </mxCell>
+    <mxCell id="dut" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=#929ba5;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Mạch cần đo" vertex="1">
+      <mxGeometry x="40" y="310" width="200" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="pico" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Khối xử lý&lt;br&gt;(Pico 2)" vertex="1">
+      <mxGeometry x="1260" y="310" width="200" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="supply" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Nguồn 3,3 V" vertex="1">
+      <mxGeometry x="940" y="30" width="200" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="current_limit" parent="front" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Giới hạn dòng&lt;br&gt;đầu vào" vertex="1">
+      <mxGeometry x="40" y="140" width="180" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="voltage_clamp" parent="front" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Kẹp điện áp&lt;br&gt;bảo vệ" vertex="1">
+      <mxGeometry x="330" y="140" width="180" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="signal_conditioning" parent="front" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Định dạng và đệm&lt;br&gt;tín hiệu logic" vertex="1">
+      <mxGeometry x="620" y="140" width="240" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="input_stability" parent="front" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Xác lập mức logic&lt;br&gt;khi đầu vào để hở" vertex="1">
+      <mxGeometry x="330" y="340" width="220" height="90" as="geometry" />
+    </mxCell>
+    <mxCell id="supply_filter" parent="front" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Ổn định nguồn&lt;br&gt;cho khối đệm" vertex="1">
+      <mxGeometry x="620" y="50" width="240" height="75" as="geometry" />
+    </mxCell>
+    <mxCell id="dut_to_protection" parent="1" source="dut" target="current_limit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" value="Tín hiệu" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="limit_to_clamp" parent="front" source="current_limit" target="voltage_clamp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" value="" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="clamp_to_buffer" parent="front" source="voltage_clamp" target="signal_conditioning" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" value="" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="protection_to_pico" parent="1" source="signal_conditioning" target="pico" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" value="0 / 3,3 V" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="stabilize_input" parent="front" source="input_stability" target="signal_conditioning" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0.5;entryY=1;" value="" edge="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="740" y="385" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="supply_to_filter" parent="1" source="supply" target="supply_filter" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#bd6741;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#bd6741;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value="" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="filter_to_buffer" parent="front" source="supply_filter" target="signal_conditioning" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#bd6741;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#bd6741;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" value="" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+  </root>
+</mxGraphModel>

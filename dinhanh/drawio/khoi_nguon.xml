@@ -1,0 +1,149 @@
+<mxGraphModel dx="3086" dy="1528" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    <mxCell id="dut" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=#929ba5;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Mạch cần đo" vertex="1">
+      <mxGeometry height="90" width="200" x="40" y="90" as="geometry" />
+    </mxCell>
+    <mxCell id="front" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#FFE6CC;fontStyle=1;fontSize=23;collapsible=0;" value="Khối bảo vệ đầu vào" vertex="1">
+      <mxGeometry height="224.5" width="510" x="40" y="280" as="geometry" />
+    </mxCell>
+    <mxCell id="limit" parent="front" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Hạn dòng" vertex="1">
+      <mxGeometry height="90" width="120" x="30" y="80" as="geometry" />
+    </mxCell>
+    <mxCell id="clamp" parent="front" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Kẹp quá áp" vertex="1">
+      <mxGeometry height="90" width="120" x="190" y="80" as="geometry" />
+    </mxCell>
+    <mxCell id="buffer" parent="front" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Đệm logic" vertex="1">
+      <mxGeometry height="90" width="130" x="350" y="80" as="geometry" />
+    </mxCell>
+    <mxCell id="limit_clamp" edge="1" parent="front" source="limit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="clamp" value="">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="clamp_buffer" edge="1" parent="front" source="clamp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="buffer" value="">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="mcu" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#CCE5FF;fontStyle=1;fontSize=23;collapsible=0;" value="Khối xử lý (Pico 2)" vertex="1">
+      <mxGeometry height="500" width="600" x="680" y="280" as="geometry" />
+    </mxCell>
+    <mxCell id="pio" parent="mcu" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="PIO" vertex="1">
+      <mxGeometry height="90" width="140" x="30" y="80" as="geometry" />
+    </mxCell>
+    <mxCell id="dma" parent="mcu" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="DMA" vertex="1">
+      <mxGeometry height="90" width="140" x="230" y="80" as="geometry" />
+    </mxCell>
+    <mxCell id="sram" parent="mcu" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="SRAM" vertex="1">
+      <mxGeometry height="90" width="140" x="430" y="80" as="geometry" />
+    </mxCell>
+    <mxCell id="cpu" parent="mcu" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="CPU / Điều khiển" vertex="1">
+      <mxGeometry height="90" width="250" x="30" y="320" as="geometry" />
+    </mxCell>
+    <mxCell id="flash" parent="mcu" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Flash" vertex="1">
+      <mxGeometry height="45" width="150" x="170" y="202" as="geometry" />
+    </mxCell>
+    <mxCell id="usb" parent="mcu" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf2ff;strokeColor=#6286b9;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="USB CDC" vertex="1">
+      <mxGeometry height="90" width="140" x="430" y="320" as="geometry" />
+    </mxCell>
+    <mxCell id="pio_dma" edge="1" parent="mcu" source="pio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="dma" value="">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="dma_ram" edge="1" parent="mcu" source="dma" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="sram" value="">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="cpu_pio" edge="1" parent="mcu" source="cpu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0.28;exitY=0;entryX=0.5;entryY=1;" target="pio" value="">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="ram_usb" edge="1" parent="mcu" source="sram" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="usb" value="">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="cpu_flash" edge="1" parent="mcu" source="cpu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=14;fontColor=default;labelBackgroundColor=none;startArrow=block;startFill=1;entryX=0.5;entryY=1;exitX=0.859;exitY=-0.021;exitDx=0;exitDy=0;exitPerimeter=0;textShadow=0;" target="flash" value="QSPI">
+      <mxGeometry relative="1" x="0.0266" y="-25" as="geometry">
+        <mxPoint x="1" as="offset" />
+        <Array as="points" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="cpu_usb" edge="1" parent="mcu" source="cpu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;startArrow=block;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="usb" value="">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="pc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf6ec;strokeColor=#659a6e;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#CCFFCC;fontStyle=1;fontSize=23;collapsible=0;" value="Khối phần mềm PC" vertex="1">
+      <mxGeometry height="450" width="230" x="1385" y="280" as="geometry" />
+    </mxCell>
+    <mxCell id="driver" parent="pc" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf6ec;strokeColor=#659a6e;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Driver libsigrok" vertex="1">
+      <mxGeometry height="90" width="200" x="16" y="320" as="geometry" />
+    </mxCell>
+    <mxCell id="pulseview" parent="pc" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf6ec;strokeColor=#659a6e;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="PulseView" vertex="1">
+      <mxGeometry height="90" width="200" x="16" y="180" as="geometry" />
+    </mxCell>
+    <mxCell id="decoder" parent="pc" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eaf6ec;strokeColor=#659a6e;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Giải mã giao thức" vertex="1">
+      <mxGeometry height="90" width="194" x="16" y="60" as="geometry" />
+    </mxCell>
+    <mxCell id="driver_pulseview" edge="1" parent="pc" source="driver" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;startArrow=block;startFill=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="pulseview" value="">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="pulseview_decoder" edge="1" parent="pc" source="pulseview" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="decoder" value="">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="power" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#CCCCFF;fontStyle=1;fontSize=23;collapsible=0;" value="Khối nguồn" vertex="1">
+      <mxGeometry height="140" width="600" x="680" y="80" as="geometry" />
+    </mxCell>
+    <mxCell id="vbus" parent="power" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Nguồn USB 5 V" vertex="1">
+      <mxGeometry height="60" width="180" x="20" y="55" as="geometry" />
+    </mxCell>
+    <mxCell id="regulator" parent="power" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff0db;strokeColor=#c98845;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Ổn áp 3,3 V (pico 2)" vertex="1">
+      <mxGeometry height="60" width="270" x="300" y="55" as="geometry" />
+    </mxCell>
+    <mxCell id="vbus_reg" edge="1" parent="power" source="vbus" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#bd6741;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#bd6741;labelBackgroundColor=none;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="regulator" value="5 V">
+      <mxGeometry relative="1" y="15" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="ui" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1ebfa;strokeColor=#9579b1;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;shape=swimlane;startSize=45;horizontal=1;swimlaneFillColor=#E5CCFF;fontStyle=1;fontSize=23;collapsible=0;" value="Khối giao diện" vertex="1">
+      <mxGeometry height="160" width="420" x="540" y="866" as="geometry" />
+    </mxCell>
+    <mxCell id="buttons" parent="ui" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1ebfa;strokeColor=#9579b1;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Nút bấm" vertex="1">
+      <mxGeometry height="70" width="160" x="30" y="55" as="geometry" />
+    </mxCell>
+    <mxCell id="oled" parent="ui" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1ebfa;strokeColor=#9579b1;strokeWidth=1.8;fontFamily=Helvetica;fontSize=22;fontColor=#202b38;align=center;verticalAlign=middle;spacing=8;" value="Màn hình LCD" vertex="1">
+      <mxGeometry height="70" width="180" x="220" y="55" as="geometry" />
+    </mxCell>
+    <mxCell id="probe" edge="1" parent="1" source="dut" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0.446;exitY=0.984;entryX=0.5;entryY=0;exitDx=0;exitDy=0;exitPerimeter=0;" target="limit" value="CH0…CH7 / GND">
+      <mxGeometry relative="1" x="-0.4219" as="geometry">
+        <mxPoint as="offset" />
+        <Array as="points">
+          <mxPoint x="129.2" y="180" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="inputs" edge="1" parent="1" source="buffer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="pio" value="GP0…GP7">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="usb_pc" edge="1" parent="1" source="usb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;startArrow=block;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="driver" value="USB">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="reg_mcu" edge="1" parent="1" source="regulator" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#bd6741;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#bd6741;labelBackgroundColor=#ffffff;exitX=0.8;exitY=1;entryX=0.86;entryY=0;" target="mcu" value="3V3 / GND">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="reg_front" edge="1" parent="1" source="regulator" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#bd6741;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#bd6741;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="buffer" value="3V3 / GND">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1115" y="245" />
+          <mxPoint x="455" y="245" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="buttons_cpu" edge="1" parent="1" source="buttons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" target="cpu" value="GPIO">
+      <mxGeometry relative="1" x="-0.2668" as="geometry">
+        <Array as="points">
+          <mxPoint x="520" y="956" />
+          <mxPoint x="520" y="645" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="cpu_oled" edge="1" parent="1" source="cpu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=18;strokeWidth=2;strokeColor=#525b65;endArrow=block;endFill=1;fontFamily=Helvetica;fontSize=18;fontColor=#525b65;labelBackgroundColor=none;exitX=0.5;exitY=1;entryX=0.42;entryY=0.017;entryDx=0;entryDy=0;entryPerimeter=0;" target="oled" value="SPI&amp;nbsp;">
+      <mxGeometry relative="1" x="0.122" y="-16" as="geometry">
+        <mxPoint as="offset" />
+        <Array as="points" />
+      </mxGeometry>
+    </mxCell>
+  </root>
+</mxGraphModel>

@@ -1,0 +1,3909 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>/media/abuntu/NVME_UBUNTU/Working/20261/Logic_Analyzer_20261/dinhanh/PCB/LogicAnalyzer_Pico2/LogicAnalyzer_Pico2.kicad_sch</source>
+    <date>2026-11-11T01:43:47</date>
+    <tool>Eeschema 10.0.8</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>Pico 2 Logic Analyzer Carrier - Layout A</title>
+        <company>Logic Analyzer 2026.1</company>
+        <rev>A1</rev>
+        <date>2026-11-11</date>
+        <source>LogicAnalyzer_Pico2.kicad_sch</source>
+        <comment number="1" value="Engineering review - see README for module mapping and validation limits"/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C1">
+      <value>100n 10V</value>
+      <footprint>LogicAnalyzer:C0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8787887b-e56b-41d2-bbfa-71d5ad6db50c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C2">
+      <value>100n 10V</value>
+      <footprint>LogicAnalyzer:C0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ab7fc0dc-985b-458a-9b9a-c1496a67f542</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C3">
+      <value>100n 10V</value>
+      <footprint>LogicAnalyzer:C0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c7f522bd-0e7c-4c46-a05f-205ee821e6e2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C4">
+      <value>100n 10V</value>
+      <footprint>LogicAnalyzer:C0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>17dc656d-ed86-484d-a076-5e7b0aef2797</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C5">
+      <value>100n 10V</value>
+      <footprint>LogicAnalyzer:C0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dd846ed7-55a5-481e-b64f-6e9b7a7a2c7d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C6">
+      <value>100n 10V</value>
+      <footprint>LogicAnalyzer:C0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>40912175-cc86-4dc0-a64f-c724599d2b7a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C7">
+      <value>100n 10V</value>
+      <footprint>LogicAnalyzer:C0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3aec5c1d-7976-422a-b3d4-e19660b3289e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C8">
+      <value>100n 10V</value>
+      <footprint>LogicAnalyzer:C0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:C0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>38020ea0-692e-4ef8-862e-97f408921e86</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C9">
+      <value>10u / 10V X7R</value>
+      <footprint>LogicAnalyzer:C1206</footprint>
+      <fields>
+        <field name="Design_note">Bulk, effective capacitance at 3.3V to be checked.</field>
+        <field name="Footprint">LogicAnalyzer:C1206</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Bulk, effective capacitance at 3.3V to be checked."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f7c69a5f-0572-4634-934f-83565015b032</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C10">
+      <value>10u / 10V X7R</value>
+      <footprint>LogicAnalyzer:C1206</footprint>
+      <fields>
+        <field name="Design_note">Near TFT header.</field>
+        <field name="Footprint">LogicAnalyzer:C1206</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="C" description="Unpolarized capacitor"/>
+      <property name="Design_note" value="Near TFT header."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>14901d82-8459-48a5-aa3a-498350b5a914</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D1">
+      <value>BAV99</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2de864e7-dff7-45a6-9e98-5b0cc7ac6f64</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D2">
+      <value>BZX85C3V3</value>
+      <footprint>LogicAnalyzer:Zener_DO41</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Zener_DO41</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ca122461-8f89-46d1-91ab-8ed377acca75</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D3">
+      <value>BAV99</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0ce5a33d-99e7-453e-8c6c-7fa9a9d65a46</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D4">
+      <value>BZX85C3V3</value>
+      <footprint>LogicAnalyzer:Zener_DO41</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Zener_DO41</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6913ea5f-1edb-43cf-afed-8a96c03c63dc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D5">
+      <value>BAV99</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a31caa3c-81d8-4bf1-ab30-f4a0a1747ac4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D6">
+      <value>BZX85C3V3</value>
+      <footprint>LogicAnalyzer:Zener_DO41</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Zener_DO41</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>63424e10-be57-4d94-8505-ae995ef1dfaa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D7">
+      <value>BAV99</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3e06bd9e-00fa-41ff-8433-35b8edba2218</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D8">
+      <value>BZX85C3V3</value>
+      <footprint>LogicAnalyzer:Zener_DO41</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Zener_DO41</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0bc3ca73-c3b2-49fb-9e5a-b0d6cc8d08ce</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D9">
+      <value>BAV99</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>61582e7c-457f-45d8-b470-76947f982b59</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D10">
+      <value>BZX85C3V3</value>
+      <footprint>LogicAnalyzer:Zener_DO41</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Zener_DO41</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>bde6bb76-8ab9-478e-bd46-031ec1f7f547</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D11">
+      <value>BAV99</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5a3ba61d-8b73-448c-b07b-051e7078768f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D12">
+      <value>BZX85C3V3</value>
+      <footprint>LogicAnalyzer:Zener_DO41</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Zener_DO41</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7f0e8e9a-c0e4-47cb-b123-aceab97280f2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D13">
+      <value>BAV99</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>22200a35-00b0-4fd6-9983-34b29dac6fec</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D14">
+      <value>BZX85C3V3</value>
+      <footprint>LogicAnalyzer:Zener_DO41</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Zener_DO41</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>05d033f8-a30c-4ea9-9843-9911b33ba691</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D15">
+      <value>BAV99</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <datasheet>https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</datasheet>
+      <fields>
+        <field name="Design_note">1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="BAV99" description="BAV99 High-speed switching diodes, SOT-23"/>
+      <property name="Design_note" value="1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="SOT?23*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8bd519de-7f69-4133-ac67-ca96545585cc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D16">
+      <value>BZX85C3V3</value>
+      <footprint>LogicAnalyzer:Zener_DO41</footprint>
+      <datasheet>https://www.vishay.com/docs/85607/bzx85.pdf</datasheet>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Zener_DO41</field>
+        <field name="Datasheet">https://www.vishay.com/docs/85607/bzx85.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="D_Zener" description="Zener diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="diode"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4f5a2c37-2480-46a8-bfdc-434f4c78c61f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D17">
+      <value>PWR</value>
+      <footprint>LogicAnalyzer:LED0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:LED0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="LED" description="Light emitting diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="LED diode"/>
+      <property name="ki_fp_filters" value="LED* LED_SMD:* LED_THT:*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>54a11679-18de-4c7e-b973-1ce51bf16410</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D18">
+      <value>STATUS</value>
+      <footprint>LogicAnalyzer:LED0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:LED0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="LED" description="Light emitting diode"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="LED diode"/>
+      <property name="ki_fp_filters" value="LED* LED_SMD:* LED_THT:*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>bdead899-2808-497b-8537-429b95952eec</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="H1">
+      <value>M3 / 3.2mm</value>
+      <footprint>LogicAnalyzer:Hole_M3</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Hole_M3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="MountingHole" description="Mounting Hole without connection"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="ki_keywords" value="mounting hole"/>
+      <property name="ki_fp_filters" value="MountingHole*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>20fcfffd-961e-41d8-a4a0-70bd61fef56e</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="H2">
+      <value>M3 / 3.2mm</value>
+      <footprint>LogicAnalyzer:Hole_M3</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Hole_M3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="MountingHole" description="Mounting Hole without connection"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="ki_keywords" value="mounting hole"/>
+      <property name="ki_fp_filters" value="MountingHole*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>931ce45a-f55e-4e44-892d-09ca30cf2f64</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="H3">
+      <value>M3 / 3.2mm</value>
+      <footprint>LogicAnalyzer:Hole_M3</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Hole_M3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="MountingHole" description="Mounting Hole without connection"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="ki_keywords" value="mounting hole"/>
+      <property name="ki_fp_filters" value="MountingHole*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f698d9c7-75af-4128-a74a-c9babaa8c475</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="H4">
+      <value>M3 / 3.2mm</value>
+      <footprint>LogicAnalyzer:Hole_M3</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Hole_M3</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="MountingHole" description="Mounting Hole without connection"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="ki_keywords" value="mounting hole"/>
+      <property name="ki_fp_filters" value="MountingHole*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>63a15e6f-aa0a-483b-9289-0aa178ab8ba0</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J1">
+      <value>PROBE CH0..7 / GND</value>
+      <footprint>LogicAnalyzer:Probe_2x08</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:Probe_2x08</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="Probe_2x08" description="Generic connector, double row, 02x08, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="connector"/>
+      <property name="ki_fp_filters" value="Connector*:*_2x??_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>48a3ed52-fa8a-4780-bde7-e569d665526e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="5"/>
+            <pin num="7"/>
+            <pin num="9"/>
+            <pin num="11"/>
+            <pin num="13"/>
+            <pin num="15"/>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="8"/>
+            <pin num="10"/>
+            <pin num="12"/>
+            <pin num="14"/>
+            <pin num="16"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J2">
+      <value>TFT CABLE / 3V3 ONLY</value>
+      <footprint>LogicAnalyzer:TFT_1x08</footprint>
+      <fields>
+        <field name="Design_note">Generic labeled cable header. Verify actual TFT pin order before wiring. No MISO.</field>
+        <field name="Footprint">LogicAnalyzer:TFT_1x08</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="Conn_01x08" description="Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Design_note" value="Generic labeled cable header. Verify actual TFT pin order before wiring. No MISO."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="connector"/>
+      <property name="ki_fp_filters" value="Connector*:*_1x??_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>adb08c4f-4835-4815-b993-255bc6ff34c6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J3">
+      <value>CAL OUT / GND</value>
+      <footprint>LogicAnalyzer:CAL_1x02</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:CAL_1x02</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="Conn_01x02" description="Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="connector"/>
+      <property name="ki_fp_filters" value="Connector*:*_1x??_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f41ebced-9acc-4389-a59b-44fff9e9ebf6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="Q1">
+      <value>BC817-40</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <fields>
+        <field name="Design_note">B=1 E=2 C=3; drives high-side PNP only, not backlight current directly.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="Q_NPN_BEC" description="NPN transistor, base/emitter/collector"/>
+      <property name="Design_note" value="B=1 E=2 C=3; drives high-side PNP only, not backlight current directly."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="BJT"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>964ccdf5-b711-4320-8d1e-ea8ded4b214f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="Q2">
+      <value>BC807-40</value>
+      <footprint>LogicAnalyzer:SOT23</footprint>
+      <fields>
+        <field name="Design_note">B=1 E=2 C=3; high-side backlight power. Module must tolerate 3.3V BL.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="Q_PNP_BEC" description="PNP transistor, base/emitter/collector"/>
+      <property name="Design_note" value="B=1 E=2 C=3; high-side backlight power. Module must tolerate 3.3V BL."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="BJT"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00a11ac6-1a8f-4e9c-9d07-0125482988b9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>110169bf-7994-4219-a7b2-e7edfc8297aa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R2">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c3029e75-3062-4af5-bdfa-16ec60c0a01a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R3">
+      <value>330R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4ebf5b93-341f-4fac-9685-9266acef1903</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R4">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b692d4d7-24fa-4d0d-af70-a453bfc3c15f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R5">
+      <value>33R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2df62b8f-617c-495c-8690-7d936e1c9937</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R6">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>af26f679-27bb-4f8f-9ab3-198a50b68822</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R7">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>112853cb-f2dc-4bc6-ae31-b0c629038a99</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R8">
+      <value>330R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>af6523da-54a8-4d99-bb63-72afce978a8b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R9">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5f6ad713-a8b8-4f9c-b606-2307c3909c67</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R10">
+      <value>33R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6cd2aedb-ceb4-46d3-a98d-59e2c20c67b9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R11">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dbfdc506-1442-4d8f-aa0a-bdf49781b47d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R12">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ad9d0464-1f6e-47da-adaf-61b029886c13</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R13">
+      <value>330R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>11efd6f4-f453-4c21-9602-db5e260d8a90</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R14">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>73ff77fe-e9c2-41c2-aedf-ef32368a91f2</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R15">
+      <value>33R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f0f251d2-ad4c-4f41-8bc1-e6a76ef32c6f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R16">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dc7f599d-21b7-46b4-bbc1-e490569b16f4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R17">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3d6e49bf-bee3-4748-ac27-b6c5b9fe86ef</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R18">
+      <value>330R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f0c30960-4940-4dd9-a192-404b2e439be7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R19">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4a95cb60-c3b9-4c3b-a1c4-1ea547f01e29</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R20">
+      <value>33R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c0c388aa-fd1d-4a42-b7f3-96a0c22cfb43</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R21">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>79dd6670-4152-40a9-805d-46be492f4afc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R22">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5d2ee41c-b3a8-4d3d-8a65-33327ccdbde4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R23">
+      <value>330R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4326a1ca-8a47-4ea3-a5ba-3530ba875e10</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R24">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ef51a85c-bf35-4384-a0ad-f6b7f80dc91f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R25">
+      <value>33R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>25dd9cd0-5bfa-4357-8588-65fb015246d3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R26">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b287d259-2d50-4da1-bf27-38322fe6385f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R27">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>842298ea-40df-4c08-bd2e-dd0991a317ec</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R28">
+      <value>330R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>58b54fc3-b0fd-4d60-8edd-782c513da615</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R29">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ffe7a292-8c28-440e-8045-ffacf5681809</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R30">
+      <value>33R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>253731bd-875c-43ec-bbeb-3a6d1344eab7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R31">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f814c89d-ce05-40fd-b238-1664b71db2b8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R32">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5b46f2c9-2544-4917-b0bf-804e94ef6e28</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R33">
+      <value>330R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3aa7819c-bd57-4aa0-b37a-160a2024b7fe</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R34">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cf3e7786-434b-4e36-9568-dcb2f920dd01</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R35">
+      <value>33R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>49fc9106-8724-463f-9445-4edf19e85711</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R36">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a8565ae4-f25e-4bd5-aa12-dc3e1823e232</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R37">
+      <value>1k PR02 2W</value>
+      <footprint>LogicAnalyzer:PR02_1k_2W_P17.78</footprint>
+      <datasheet>https://www.vishay.com/docs/28729/pr010203.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.</field>
+        <field name="Footprint">LogicAnalyzer:PR02_1k_2W_P17.78</field>
+        <field name="Datasheet">https://www.vishay.com/docs/28729/pr010203.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value="Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>aa0c8f2a-2f53-4ad0-90e7-1d72eb3acb91</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R38">
+      <value>330R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e0fdcfc9-e9b6-4eb4-b871-fb7c852099aa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R39">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2da67c2a-7cf8-46c2-92f4-8ecd68eac5be</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R40">
+      <value>33R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b8eb738f-d4f6-4d1a-8b09-74bee303d1e3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R41">
+      <value>1k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>723541dc-81a4-45d4-bf26-977991c88937</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R42">
+      <value>1k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>895f536d-3471-4d3a-b20b-490a1eff213e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R43">
+      <value>4k7</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4c43b4a2-e39a-4e0e-a895-ea557a2f23e4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R44">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>523df01e-3131-4ed8-9b16-5db9b487c48c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R45">
+      <value>4k7</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>53184b45-8ad6-494d-b8be-017b1fc29ae9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R46">
+      <value>47k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>01a32c4b-9ae8-47d7-abcd-ed6a7a4d5564</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R47">
+      <value>100R</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ddd29bfa-22ea-4568-940f-f307140df1dd</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R48">
+      <value>100k</value>
+      <footprint>LogicAnalyzer:R0805</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:R0805</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="R" description="Resistor"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d5c21507-01d0-4e07-90e6-de50623106a3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="SW1">
+      <value>UP</value>
+      <footprint>LogicAnalyzer:SW_6mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:SW_6mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="SW_Push" description="Push button switch, generic, two pins"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="switch normally-open pushbutton push-button"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b9a032ed-3b20-432f-9723-1f8448925e7f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="SW2">
+      <value>DOWN</value>
+      <footprint>LogicAnalyzer:SW_6mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:SW_6mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="SW_Push" description="Push button switch, generic, two pins"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="switch normally-open pushbutton push-button"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>89bc1bac-9a02-45c4-8340-7c8cbb01c897</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="SW3">
+      <value>OK</value>
+      <footprint>LogicAnalyzer:SW_6mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:SW_6mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="SW_Push" description="Push button switch, generic, two pins"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="switch normally-open pushbutton push-button"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9148d47a-be07-43ca-aa9a-e77acd6b7f6b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="SW4">
+      <value>BACK</value>
+      <footprint>LogicAnalyzer:SW_6mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:SW_6mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="SW_Push" description="Push button switch, generic, two pins"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="switch normally-open pushbutton push-button"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9336e8a5-56c7-4c62-94e0-c8dd91f01f3e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="SW5">
+      <value>RESET</value>
+      <footprint>LogicAnalyzer:SW_6mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:SW_6mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="SW_Push" description="Push button switch, generic, two pins"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="switch normally-open pushbutton push-button"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>55cda8e1-378f-4162-9ad1-98f4cf8255bd</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP1">
+      <value>OUT0</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>64b6b10a-f4d0-47e6-bedd-9ab93b03973b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP2">
+      <value>OUT1</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>15177d6d-7b99-49e9-954b-a1ad8af7cb03</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP3">
+      <value>OUT2</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5cfd05a7-1f65-45f8-b295-4dda56e27c3e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP4">
+      <value>OUT3</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1db4f0dc-114f-40e2-8ae6-12477631e871</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP5">
+      <value>OUT4</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4fda5b9e-caa1-47f1-ac92-2dd1a6c39ac6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP6">
+      <value>OUT5</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1e79efe1-d04e-44ad-aa60-92fdc0e28922</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP7">
+      <value>OUT6</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>308b74e9-d508-48ff-b64e-cfad35f3954b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP8">
+      <value>OUT7</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ffd952f1-a1aa-4f03-9661-bcf451d85d94</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP9">
+      <value>+3V3</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>094556c7-b909-48ae-932f-7db0a386b847</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP10">
+      <value>VSYS</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>43c59a18-71e0-47c7-96fa-98e522c1db4a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP11">
+      <value>GND</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fa71acf2-8328-407a-97a1-4274df39ddaa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP12">
+      <value>IN0</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5ac906fe-3d82-4744-a15e-679b7856929b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP13">
+      <value>CLAMP_0</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e4e0cd04-05c0-4794-b3ad-e374801e4983</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP14">
+      <value>A_0</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>377420ec-2519-4330-bad1-9ac86590c240</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP15">
+      <value>Z_0</value>
+      <footprint>LogicAnalyzer:TP_1mm</footprint>
+      <fields>
+        <field name="Design_note"/>
+        <field name="Footprint">LogicAnalyzer:TP_1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="TestPoint" description="test point"/>
+      <property name="Design_note" value=""/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>105e706e-57c1-4cfa-a999-cfb123a458f3</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U1">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>LogicAnalyzer:SOT23_5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23_5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a1829540-c037-4095-b5f5-da238651beb4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U2">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>LogicAnalyzer:SOT23_5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23_5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>31058e97-a48c-4df9-be4b-5460f7726ff8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U3">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>LogicAnalyzer:SOT23_5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23_5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7f927f7f-58f7-459f-8a0b-f14f92144cc6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U4">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>LogicAnalyzer:SOT23_5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23_5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>eb6cf0ea-2280-4abd-a233-54b88a25cd57</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U5">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>LogicAnalyzer:SOT23_5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23_5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6bd193d8-6ea0-48eb-81d6-645bd86d193a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U6">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>LogicAnalyzer:SOT23_5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23_5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>69e9c13c-e12c-4c96-b6e0-6d05e76d2ffd</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U7">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>LogicAnalyzer:SOT23_5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23_5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4923ccc6-f47b-43e6-af71-ecfef48a44b6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U8">
+      <value>SN74LVC1G17DBVR</value>
+      <footprint>LogicAnalyzer:SOT23_5</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</datasheet>
+      <fields>
+        <field name="Design_note">DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico.</field>
+        <field name="Footprint">LogicAnalyzer:SOT23_5</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="74LVC1G17" description="Single Schmitt Buffer Gate, Low-Voltage CMOS"/>
+      <property name="Design_note" value="DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y -&gt;33R connects to Pico."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <property name="ki_keywords" value="Single Gate Buff Schmitt LVC CMOS"/>
+      <property name="ki_fp_filters" value="SOT?23* SOT?553* Texas?R-PDSO-G5?DCK* Texas?R-PDSO-N5?DRL* Texas?X2SON*0.8x0.8mm*P0.48mm*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>96c36e1f-0ed6-4257-a872-2e2d1b56503c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="2"/>
+            <pin num="1"/>
+            <pin num="5"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U9">
+      <value>Pico 2 + 2x female 1x20</value>
+      <footprint>LogicAnalyzer:Pico2_Sockets</footprint>
+      <datasheet>https://datasheets.raspberrypi.com/pico/pico-2-datasheet.pdf</datasheet>
+      <fields>
+        <field name="Design_note">Fit two female 1x20 2.54mm sockets, row spacing 17.78mm; USB and regulator are on the plug-in Pico 2.</field>
+        <field name="Footprint">LogicAnalyzer:Pico2_Sockets</field>
+        <field name="Datasheet">https://datasheets.raspberrypi.com/pico/pico-2-datasheet.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="LogicAnalyzer" part="Pico2_SOCKET" description=""/>
+      <property name="Design_note" value="Fit two female 1x20 2.54mm sockets, row spacing 17.78mm; USB and regulator are on the plug-in Pico 2."/>
+      <property name="Sheetname" value="LogicAnalyzer_Pico2"/>
+      <property name="Sheetfile" value="LogicAnalyzer_Pico2.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ab2bc150-cdf4-427e-a793-532a62371530</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+            <pin num="11"/>
+            <pin num="12"/>
+            <pin num="13"/>
+            <pin num="14"/>
+            <pin num="15"/>
+            <pin num="16"/>
+            <pin num="17"/>
+            <pin num="18"/>
+            <pin num="19"/>
+            <pin num="20"/>
+            <pin num="40"/>
+            <pin num="39"/>
+            <pin num="38"/>
+            <pin num="37"/>
+            <pin num="36"/>
+            <pin num="35"/>
+            <pin num="34"/>
+            <pin num="33"/>
+            <pin num="32"/>
+            <pin num="31"/>
+            <pin num="30"/>
+            <pin num="29"/>
+            <pin num="28"/>
+            <pin num="27"/>
+            <pin num="26"/>
+            <pin num="25"/>
+            <pin num="24"/>
+            <pin num="23"/>
+            <pin num="22"/>
+            <pin num="21"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="LogicAnalyzer" part="74LVC1G17">
+      <description>Single Schmitt Buffer Gate, Low-Voltage CMOS</description>
+      <docs>https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</docs>
+      <footprints>
+        <fp>SOT?23*</fp>
+        <fp>SOT?553*</fp>
+        <fp>Texas?R-PDSO-G5?DCK*</fp>
+        <fp>Texas?R-PDSO-N5?DRL*</fp>
+        <fp>Texas?X2SON*0.8x0.8mm*P0.48mm*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">74LVC1G17</field>
+        <field name="Footprint"/>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf</field>
+        <field name="Description">Single Schmitt Buffer Gate, Low-Voltage CMOS</field>
+      </fields>
+      <pins>
+        <pin num="1" name="NC" type="no_connect"/>
+        <pin num="2" name="" type="input"/>
+        <pin num="3" name="GND" type="power_in"/>
+        <pin num="4" name="" type="output"/>
+        <pin num="5" name="VCC" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="BAV99">
+      <description>BAV99 High-speed switching diodes, SOT-23</description>
+      <docs>https://assets.nexperia.com/documents/data-sheet/BAV99_SER.pdf</docs>
+      <footprints>
+        <fp>SOT?23*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">BAV99</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://assets.nexperia.com/documents/data-sheet/BAV99_SER.pdf</field>
+        <field name="Description">BAV99 High-speed switching diodes, SOT-23</field>
+      </fields>
+      <pins>
+        <pin num="1" name="A1" type="passive"/>
+        <pin num="2" name="K2" type="passive"/>
+        <pin num="3" name="K1_A2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="C">
+      <description>Unpolarized capacitor</description>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Unpolarized capacitor</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="Conn_01x02">
+      <description>Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x02</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="Conn_01x08">
+      <description>Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x08</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+        <pin num="7" name="Pin_7" type="passive"/>
+        <pin num="8" name="Pin_8" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="D_Zener">
+      <description>Zener diode</description>
+      <footprints>
+        <fp>TO-???*</fp>
+        <fp>*_Diode_*</fp>
+        <fp>*SingleDiode*</fp>
+        <fp>D_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">D_Zener</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Zener diode</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="LED">
+      <description>Light emitting diode</description>
+      <footprints>
+        <fp>LED*</fp>
+        <fp>LED_SMD:*</fp>
+        <fp>LED_THT:*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">LED</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Light emitting diode</field>
+        <field name="Sim.Pins">1=K 2=A</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="MountingHole">
+      <description>Mounting Hole without connection</description>
+      <footprints>
+        <fp>MountingHole*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">H</field>
+        <field name="Value">MountingHole</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Mounting Hole without connection</field>
+      </fields>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="Pico2_SOCKET">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">Pico 2 socketed</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="GP0" type="bidirectional"/>
+        <pin num="2" name="GP1" type="bidirectional"/>
+        <pin num="3" name="GND" type="power_out"/>
+        <pin num="4" name="GP2" type="bidirectional"/>
+        <pin num="5" name="GP3" type="bidirectional"/>
+        <pin num="6" name="GP4" type="bidirectional"/>
+        <pin num="7" name="GP5" type="bidirectional"/>
+        <pin num="8" name="GND" type="passive"/>
+        <pin num="9" name="GP6" type="bidirectional"/>
+        <pin num="10" name="GP7" type="bidirectional"/>
+        <pin num="11" name="GP8" type="bidirectional"/>
+        <pin num="12" name="GP9" type="bidirectional"/>
+        <pin num="13" name="GND" type="passive"/>
+        <pin num="14" name="GP10" type="bidirectional"/>
+        <pin num="15" name="GP11" type="bidirectional"/>
+        <pin num="16" name="GP12" type="bidirectional"/>
+        <pin num="17" name="GP13" type="bidirectional"/>
+        <pin num="18" name="GND" type="passive"/>
+        <pin num="19" name="GP14" type="bidirectional"/>
+        <pin num="20" name="GP15" type="bidirectional"/>
+        <pin num="21" name="GP16" type="bidirectional"/>
+        <pin num="22" name="GP17" type="bidirectional"/>
+        <pin num="23" name="GND" type="passive"/>
+        <pin num="24" name="GP18" type="bidirectional"/>
+        <pin num="25" name="GP19" type="bidirectional"/>
+        <pin num="26" name="GP20" type="bidirectional"/>
+        <pin num="27" name="GP21" type="bidirectional"/>
+        <pin num="28" name="GND" type="passive"/>
+        <pin num="29" name="GP22" type="bidirectional"/>
+        <pin num="30" name="RUN" type="passive"/>
+        <pin num="31" name="GP26" type="bidirectional"/>
+        <pin num="32" name="GP27" type="bidirectional"/>
+        <pin num="33" name="AGND" type="passive"/>
+        <pin num="34" name="GP28" type="bidirectional"/>
+        <pin num="35" name="ADC_VREF" type="passive"/>
+        <pin num="36" name="3V3_OUT" type="power_out"/>
+        <pin num="37" name="3V3_EN" type="passive"/>
+        <pin num="38" name="GND" type="passive"/>
+        <pin num="39" name="VSYS" type="passive"/>
+        <pin num="40" name="VBUS" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="Probe_2x08">
+      <description>Generic connector, double row, 02x08, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <footprints>
+        <fp>Connector*:*_2x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_02x08_Odd_Even</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Generic connector, double row, 02x08, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+        <pin num="7" name="Pin_7" type="passive"/>
+        <pin num="8" name="Pin_8" type="passive"/>
+        <pin num="9" name="Pin_9" type="passive"/>
+        <pin num="10" name="Pin_10" type="passive"/>
+        <pin num="11" name="Pin_11" type="passive"/>
+        <pin num="12" name="Pin_12" type="passive"/>
+        <pin num="13" name="Pin_13" type="passive"/>
+        <pin num="14" name="Pin_14" type="passive"/>
+        <pin num="15" name="Pin_15" type="passive"/>
+        <pin num="16" name="Pin_16" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="Q_NPN_BEC">
+      <description>NPN transistor, base/emitter/collector</description>
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">Q_NPN_BEC</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">NPN transistor, base/emitter/collector</field>
+        <field name="Sim.Device">NPN</field>
+        <field name="Sim.Pins">1=B 2=E 3=C</field>
+      </fields>
+      <pins>
+        <pin num="1" name="B" type="input"/>
+        <pin num="2" name="E" type="passive"/>
+        <pin num="3" name="C" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="Q_PNP_BEC">
+      <description>PNP transistor, base/emitter/collector</description>
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">Q_PNP_BEC</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">PNP transistor, base/emitter/collector</field>
+        <field name="Sim.Device">PNP</field>
+        <field name="Sim.Pins">1=B 2=E 3=C</field>
+      </fields>
+      <pins>
+        <pin num="1" name="B" type="input"/>
+        <pin num="2" name="E" type="passive"/>
+        <pin num="3" name="C" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="R">
+      <description>Resistor</description>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Resistor</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="SW_Push">
+      <description>Push button switch, generic, two pins</description>
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Value">SW_Push</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Push button switch, generic, two pins</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="LogicAnalyzer" part="TestPoint">
+      <description>test point</description>
+      <footprints>
+        <fp>Pin*</fp>
+        <fp>Test*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">TP</field>
+        <field name="Value">TestPoint</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">test point</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="LogicAnalyzer">
+      <uri>${KIPRJMOD}/LogicAnalyzer.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="/+3V3" class="Default">
+      <node ref="C1" pin="1" pintype="passive"/>
+      <node ref="C10" pin="1" pintype="passive"/>
+      <node ref="C2" pin="1" pintype="passive"/>
+      <node ref="C3" pin="1" pintype="passive"/>
+      <node ref="C4" pin="1" pintype="passive"/>
+      <node ref="C5" pin="1" pintype="passive"/>
+      <node ref="C6" pin="1" pintype="passive"/>
+      <node ref="C7" pin="1" pintype="passive"/>
+      <node ref="C8" pin="1" pintype="passive"/>
+      <node ref="C9" pin="1" pintype="passive"/>
+      <node ref="J2" pin="2" pinfunction="Pin_2_2" pintype="passive"/>
+      <node ref="Q2" pin="2" pinfunction="E_2" pintype="passive"/>
+      <node ref="R41" pin="1" pintype="passive"/>
+      <node ref="R46" pin="2" pintype="passive"/>
+      <node ref="TP9" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U2" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U3" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U4" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U5" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U6" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U7" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U8" pin="5" pinfunction="VCC_5" pintype="power_in"/>
+      <node ref="U9" pin="36" pinfunction="3V3_OUT_36" pintype="power_out"/>
+    </net>
+    <net code="2" name="/A_0" class="Default">
+      <node ref="R3" pin="2" pintype="passive"/>
+      <node ref="R4" pin="1" pintype="passive"/>
+      <node ref="TP14" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="2" pintype="input"/>
+    </net>
+    <net code="3" name="/A_1" class="Default">
+      <node ref="R8" pin="2" pintype="passive"/>
+      <node ref="R9" pin="1" pintype="passive"/>
+      <node ref="U2" pin="2" pintype="input"/>
+    </net>
+    <net code="4" name="/A_2" class="Default">
+      <node ref="R13" pin="2" pintype="passive"/>
+      <node ref="R14" pin="1" pintype="passive"/>
+      <node ref="U3" pin="2" pintype="input"/>
+    </net>
+    <net code="5" name="/A_3" class="Default">
+      <node ref="R18" pin="2" pintype="passive"/>
+      <node ref="R19" pin="1" pintype="passive"/>
+      <node ref="U4" pin="2" pintype="input"/>
+    </net>
+    <net code="6" name="/A_4" class="Default">
+      <node ref="R23" pin="2" pintype="passive"/>
+      <node ref="R24" pin="1" pintype="passive"/>
+      <node ref="U5" pin="2" pintype="input"/>
+    </net>
+    <net code="7" name="/A_5" class="Default">
+      <node ref="R28" pin="2" pintype="passive"/>
+      <node ref="R29" pin="1" pintype="passive"/>
+      <node ref="U6" pin="2" pintype="input"/>
+    </net>
+    <net code="8" name="/A_6" class="Default">
+      <node ref="R33" pin="2" pintype="passive"/>
+      <node ref="R34" pin="1" pintype="passive"/>
+      <node ref="U7" pin="2" pintype="input"/>
+    </net>
+    <net code="9" name="/A_7" class="Default">
+      <node ref="R38" pin="2" pintype="passive"/>
+      <node ref="R39" pin="1" pintype="passive"/>
+      <node ref="U8" pin="2" pintype="input"/>
+    </net>
+    <net code="10" name="/BL_N_BASE" class="Default">
+      <node ref="Q1" pin="1" pinfunction="B_1" pintype="input"/>
+      <node ref="R43" pin="2" pintype="passive"/>
+      <node ref="R44" pin="1" pintype="passive"/>
+    </net>
+    <net code="11" name="/BL_N_COL" class="Default">
+      <node ref="Q1" pin="3" pinfunction="C_3" pintype="passive"/>
+      <node ref="R45" pin="1" pintype="passive"/>
+    </net>
+    <net code="12" name="/BL_PWR" class="Default">
+      <node ref="Q2" pin="3" pinfunction="C_3" pintype="passive"/>
+      <node ref="R47" pin="1" pintype="passive"/>
+    </net>
+    <net code="13" name="/BL_P_BASE" class="Default">
+      <node ref="Q2" pin="1" pinfunction="B_1" pintype="input"/>
+      <node ref="R45" pin="2" pintype="passive"/>
+      <node ref="R46" pin="1" pintype="passive"/>
+    </net>
+    <net code="14" name="/BTN_BACK" class="Default">
+      <node ref="SW4" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="29" pinfunction="GP22_29" pintype="bidirectional"/>
+    </net>
+    <net code="15" name="/BTN_DOWN" class="Default">
+      <node ref="SW2" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="12" pinfunction="GP9_12" pintype="bidirectional"/>
+    </net>
+    <net code="16" name="/BTN_OK" class="Default">
+      <node ref="SW3" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="16" pinfunction="GP12_16" pintype="bidirectional"/>
+    </net>
+    <net code="17" name="/BTN_UP" class="Default">
+      <node ref="SW1" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="11" pinfunction="GP8_11" pintype="bidirectional"/>
+    </net>
+    <net code="18" name="/CAL_OUT" class="Default">
+      <node ref="J3" pin="1" pinfunction="Pin_1_1" pintype="passive"/>
+      <node ref="U9" pin="32" pinfunction="GP27_32" pintype="bidirectional"/>
+    </net>
+    <net code="19" name="/CLAMP_0" class="Default">
+      <node ref="D1" pin="3" pinfunction="K1_A2_3" pintype="passive"/>
+      <node ref="R2" pin="2" pintype="passive"/>
+      <node ref="R3" pin="1" pintype="passive"/>
+      <node ref="TP13" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="20" name="/CLAMP_1" class="Default">
+      <node ref="D3" pin="3" pinfunction="K1_A2_3" pintype="passive"/>
+      <node ref="R7" pin="2" pintype="passive"/>
+      <node ref="R8" pin="1" pintype="passive"/>
+    </net>
+    <net code="21" name="/CLAMP_2" class="Default">
+      <node ref="D5" pin="3" pinfunction="K1_A2_3" pintype="passive"/>
+      <node ref="R12" pin="2" pintype="passive"/>
+      <node ref="R13" pin="1" pintype="passive"/>
+    </net>
+    <net code="22" name="/CLAMP_3" class="Default">
+      <node ref="D7" pin="3" pinfunction="K1_A2_3" pintype="passive"/>
+      <node ref="R17" pin="2" pintype="passive"/>
+      <node ref="R18" pin="1" pintype="passive"/>
+    </net>
+    <net code="23" name="/CLAMP_4" class="Default">
+      <node ref="D9" pin="3" pinfunction="K1_A2_3" pintype="passive"/>
+      <node ref="R22" pin="2" pintype="passive"/>
+      <node ref="R23" pin="1" pintype="passive"/>
+    </net>
+    <net code="24" name="/CLAMP_5" class="Default">
+      <node ref="D11" pin="3" pinfunction="K1_A2_3" pintype="passive"/>
+      <node ref="R27" pin="2" pintype="passive"/>
+      <node ref="R28" pin="1" pintype="passive"/>
+    </net>
+    <net code="25" name="/CLAMP_6" class="Default">
+      <node ref="D13" pin="3" pinfunction="K1_A2_3" pintype="passive"/>
+      <node ref="R32" pin="2" pintype="passive"/>
+      <node ref="R33" pin="1" pintype="passive"/>
+    </net>
+    <net code="26" name="/CLAMP_7" class="Default">
+      <node ref="D15" pin="3" pinfunction="K1_A2_3" pintype="passive"/>
+      <node ref="R37" pin="2" pintype="passive"/>
+      <node ref="R38" pin="1" pintype="passive"/>
+    </net>
+    <net code="27" name="/GND" class="Default">
+      <node ref="C1" pin="2" pintype="passive"/>
+      <node ref="C10" pin="2" pintype="passive"/>
+      <node ref="C2" pin="2" pintype="passive"/>
+      <node ref="C3" pin="2" pintype="passive"/>
+      <node ref="C4" pin="2" pintype="passive"/>
+      <node ref="C5" pin="2" pintype="passive"/>
+      <node ref="C6" pin="2" pintype="passive"/>
+      <node ref="C7" pin="2" pintype="passive"/>
+      <node ref="C8" pin="2" pintype="passive"/>
+      <node ref="C9" pin="2" pintype="passive"/>
+      <node ref="D1" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="D10" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D11" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="D12" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D13" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="D14" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D15" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="D16" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D17" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D18" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D2" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D3" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="D4" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D5" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="D6" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D7" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="D8" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="D9" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="J1" pin="10" pinfunction="Pin_10_10" pintype="passive"/>
+      <node ref="J1" pin="12" pinfunction="Pin_12_12" pintype="passive"/>
+      <node ref="J1" pin="14" pinfunction="Pin_14_14" pintype="passive"/>
+      <node ref="J1" pin="16" pinfunction="Pin_16_16" pintype="passive"/>
+      <node ref="J1" pin="2" pinfunction="Pin_2_2" pintype="passive"/>
+      <node ref="J1" pin="4" pinfunction="Pin_4_4" pintype="passive"/>
+      <node ref="J1" pin="6" pinfunction="Pin_6_6" pintype="passive"/>
+      <node ref="J1" pin="8" pinfunction="Pin_8_8" pintype="passive"/>
+      <node ref="J2" pin="1" pinfunction="Pin_1_1" pintype="passive"/>
+      <node ref="J3" pin="2" pinfunction="Pin_2_2" pintype="passive"/>
+      <node ref="Q1" pin="2" pinfunction="E_2" pintype="passive"/>
+      <node ref="R14" pin="2" pintype="passive"/>
+      <node ref="R19" pin="2" pintype="passive"/>
+      <node ref="R24" pin="2" pintype="passive"/>
+      <node ref="R29" pin="2" pintype="passive"/>
+      <node ref="R34" pin="2" pintype="passive"/>
+      <node ref="R39" pin="2" pintype="passive"/>
+      <node ref="R4" pin="2" pintype="passive"/>
+      <node ref="R44" pin="2" pintype="passive"/>
+      <node ref="R48" pin="2" pintype="passive"/>
+      <node ref="R9" pin="2" pintype="passive"/>
+      <node ref="SW1" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="SW2" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="SW3" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="SW4" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="SW5" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="TP11" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U2" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U3" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U4" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U5" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U6" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U7" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U8" pin="3" pinfunction="GND_3" pintype="power_in"/>
+      <node ref="U9" pin="13" pinfunction="GND_13" pintype="passive"/>
+      <node ref="U9" pin="18" pinfunction="GND_18" pintype="passive"/>
+      <node ref="U9" pin="23" pinfunction="GND_23" pintype="passive"/>
+      <node ref="U9" pin="28" pinfunction="GND_28" pintype="passive"/>
+      <node ref="U9" pin="3" pinfunction="GND_3" pintype="power_out"/>
+      <node ref="U9" pin="33" pinfunction="AGND_33" pintype="passive"/>
+      <node ref="U9" pin="38" pinfunction="GND_38" pintype="passive"/>
+      <node ref="U9" pin="8" pinfunction="GND_8" pintype="passive"/>
+    </net>
+    <net code="28" name="/IN0" class="Default">
+      <node ref="J1" pin="1" pinfunction="Pin_1_1" pintype="passive"/>
+      <node ref="R1" pin="1" pintype="passive"/>
+      <node ref="TP12" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="29" name="/IN1" class="Default">
+      <node ref="J1" pin="3" pinfunction="Pin_3_3" pintype="passive"/>
+      <node ref="R6" pin="1" pintype="passive"/>
+    </net>
+    <net code="30" name="/IN2" class="Default">
+      <node ref="J1" pin="5" pinfunction="Pin_5_5" pintype="passive"/>
+      <node ref="R11" pin="1" pintype="passive"/>
+    </net>
+    <net code="31" name="/IN3" class="Default">
+      <node ref="J1" pin="7" pinfunction="Pin_7_7" pintype="passive"/>
+      <node ref="R16" pin="1" pintype="passive"/>
+    </net>
+    <net code="32" name="/IN4" class="Default">
+      <node ref="J1" pin="9" pinfunction="Pin_9_9" pintype="passive"/>
+      <node ref="R21" pin="1" pintype="passive"/>
+    </net>
+    <net code="33" name="/IN5" class="Default">
+      <node ref="J1" pin="11" pinfunction="Pin_11_11" pintype="passive"/>
+      <node ref="R26" pin="1" pintype="passive"/>
+    </net>
+    <net code="34" name="/IN6" class="Default">
+      <node ref="J1" pin="13" pinfunction="Pin_13_13" pintype="passive"/>
+      <node ref="R31" pin="1" pintype="passive"/>
+    </net>
+    <net code="35" name="/IN7" class="Default">
+      <node ref="J1" pin="15" pinfunction="Pin_15_15" pintype="passive"/>
+      <node ref="R36" pin="1" pintype="passive"/>
+    </net>
+    <net code="36" name="/LED0_A" class="Default">
+      <node ref="D17" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="R41" pin="2" pintype="passive"/>
+    </net>
+    <net code="37" name="/LED1_A" class="Default">
+      <node ref="D18" pin="2" pinfunction="A_2" pintype="passive"/>
+      <node ref="R42" pin="2" pintype="passive"/>
+    </net>
+    <net code="38" name="/LED_STATUS" class="Default">
+      <node ref="R42" pin="1" pintype="passive"/>
+      <node ref="U9" pin="31" pinfunction="GP26_31" pintype="bidirectional"/>
+    </net>
+    <net code="39" name="/MID_0" class="Default">
+      <node ref="R1" pin="2" pintype="passive"/>
+      <node ref="R2" pin="1" pintype="passive"/>
+    </net>
+    <net code="40" name="/MID_1" class="Default">
+      <node ref="R6" pin="2" pintype="passive"/>
+      <node ref="R7" pin="1" pintype="passive"/>
+    </net>
+    <net code="41" name="/MID_2" class="Default">
+      <node ref="R11" pin="2" pintype="passive"/>
+      <node ref="R12" pin="1" pintype="passive"/>
+    </net>
+    <net code="42" name="/MID_3" class="Default">
+      <node ref="R16" pin="2" pintype="passive"/>
+      <node ref="R17" pin="1" pintype="passive"/>
+    </net>
+    <net code="43" name="/MID_4" class="Default">
+      <node ref="R21" pin="2" pintype="passive"/>
+      <node ref="R22" pin="1" pintype="passive"/>
+    </net>
+    <net code="44" name="/MID_5" class="Default">
+      <node ref="R26" pin="2" pintype="passive"/>
+      <node ref="R27" pin="1" pintype="passive"/>
+    </net>
+    <net code="45" name="/MID_6" class="Default">
+      <node ref="R31" pin="2" pintype="passive"/>
+      <node ref="R32" pin="1" pintype="passive"/>
+    </net>
+    <net code="46" name="/MID_7" class="Default">
+      <node ref="R36" pin="2" pintype="passive"/>
+      <node ref="R37" pin="1" pintype="passive"/>
+    </net>
+    <net code="47" name="/OUT0" class="Default">
+      <node ref="R5" pin="2" pintype="passive"/>
+      <node ref="TP1" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="1" pinfunction="GP0_1" pintype="bidirectional"/>
+    </net>
+    <net code="48" name="/OUT1" class="Default">
+      <node ref="R10" pin="2" pintype="passive"/>
+      <node ref="TP2" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="2" pinfunction="GP1_2" pintype="bidirectional"/>
+    </net>
+    <net code="49" name="/OUT2" class="Default">
+      <node ref="R15" pin="2" pintype="passive"/>
+      <node ref="TP3" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="4" pinfunction="GP2_4" pintype="bidirectional"/>
+    </net>
+    <net code="50" name="/OUT3" class="Default">
+      <node ref="R20" pin="2" pintype="passive"/>
+      <node ref="TP4" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="5" pinfunction="GP3_5" pintype="bidirectional"/>
+    </net>
+    <net code="51" name="/OUT4" class="Default">
+      <node ref="R25" pin="2" pintype="passive"/>
+      <node ref="TP5" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="6" pinfunction="GP4_6" pintype="bidirectional"/>
+    </net>
+    <net code="52" name="/OUT5" class="Default">
+      <node ref="R30" pin="2" pintype="passive"/>
+      <node ref="TP6" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="7" pinfunction="GP5_7" pintype="bidirectional"/>
+    </net>
+    <net code="53" name="/OUT6" class="Default">
+      <node ref="R35" pin="2" pintype="passive"/>
+      <node ref="TP7" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="9" pinfunction="GP6_9" pintype="bidirectional"/>
+    </net>
+    <net code="54" name="/OUT7" class="Default">
+      <node ref="R40" pin="2" pintype="passive"/>
+      <node ref="TP8" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="10" pinfunction="GP7_10" pintype="bidirectional"/>
+    </net>
+    <net code="55" name="/RUN" class="Default">
+      <node ref="SW5" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="30" pinfunction="RUN_30" pintype="passive"/>
+    </net>
+    <net code="56" name="/TFT_BL" class="Default">
+      <node ref="J2" pin="8" pinfunction="Pin_8_8" pintype="passive"/>
+      <node ref="R47" pin="2" pintype="passive"/>
+      <node ref="R48" pin="1" pintype="passive"/>
+    </net>
+    <net code="57" name="/TFT_BL_CTRL" class="Default">
+      <node ref="R43" pin="1" pintype="passive"/>
+      <node ref="U9" pin="21" pinfunction="GP16_21" pintype="bidirectional"/>
+    </net>
+    <net code="58" name="/TFT_CS" class="Default">
+      <node ref="J2" pin="7" pinfunction="Pin_7_7" pintype="passive"/>
+      <node ref="U9" pin="17" pinfunction="GP13_17" pintype="bidirectional"/>
+    </net>
+    <net code="59" name="/TFT_DC" class="Default">
+      <node ref="J2" pin="6" pinfunction="Pin_6_6" pintype="passive"/>
+      <node ref="U9" pin="19" pinfunction="GP14_19" pintype="bidirectional"/>
+    </net>
+    <net code="60" name="/TFT_MOSI" class="Default">
+      <node ref="J2" pin="4" pinfunction="Pin_4_4" pintype="passive"/>
+      <node ref="U9" pin="15" pinfunction="GP11_15" pintype="bidirectional"/>
+    </net>
+    <net code="61" name="/TFT_RST" class="Default">
+      <node ref="J2" pin="5" pinfunction="Pin_5_5" pintype="passive"/>
+      <node ref="U9" pin="20" pinfunction="GP15_20" pintype="bidirectional"/>
+    </net>
+    <net code="62" name="/TFT_SCK" class="Default">
+      <node ref="J2" pin="3" pinfunction="Pin_3_3" pintype="passive"/>
+      <node ref="U9" pin="14" pinfunction="GP10_14" pintype="bidirectional"/>
+    </net>
+    <net code="63" name="/VSYS" class="Default">
+      <node ref="TP10" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U9" pin="39" pinfunction="VSYS_39" pintype="passive"/>
+    </net>
+    <net code="64" name="/Y_0" class="Default">
+      <node ref="R5" pin="1" pintype="passive"/>
+      <node ref="U1" pin="4" pintype="output"/>
+    </net>
+    <net code="65" name="/Y_1" class="Default">
+      <node ref="R10" pin="1" pintype="passive"/>
+      <node ref="U2" pin="4" pintype="output"/>
+    </net>
+    <net code="66" name="/Y_2" class="Default">
+      <node ref="R15" pin="1" pintype="passive"/>
+      <node ref="U3" pin="4" pintype="output"/>
+    </net>
+    <net code="67" name="/Y_3" class="Default">
+      <node ref="R20" pin="1" pintype="passive"/>
+      <node ref="U4" pin="4" pintype="output"/>
+    </net>
+    <net code="68" name="/Y_4" class="Default">
+      <node ref="R25" pin="1" pintype="passive"/>
+      <node ref="U5" pin="4" pintype="output"/>
+    </net>
+    <net code="69" name="/Y_5" class="Default">
+      <node ref="R30" pin="1" pintype="passive"/>
+      <node ref="U6" pin="4" pintype="output"/>
+    </net>
+    <net code="70" name="/Y_6" class="Default">
+      <node ref="R35" pin="1" pintype="passive"/>
+      <node ref="U7" pin="4" pintype="output"/>
+    </net>
+    <net code="71" name="/Y_7" class="Default">
+      <node ref="R40" pin="1" pintype="passive"/>
+      <node ref="U8" pin="4" pintype="output"/>
+    </net>
+    <net code="72" name="/Z_0" class="Default">
+      <node ref="D1" pin="2" pinfunction="K2_2" pintype="passive"/>
+      <node ref="D2" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="TP15" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="73" name="/Z_1" class="Default">
+      <node ref="D3" pin="2" pinfunction="K2_2" pintype="passive"/>
+      <node ref="D4" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="74" name="/Z_2" class="Default">
+      <node ref="D5" pin="2" pinfunction="K2_2" pintype="passive"/>
+      <node ref="D6" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="75" name="/Z_3" class="Default">
+      <node ref="D7" pin="2" pinfunction="K2_2" pintype="passive"/>
+      <node ref="D8" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="76" name="/Z_4" class="Default">
+      <node ref="D10" pin="1" pinfunction="K_1" pintype="passive"/>
+      <node ref="D9" pin="2" pinfunction="K2_2" pintype="passive"/>
+    </net>
+    <net code="77" name="/Z_5" class="Default">
+      <node ref="D11" pin="2" pinfunction="K2_2" pintype="passive"/>
+      <node ref="D12" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="78" name="/Z_6" class="Default">
+      <node ref="D13" pin="2" pinfunction="K2_2" pintype="passive"/>
+      <node ref="D14" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="79" name="/Z_7" class="Default">
+      <node ref="D15" pin="2" pinfunction="K2_2" pintype="passive"/>
+      <node ref="D16" pin="1" pinfunction="K_1" pintype="passive"/>
+    </net>
+    <net code="80" name="unconnected-(U1-NC-Pad1)" class="Default">
+      <node ref="U1" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="81" name="unconnected-(U2-NC-Pad1)" class="Default">
+      <node ref="U2" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="82" name="unconnected-(U3-NC-Pad1)" class="Default">
+      <node ref="U3" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="83" name="unconnected-(U4-NC-Pad1)" class="Default">
+      <node ref="U4" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="84" name="unconnected-(U5-NC-Pad1)" class="Default">
+      <node ref="U5" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="85" name="unconnected-(U6-NC-Pad1)" class="Default">
+      <node ref="U6" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="86" name="unconnected-(U7-NC-Pad1)" class="Default">
+      <node ref="U7" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="87" name="unconnected-(U8-NC-Pad1)" class="Default">
+      <node ref="U8" pin="1" pinfunction="NC_1" pintype="no_connect"/>
+    </net>
+    <net code="88" name="unconnected-(U9-3V3_EN-Pad37)" class="Default">
+      <node ref="U9" pin="37" pinfunction="3V3_EN_37" pintype="passive+no_connect"/>
+    </net>
+    <net code="89" name="unconnected-(U9-ADC_VREF-Pad35)" class="Default">
+      <node ref="U9" pin="35" pinfunction="ADC_VREF_35" pintype="passive+no_connect"/>
+    </net>
+    <net code="90" name="unconnected-(U9-GP17-Pad22)" class="Default">
+      <node ref="U9" pin="22" pinfunction="GP17_22" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="91" name="unconnected-(U9-GP18-Pad24)" class="Default">
+      <node ref="U9" pin="24" pinfunction="GP18_24" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="92" name="unconnected-(U9-GP19-Pad25)" class="Default">
+      <node ref="U9" pin="25" pinfunction="GP19_25" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="93" name="unconnected-(U9-GP20-Pad26)" class="Default">
+      <node ref="U9" pin="26" pinfunction="GP20_26" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="94" name="unconnected-(U9-GP21-Pad27)" class="Default">
+      <node ref="U9" pin="27" pinfunction="GP21_27" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="95" name="unconnected-(U9-GP28-Pad34)" class="Default">
+      <node ref="U9" pin="34" pinfunction="GP28_34" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="96" name="unconnected-(U9-VBUS-Pad40)" class="Default">
+      <node ref="U9" pin="40" pinfunction="VBUS_40" pintype="passive+no_connect"/>
+    </net>
+  </nets>
+</export>

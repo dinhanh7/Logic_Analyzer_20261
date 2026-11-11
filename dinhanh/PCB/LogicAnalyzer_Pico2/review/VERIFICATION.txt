@@ -1,0 +1,14 @@
+KiCad 10.0.8 / Rev A1 / 2026-11-11
+ERC: 0 errors, 0 warnings
+DRC: 0 violations
+Unconnected items: 0
+Schematic parity issues: 0
+Topology/pin mapping: 84 checks passed
+DRC exclusions: none
+Board: 160 x 110 mm, 2 copper layers, FR4 1.6 mm
+Release: ENGINEERING REVIEW, module / pulse / timing / budget validation pending.
+
+SHA256 of native design files:
+11baab6bc0b2033c103ea6995477f6cd6afbbddd6161b5b2c94bba36b4c965ce  LogicAnalyzer_Pico2.kicad_sch
+c7cd61c8aa1fc41121ff99f85156b928cf7b72ab69c2976a75314b29847ebd5a  LogicAnalyzer_Pico2.kicad_pcb
+de187fd2592c92f9810f1aa2e0cefb45e80013f9897be74c32fe0608f393d5c1  LogicAnalyzer_Pico2.kicad_pro

@@ -1,0 +1,111 @@
+Reference,Value,Footprint,Datasheet,Note
+U9,Pico 2 + 2x female 1x20,LogicAnalyzer:Pico2_Sockets,https://datasheets.raspberrypi.com/pico/pico-2-datasheet.pdf,"Fit two female 1x20 2.54mm sockets, row spacing 17.78mm; USB and regulator are on the plug-in Pico 2."
+J1,PROBE CH0..7 / GND,LogicAnalyzer:Probe_2x08,,
+J2,TFT CABLE / 3V3 ONLY,LogicAnalyzer:TFT_1x08,,Generic labeled cable header. Verify actual TFT pin order before wiring. No MISO.
+SW1,UP,LogicAnalyzer:SW_6mm,,
+SW2,DOWN,LogicAnalyzer:SW_6mm,,
+SW3,OK,LogicAnalyzer:SW_6mm,,
+SW4,BACK,LogicAnalyzer:SW_6mm,,
+SW5,RESET,LogicAnalyzer:SW_6mm,,
+C9,10u / 10V X7R,LogicAnalyzer:C1206,,"Bulk, effective capacitance at 3.3V to be checked."
+C10,10u / 10V X7R,LogicAnalyzer:C1206,,Near TFT header.
+R41,1k,LogicAnalyzer:R0805,,
+D17,PWR,LogicAnalyzer:LED0805,,
+R42,1k,LogicAnalyzer:R0805,,
+D18,STATUS,LogicAnalyzer:LED0805,,
+J3,CAL OUT / GND,LogicAnalyzer:CAL_1x02,,
+Q1,BC817-40,LogicAnalyzer:SOT23,,"B=1 E=2 C=3; drives high-side PNP only, not backlight current directly."
+R43,4k7,LogicAnalyzer:R0805,,
+R44,47k,LogicAnalyzer:R0805,,
+Q2,BC807-40,LogicAnalyzer:SOT23,,B=1 E=2 C=3; high-side backlight power. Module must tolerate 3.3V BL.
+R45,4k7,LogicAnalyzer:R0805,,
+R46,47k,LogicAnalyzer:R0805,,
+R47,100R,LogicAnalyzer:R0805,,
+R48,100k,LogicAnalyzer:R0805,,
+TP9,+3V3,LogicAnalyzer:TP_1mm,,
+TP10,VSYS,LogicAnalyzer:TP_1mm,,
+TP11,GND,LogicAnalyzer:TP_1mm,,
+TP12,IN0,LogicAnalyzer:TP_1mm,,
+TP13,CLAMP_0,LogicAnalyzer:TP_1mm,,
+TP14,A_0,LogicAnalyzer:TP_1mm,,
+TP15,Z_0,LogicAnalyzer:TP_1mm,,
+R1,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R2,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R3,330R,LogicAnalyzer:R0805,,
+R4,47k,LogicAnalyzer:R0805,,
+D1,BAV99,LogicAnalyzer:SOT23,https://assets.nexperia.com/documents/data-sheet/BAV99.pdf,"1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."
+D2,BZX85C3V3,LogicAnalyzer:Zener_DO41,https://www.vishay.com/docs/85607/bzx85.pdf,
+U1,SN74LVC1G17DBVR,LogicAnalyzer:SOT23_5,https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf,DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.
+R5,33R,LogicAnalyzer:R0805,,
+C1,100n 10V,LogicAnalyzer:C0805,,
+TP1,OUT0,LogicAnalyzer:TP_1mm,,
+R6,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R7,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R8,330R,LogicAnalyzer:R0805,,
+R9,47k,LogicAnalyzer:R0805,,
+D3,BAV99,LogicAnalyzer:SOT23,https://assets.nexperia.com/documents/data-sheet/BAV99.pdf,"1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."
+D4,BZX85C3V3,LogicAnalyzer:Zener_DO41,https://www.vishay.com/docs/85607/bzx85.pdf,
+U2,SN74LVC1G17DBVR,LogicAnalyzer:SOT23_5,https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf,DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.
+R10,33R,LogicAnalyzer:R0805,,
+C2,100n 10V,LogicAnalyzer:C0805,,
+TP2,OUT1,LogicAnalyzer:TP_1mm,,
+R11,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R12,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R13,330R,LogicAnalyzer:R0805,,
+R14,47k,LogicAnalyzer:R0805,,
+D5,BAV99,LogicAnalyzer:SOT23,https://assets.nexperia.com/documents/data-sheet/BAV99.pdf,"1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."
+D6,BZX85C3V3,LogicAnalyzer:Zener_DO41,https://www.vishay.com/docs/85607/bzx85.pdf,
+U3,SN74LVC1G17DBVR,LogicAnalyzer:SOT23_5,https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf,DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.
+R15,33R,LogicAnalyzer:R0805,,
+C3,100n 10V,LogicAnalyzer:C0805,,
+TP3,OUT2,LogicAnalyzer:TP_1mm,,
+R16,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R17,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R18,330R,LogicAnalyzer:R0805,,
+R19,47k,LogicAnalyzer:R0805,,
+D7,BAV99,LogicAnalyzer:SOT23,https://assets.nexperia.com/documents/data-sheet/BAV99.pdf,"1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."
+D8,BZX85C3V3,LogicAnalyzer:Zener_DO41,https://www.vishay.com/docs/85607/bzx85.pdf,
+U4,SN74LVC1G17DBVR,LogicAnalyzer:SOT23_5,https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf,DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.
+R20,33R,LogicAnalyzer:R0805,,
+C4,100n 10V,LogicAnalyzer:C0805,,
+TP4,OUT3,LogicAnalyzer:TP_1mm,,
+R21,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R22,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R23,330R,LogicAnalyzer:R0805,,
+R24,47k,LogicAnalyzer:R0805,,
+D9,BAV99,LogicAnalyzer:SOT23,https://assets.nexperia.com/documents/data-sheet/BAV99.pdf,"1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."
+D10,BZX85C3V3,LogicAnalyzer:Zener_DO41,https://www.vishay.com/docs/85607/bzx85.pdf,
+U5,SN74LVC1G17DBVR,LogicAnalyzer:SOT23_5,https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf,DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.
+R25,33R,LogicAnalyzer:R0805,,
+C5,100n 10V,LogicAnalyzer:C0805,,
+TP5,OUT4,LogicAnalyzer:TP_1mm,,
+R26,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R27,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R28,330R,LogicAnalyzer:R0805,,
+R29,47k,LogicAnalyzer:R0805,,
+D11,BAV99,LogicAnalyzer:SOT23,https://assets.nexperia.com/documents/data-sheet/BAV99.pdf,"1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."
+D12,BZX85C3V3,LogicAnalyzer:Zener_DO41,https://www.vishay.com/docs/85607/bzx85.pdf,
+U6,SN74LVC1G17DBVR,LogicAnalyzer:SOT23_5,https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf,DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.
+R30,33R,LogicAnalyzer:R0805,,
+C6,100n 10V,LogicAnalyzer:C0805,,
+TP6,OUT5,LogicAnalyzer:TP_1mm,,
+R31,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R32,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R33,330R,LogicAnalyzer:R0805,,
+R34,47k,LogicAnalyzer:R0805,,
+D13,BAV99,LogicAnalyzer:SOT23,https://assets.nexperia.com/documents/data-sheet/BAV99.pdf,"1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."
+D14,BZX85C3V3,LogicAnalyzer:Zener_DO41,https://www.vishay.com/docs/85607/bzx85.pdf,
+U7,SN74LVC1G17DBVR,LogicAnalyzer:SOT23_5,https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf,DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.
+R35,33R,LogicAnalyzer:R0805,,
+C7,100n 10V,LogicAnalyzer:C0805,,
+TP7,OUT6,LogicAnalyzer:TP_1mm,,
+R36,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R37,1k PR02 2W,LogicAnalyzer:PR02_1k_2W_P17.78,https://www.vishay.com/docs/28729/pr010203.pdf,"Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor."
+R38,330R,LogicAnalyzer:R0805,,
+R39,47k,LogicAnalyzer:R0805,,
+D15,BAV99,LogicAnalyzer:SOT23,https://assets.nexperia.com/documents/data-sheet/BAV99.pdf,"1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3."
+D16,BZX85C3V3,LogicAnalyzer:Zener_DO41,https://www.vishay.com/docs/85607/bzx85.pdf,
+U8,SN74LVC1G17DBVR,LogicAnalyzer:SOT23_5,https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf,DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.
+R40,33R,LogicAnalyzer:R0805,,
+C8,100n 10V,LogicAnalyzer:C0805,,
+TP8,OUT7,LogicAnalyzer:TP_1mm,,

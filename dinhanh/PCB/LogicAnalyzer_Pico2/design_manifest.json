@@ -1,0 +1,1064 @@
+{
+  "root_uuid": "f34a609e-a803-47b6-bdb1-26745dc0fad9",
+  "parts": [
+    {
+      "Reference": "U9",
+      "Value": "Pico 2 + 2x female 1x20",
+      "Footprint": "LogicAnalyzer:Pico2_Sockets",
+      "Datasheet": "https://datasheets.raspberrypi.com/pico/pico-2-datasheet.pdf",
+      "Note": "Fit two female 1x20 2.54mm sockets, row spacing 17.78mm; USB and regulator are on the plug-in Pico 2.",
+      "UUID": "ab2bc150-cdf4-427e-a793-532a62371530",
+      "BOM": true
+    },
+    {
+      "Reference": "J1",
+      "Value": "PROBE CH0..7 / GND",
+      "Footprint": "LogicAnalyzer:Probe_2x08",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "48a3ed52-fa8a-4780-bde7-e569d665526e",
+      "BOM": true
+    },
+    {
+      "Reference": "J2",
+      "Value": "TFT CABLE / 3V3 ONLY",
+      "Footprint": "LogicAnalyzer:TFT_1x08",
+      "Datasheet": "",
+      "Note": "Generic labeled cable header. Verify actual TFT pin order before wiring. No MISO.",
+      "UUID": "adb08c4f-4835-4815-b993-255bc6ff34c6",
+      "BOM": true
+    },
+    {
+      "Reference": "SW1",
+      "Value": "UP",
+      "Footprint": "LogicAnalyzer:SW_6mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "b9a032ed-3b20-432f-9723-1f8448925e7f",
+      "BOM": true
+    },
+    {
+      "Reference": "SW2",
+      "Value": "DOWN",
+      "Footprint": "LogicAnalyzer:SW_6mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "89bc1bac-9a02-45c4-8340-7c8cbb01c897",
+      "BOM": true
+    },
+    {
+      "Reference": "SW3",
+      "Value": "OK",
+      "Footprint": "LogicAnalyzer:SW_6mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "9148d47a-be07-43ca-aa9a-e77acd6b7f6b",
+      "BOM": true
+    },
+    {
+      "Reference": "SW4",
+      "Value": "BACK",
+      "Footprint": "LogicAnalyzer:SW_6mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "9336e8a5-56c7-4c62-94e0-c8dd91f01f3e",
+      "BOM": true
+    },
+    {
+      "Reference": "SW5",
+      "Value": "RESET",
+      "Footprint": "LogicAnalyzer:SW_6mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "55cda8e1-378f-4162-9ad1-98f4cf8255bd",
+      "BOM": true
+    },
+    {
+      "Reference": "C9",
+      "Value": "10u / 10V X7R",
+      "Footprint": "LogicAnalyzer:C1206",
+      "Datasheet": "",
+      "Note": "Bulk, effective capacitance at 3.3V to be checked.",
+      "UUID": "f7c69a5f-0572-4634-934f-83565015b032",
+      "BOM": true
+    },
+    {
+      "Reference": "C10",
+      "Value": "10u / 10V X7R",
+      "Footprint": "LogicAnalyzer:C1206",
+      "Datasheet": "",
+      "Note": "Near TFT header.",
+      "UUID": "14901d82-8459-48a5-aa3a-498350b5a914",
+      "BOM": true
+    },
+    {
+      "Reference": "R41",
+      "Value": "1k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "723541dc-81a4-45d4-bf26-977991c88937",
+      "BOM": true
+    },
+    {
+      "Reference": "D17",
+      "Value": "PWR",
+      "Footprint": "LogicAnalyzer:LED0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "54a11679-18de-4c7e-b973-1ce51bf16410",
+      "BOM": true
+    },
+    {
+      "Reference": "R42",
+      "Value": "1k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "895f536d-3471-4d3a-b20b-490a1eff213e",
+      "BOM": true
+    },
+    {
+      "Reference": "D18",
+      "Value": "STATUS",
+      "Footprint": "LogicAnalyzer:LED0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "bdead899-2808-497b-8537-429b95952eec",
+      "BOM": true
+    },
+    {
+      "Reference": "J3",
+      "Value": "CAL OUT / GND",
+      "Footprint": "LogicAnalyzer:CAL_1x02",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "f41ebced-9acc-4389-a59b-44fff9e9ebf6",
+      "BOM": true
+    },
+    {
+      "Reference": "Q1",
+      "Value": "BC817-40",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "",
+      "Note": "B=1 E=2 C=3; drives high-side PNP only, not backlight current directly.",
+      "UUID": "964ccdf5-b711-4320-8d1e-ea8ded4b214f",
+      "BOM": true
+    },
+    {
+      "Reference": "R43",
+      "Value": "4k7",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "4c43b4a2-e39a-4e0e-a895-ea557a2f23e4",
+      "BOM": true
+    },
+    {
+      "Reference": "R44",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "523df01e-3131-4ed8-9b16-5db9b487c48c",
+      "BOM": true
+    },
+    {
+      "Reference": "Q2",
+      "Value": "BC807-40",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "",
+      "Note": "B=1 E=2 C=3; high-side backlight power. Module must tolerate 3.3V BL.",
+      "UUID": "00a11ac6-1a8f-4e9c-9d07-0125482988b9",
+      "BOM": true
+    },
+    {
+      "Reference": "R45",
+      "Value": "4k7",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "53184b45-8ad6-494d-b8be-017b1fc29ae9",
+      "BOM": true
+    },
+    {
+      "Reference": "R46",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "01a32c4b-9ae8-47d7-abcd-ed6a7a4d5564",
+      "BOM": true
+    },
+    {
+      "Reference": "R47",
+      "Value": "100R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "ddd29bfa-22ea-4568-940f-f307140df1dd",
+      "BOM": true
+    },
+    {
+      "Reference": "R48",
+      "Value": "100k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "d5c21507-01d0-4e07-90e6-de50623106a3",
+      "BOM": true
+    },
+    {
+      "Reference": "TP9",
+      "Value": "+3V3",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "094556c7-b909-48ae-932f-7db0a386b847",
+      "BOM": true
+    },
+    {
+      "Reference": "TP10",
+      "Value": "VSYS",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "43c59a18-71e0-47c7-96fa-98e522c1db4a",
+      "BOM": true
+    },
+    {
+      "Reference": "TP11",
+      "Value": "GND",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "fa71acf2-8328-407a-97a1-4274df39ddaa",
+      "BOM": true
+    },
+    {
+      "Reference": "TP12",
+      "Value": "IN0",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "5ac906fe-3d82-4744-a15e-679b7856929b",
+      "BOM": true
+    },
+    {
+      "Reference": "TP13",
+      "Value": "CLAMP_0",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "e4e0cd04-05c0-4794-b3ad-e374801e4983",
+      "BOM": true
+    },
+    {
+      "Reference": "TP14",
+      "Value": "A_0",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "377420ec-2519-4330-bad1-9ac86590c240",
+      "BOM": true
+    },
+    {
+      "Reference": "TP15",
+      "Value": "Z_0",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "105e706e-57c1-4cfa-a999-cfb123a458f3",
+      "BOM": true
+    },
+    {
+      "Reference": "R1",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "110169bf-7994-4219-a7b2-e7edfc8297aa",
+      "BOM": true
+    },
+    {
+      "Reference": "R2",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "c3029e75-3062-4af5-bdfa-16ec60c0a01a",
+      "BOM": true
+    },
+    {
+      "Reference": "R3",
+      "Value": "330R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "4ebf5b93-341f-4fac-9685-9266acef1903",
+      "BOM": true
+    },
+    {
+      "Reference": "R4",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "b692d4d7-24fa-4d0d-af70-a453bfc3c15f",
+      "BOM": true
+    },
+    {
+      "Reference": "D1",
+      "Value": "BAV99",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf",
+      "Note": "1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.",
+      "UUID": "2de864e7-dff7-45a6-9e98-5b0cc7ac6f64",
+      "BOM": true
+    },
+    {
+      "Reference": "D2",
+      "Value": "BZX85C3V3",
+      "Footprint": "LogicAnalyzer:Zener_DO41",
+      "Datasheet": "https://www.vishay.com/docs/85607/bzx85.pdf",
+      "Note": "",
+      "UUID": "ca122461-8f89-46d1-91ab-8ed377acca75",
+      "BOM": true
+    },
+    {
+      "Reference": "U1",
+      "Value": "SN74LVC1G17DBVR",
+      "Footprint": "LogicAnalyzer:SOT23_5",
+      "Datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf",
+      "Note": "DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.",
+      "UUID": "a1829540-c037-4095-b5f5-da238651beb4",
+      "BOM": true
+    },
+    {
+      "Reference": "R5",
+      "Value": "33R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "2df62b8f-617c-495c-8690-7d936e1c9937",
+      "BOM": true
+    },
+    {
+      "Reference": "C1",
+      "Value": "100n 10V",
+      "Footprint": "LogicAnalyzer:C0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "8787887b-e56b-41d2-bbfa-71d5ad6db50c",
+      "BOM": true
+    },
+    {
+      "Reference": "TP1",
+      "Value": "OUT0",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "64b6b10a-f4d0-47e6-bedd-9ab93b03973b",
+      "BOM": true
+    },
+    {
+      "Reference": "R6",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "af26f679-27bb-4f8f-9ab3-198a50b68822",
+      "BOM": true
+    },
+    {
+      "Reference": "R7",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "112853cb-f2dc-4bc6-ae31-b0c629038a99",
+      "BOM": true
+    },
+    {
+      "Reference": "R8",
+      "Value": "330R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "af6523da-54a8-4d99-bb63-72afce978a8b",
+      "BOM": true
+    },
+    {
+      "Reference": "R9",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "5f6ad713-a8b8-4f9c-b606-2307c3909c67",
+      "BOM": true
+    },
+    {
+      "Reference": "D3",
+      "Value": "BAV99",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf",
+      "Note": "1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.",
+      "UUID": "0ce5a33d-99e7-453e-8c6c-7fa9a9d65a46",
+      "BOM": true
+    },
+    {
+      "Reference": "D4",
+      "Value": "BZX85C3V3",
+      "Footprint": "LogicAnalyzer:Zener_DO41",
+      "Datasheet": "https://www.vishay.com/docs/85607/bzx85.pdf",
+      "Note": "",
+      "UUID": "6913ea5f-1edb-43cf-afed-8a96c03c63dc",
+      "BOM": true
+    },
+    {
+      "Reference": "U2",
+      "Value": "SN74LVC1G17DBVR",
+      "Footprint": "LogicAnalyzer:SOT23_5",
+      "Datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf",
+      "Note": "DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.",
+      "UUID": "31058e97-a48c-4df9-be4b-5460f7726ff8",
+      "BOM": true
+    },
+    {
+      "Reference": "R10",
+      "Value": "33R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "6cd2aedb-ceb4-46d3-a98d-59e2c20c67b9",
+      "BOM": true
+    },
+    {
+      "Reference": "C2",
+      "Value": "100n 10V",
+      "Footprint": "LogicAnalyzer:C0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "ab7fc0dc-985b-458a-9b9a-c1496a67f542",
+      "BOM": true
+    },
+    {
+      "Reference": "TP2",
+      "Value": "OUT1",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "15177d6d-7b99-49e9-954b-a1ad8af7cb03",
+      "BOM": true
+    },
+    {
+      "Reference": "R11",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "dbfdc506-1442-4d8f-aa0a-bdf49781b47d",
+      "BOM": true
+    },
+    {
+      "Reference": "R12",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "ad9d0464-1f6e-47da-adaf-61b029886c13",
+      "BOM": true
+    },
+    {
+      "Reference": "R13",
+      "Value": "330R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "11efd6f4-f453-4c21-9602-db5e260d8a90",
+      "BOM": true
+    },
+    {
+      "Reference": "R14",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "73ff77fe-e9c2-41c2-aedf-ef32368a91f2",
+      "BOM": true
+    },
+    {
+      "Reference": "D5",
+      "Value": "BAV99",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf",
+      "Note": "1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.",
+      "UUID": "a31caa3c-81d8-4bf1-ab30-f4a0a1747ac4",
+      "BOM": true
+    },
+    {
+      "Reference": "D6",
+      "Value": "BZX85C3V3",
+      "Footprint": "LogicAnalyzer:Zener_DO41",
+      "Datasheet": "https://www.vishay.com/docs/85607/bzx85.pdf",
+      "Note": "",
+      "UUID": "63424e10-be57-4d94-8505-ae995ef1dfaa",
+      "BOM": true
+    },
+    {
+      "Reference": "U3",
+      "Value": "SN74LVC1G17DBVR",
+      "Footprint": "LogicAnalyzer:SOT23_5",
+      "Datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf",
+      "Note": "DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.",
+      "UUID": "7f927f7f-58f7-459f-8a0b-f14f92144cc6",
+      "BOM": true
+    },
+    {
+      "Reference": "R15",
+      "Value": "33R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "f0f251d2-ad4c-4f41-8bc1-e6a76ef32c6f",
+      "BOM": true
+    },
+    {
+      "Reference": "C3",
+      "Value": "100n 10V",
+      "Footprint": "LogicAnalyzer:C0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "c7f522bd-0e7c-4c46-a05f-205ee821e6e2",
+      "BOM": true
+    },
+    {
+      "Reference": "TP3",
+      "Value": "OUT2",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "5cfd05a7-1f65-45f8-b295-4dda56e27c3e",
+      "BOM": true
+    },
+    {
+      "Reference": "R16",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "dc7f599d-21b7-46b4-bbc1-e490569b16f4",
+      "BOM": true
+    },
+    {
+      "Reference": "R17",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "3d6e49bf-bee3-4748-ac27-b6c5b9fe86ef",
+      "BOM": true
+    },
+    {
+      "Reference": "R18",
+      "Value": "330R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "f0c30960-4940-4dd9-a192-404b2e439be7",
+      "BOM": true
+    },
+    {
+      "Reference": "R19",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "4a95cb60-c3b9-4c3b-a1c4-1ea547f01e29",
+      "BOM": true
+    },
+    {
+      "Reference": "D7",
+      "Value": "BAV99",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf",
+      "Note": "1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.",
+      "UUID": "3e06bd9e-00fa-41ff-8433-35b8edba2218",
+      "BOM": true
+    },
+    {
+      "Reference": "D8",
+      "Value": "BZX85C3V3",
+      "Footprint": "LogicAnalyzer:Zener_DO41",
+      "Datasheet": "https://www.vishay.com/docs/85607/bzx85.pdf",
+      "Note": "",
+      "UUID": "0bc3ca73-c3b2-49fb-9e5a-b0d6cc8d08ce",
+      "BOM": true
+    },
+    {
+      "Reference": "U4",
+      "Value": "SN74LVC1G17DBVR",
+      "Footprint": "LogicAnalyzer:SOT23_5",
+      "Datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf",
+      "Note": "DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.",
+      "UUID": "eb6cf0ea-2280-4abd-a233-54b88a25cd57",
+      "BOM": true
+    },
+    {
+      "Reference": "R20",
+      "Value": "33R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "c0c388aa-fd1d-4a42-b7f3-96a0c22cfb43",
+      "BOM": true
+    },
+    {
+      "Reference": "C4",
+      "Value": "100n 10V",
+      "Footprint": "LogicAnalyzer:C0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "17dc656d-ed86-484d-a076-5e7b0aef2797",
+      "BOM": true
+    },
+    {
+      "Reference": "TP4",
+      "Value": "OUT3",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "1db4f0dc-114f-40e2-8ae6-12477631e871",
+      "BOM": true
+    },
+    {
+      "Reference": "R21",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "79dd6670-4152-40a9-805d-46be492f4afc",
+      "BOM": true
+    },
+    {
+      "Reference": "R22",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "5d2ee41c-b3a8-4d3d-8a65-33327ccdbde4",
+      "BOM": true
+    },
+    {
+      "Reference": "R23",
+      "Value": "330R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "4326a1ca-8a47-4ea3-a5ba-3530ba875e10",
+      "BOM": true
+    },
+    {
+      "Reference": "R24",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "ef51a85c-bf35-4384-a0ad-f6b7f80dc91f",
+      "BOM": true
+    },
+    {
+      "Reference": "D9",
+      "Value": "BAV99",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf",
+      "Note": "1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.",
+      "UUID": "61582e7c-457f-45d8-b470-76947f982b59",
+      "BOM": true
+    },
+    {
+      "Reference": "D10",
+      "Value": "BZX85C3V3",
+      "Footprint": "LogicAnalyzer:Zener_DO41",
+      "Datasheet": "https://www.vishay.com/docs/85607/bzx85.pdf",
+      "Note": "",
+      "UUID": "bde6bb76-8ab9-478e-bd46-031ec1f7f547",
+      "BOM": true
+    },
+    {
+      "Reference": "U5",
+      "Value": "SN74LVC1G17DBVR",
+      "Footprint": "LogicAnalyzer:SOT23_5",
+      "Datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf",
+      "Note": "DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.",
+      "UUID": "6bd193d8-6ea0-48eb-81d6-645bd86d193a",
+      "BOM": true
+    },
+    {
+      "Reference": "R25",
+      "Value": "33R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "25dd9cd0-5bfa-4357-8588-65fb015246d3",
+      "BOM": true
+    },
+    {
+      "Reference": "C5",
+      "Value": "100n 10V",
+      "Footprint": "LogicAnalyzer:C0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "dd846ed7-55a5-481e-b64f-6e9b7a7a2c7d",
+      "BOM": true
+    },
+    {
+      "Reference": "TP5",
+      "Value": "OUT4",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "4fda5b9e-caa1-47f1-ac92-2dd1a6c39ac6",
+      "BOM": true
+    },
+    {
+      "Reference": "R26",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "b287d259-2d50-4da1-bf27-38322fe6385f",
+      "BOM": true
+    },
+    {
+      "Reference": "R27",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "842298ea-40df-4c08-bd2e-dd0991a317ec",
+      "BOM": true
+    },
+    {
+      "Reference": "R28",
+      "Value": "330R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "58b54fc3-b0fd-4d60-8edd-782c513da615",
+      "BOM": true
+    },
+    {
+      "Reference": "R29",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "ffe7a292-8c28-440e-8045-ffacf5681809",
+      "BOM": true
+    },
+    {
+      "Reference": "D11",
+      "Value": "BAV99",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf",
+      "Note": "1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.",
+      "UUID": "5a3ba61d-8b73-448c-b07b-051e7078768f",
+      "BOM": true
+    },
+    {
+      "Reference": "D12",
+      "Value": "BZX85C3V3",
+      "Footprint": "LogicAnalyzer:Zener_DO41",
+      "Datasheet": "https://www.vishay.com/docs/85607/bzx85.pdf",
+      "Note": "",
+      "UUID": "7f0e8e9a-c0e4-47cb-b123-aceab97280f2",
+      "BOM": true
+    },
+    {
+      "Reference": "U6",
+      "Value": "SN74LVC1G17DBVR",
+      "Footprint": "LogicAnalyzer:SOT23_5",
+      "Datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf",
+      "Note": "DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.",
+      "UUID": "69e9c13c-e12c-4c96-b6e0-6d05e76d2ffd",
+      "BOM": true
+    },
+    {
+      "Reference": "R30",
+      "Value": "33R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "253731bd-875c-43ec-bbeb-3a6d1344eab7",
+      "BOM": true
+    },
+    {
+      "Reference": "C6",
+      "Value": "100n 10V",
+      "Footprint": "LogicAnalyzer:C0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "40912175-cc86-4dc0-a64f-c724599d2b7a",
+      "BOM": true
+    },
+    {
+      "Reference": "TP6",
+      "Value": "OUT5",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "1e79efe1-d04e-44ad-aa60-92fdc0e28922",
+      "BOM": true
+    },
+    {
+      "Reference": "R31",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "f814c89d-ce05-40fd-b238-1664b71db2b8",
+      "BOM": true
+    },
+    {
+      "Reference": "R32",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "5b46f2c9-2544-4917-b0bf-804e94ef6e28",
+      "BOM": true
+    },
+    {
+      "Reference": "R33",
+      "Value": "330R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "3aa7819c-bd57-4aa0-b37a-160a2024b7fe",
+      "BOM": true
+    },
+    {
+      "Reference": "R34",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "cf3e7786-434b-4e36-9568-dcb2f920dd01",
+      "BOM": true
+    },
+    {
+      "Reference": "D13",
+      "Value": "BAV99",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf",
+      "Note": "1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.",
+      "UUID": "22200a35-00b0-4fd6-9983-34b29dac6fec",
+      "BOM": true
+    },
+    {
+      "Reference": "D14",
+      "Value": "BZX85C3V3",
+      "Footprint": "LogicAnalyzer:Zener_DO41",
+      "Datasheet": "https://www.vishay.com/docs/85607/bzx85.pdf",
+      "Note": "",
+      "UUID": "05d033f8-a30c-4ea9-9843-9911b33ba691",
+      "BOM": true
+    },
+    {
+      "Reference": "U7",
+      "Value": "SN74LVC1G17DBVR",
+      "Footprint": "LogicAnalyzer:SOT23_5",
+      "Datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf",
+      "Note": "DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.",
+      "UUID": "4923ccc6-f47b-43e6-af71-ecfef48a44b6",
+      "BOM": true
+    },
+    {
+      "Reference": "R35",
+      "Value": "33R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "49fc9106-8724-463f-9445-4edf19e85711",
+      "BOM": true
+    },
+    {
+      "Reference": "C7",
+      "Value": "100n 10V",
+      "Footprint": "LogicAnalyzer:C0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "3aec5c1d-7976-422a-b3d4-e19660b3289e",
+      "BOM": true
+    },
+    {
+      "Reference": "TP7",
+      "Value": "OUT6",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "308b74e9-d508-48ff-b64e-cfad35f3954b",
+      "BOM": true
+    },
+    {
+      "Reference": "R36",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "a8565ae4-f25e-4bd5-aa12-dc3e1823e232",
+      "BOM": true
+    },
+    {
+      "Reference": "R37",
+      "Value": "1k PR02 2W",
+      "Footprint": "LogicAnalyzer:PR02_1k_2W_P17.78",
+      "Datasheet": "https://www.vishay.com/docs/28729/pr010203.pdf",
+      "Note": "Cu-lead PR02, 1%, proposed order code PR02000201001FA100; validate pulse curve. Do not replace with ordinary SMD resistor.",
+      "UUID": "aa0c8f2a-2f53-4ad0-90e7-1d72eb3acb91",
+      "BOM": true
+    },
+    {
+      "Reference": "R38",
+      "Value": "330R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "e0fdcfc9-e9b6-4eb4-b871-fb7c852099aa",
+      "BOM": true
+    },
+    {
+      "Reference": "R39",
+      "Value": "47k",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "2da67c2a-7cf8-46c2-92f4-8ecd68eac5be",
+      "BOM": true
+    },
+    {
+      "Reference": "D15",
+      "Value": "BAV99",
+      "Footprint": "LogicAnalyzer:SOT23",
+      "Datasheet": "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf",
+      "Note": "1=GND (A1), 2=Z (K2), 3=CLAMP (K1/A2). Z is private to this channel, NOT +3V3.",
+      "UUID": "8bd519de-7f69-4133-ac67-ca96545585cc",
+      "BOM": true
+    },
+    {
+      "Reference": "D16",
+      "Value": "BZX85C3V3",
+      "Footprint": "LogicAnalyzer:Zener_DO41",
+      "Datasheet": "https://www.vishay.com/docs/85607/bzx85.pdf",
+      "Note": "",
+      "UUID": "4f5a2c37-2480-46a8-bfdc-434f4c78c61f",
+      "BOM": true
+    },
+    {
+      "Reference": "U8",
+      "Value": "SN74LVC1G17DBVR",
+      "Footprint": "LogicAnalyzer:SOT23_5",
+      "Datasheet": "https://www.ti.com/lit/ds/symlink/sn74lvc1g17.pdf",
+      "Note": "DBV 1=NC 2=A 3=GND 4=Y 5=VCC. Only Y ->33R connects to Pico.",
+      "UUID": "96c36e1f-0ed6-4257-a872-2e2d1b56503c",
+      "BOM": true
+    },
+    {
+      "Reference": "R40",
+      "Value": "33R",
+      "Footprint": "LogicAnalyzer:R0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "b8eb738f-d4f6-4d1a-8b09-74bee303d1e3",
+      "BOM": true
+    },
+    {
+      "Reference": "C8",
+      "Value": "100n 10V",
+      "Footprint": "LogicAnalyzer:C0805",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "38020ea0-692e-4ef8-862e-97f408921e86",
+      "BOM": true
+    },
+    {
+      "Reference": "TP8",
+      "Value": "OUT7",
+      "Footprint": "LogicAnalyzer:TP_1mm",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "ffd952f1-a1aa-4f03-9661-bcf451d85d94",
+      "BOM": true
+    },
+    {
+      "Reference": "H1",
+      "Value": "M3 / 3.2mm",
+      "Footprint": "LogicAnalyzer:Hole_M3",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "20fcfffd-961e-41d8-a4a0-70bd61fef56e",
+      "BOM": false
+    },
+    {
+      "Reference": "H2",
+      "Value": "M3 / 3.2mm",
+      "Footprint": "LogicAnalyzer:Hole_M3",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "931ce45a-f55e-4e44-892d-09ca30cf2f64",
+      "BOM": false
+    },
+    {
+      "Reference": "H3",
+      "Value": "M3 / 3.2mm",
+      "Footprint": "LogicAnalyzer:Hole_M3",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "f698d9c7-75af-4128-a74a-c9babaa8c475",
+      "BOM": false
+    },
+    {
+      "Reference": "H4",
+      "Value": "M3 / 3.2mm",
+      "Footprint": "LogicAnalyzer:Hole_M3",
+      "Datasheet": "",
+      "Note": "",
+      "UUID": "63a15e6f-aa0a-483b-9289-0aa178ab8ba0",
+      "BOM": false
+    }
+  ],
+  "pico_nets": {
+    "1": "OUT0",
+    "2": "OUT1",
+    "4": "OUT2",
+    "5": "OUT3",
+    "6": "OUT4",
+    "7": "OUT5",
+    "9": "OUT6",
+    "10": "OUT7",
+    "11": "BTN_UP",
+    "12": "BTN_DOWN",
+    "14": "TFT_SCK",
+    "15": "TFT_MOSI",
+    "16": "BTN_OK",
+    "17": "TFT_CS",
+    "19": "TFT_DC",
+    "20": "TFT_RST",
+    "21": "TFT_BL_CTRL",
+    "29": "BTN_BACK",
+    "30": "RUN",
+    "31": "LED_STATUS",
+    "32": "CAL_OUT",
+    "36": "+3V3",
+    "39": "VSYS",
+    "3": "GND",
+    "8": "GND",
+    "13": "GND",
+    "18": "GND",
+    "23": "GND",
+    "28": "GND",
+    "33": "GND",
+    "38": "GND"
+  }
+}
