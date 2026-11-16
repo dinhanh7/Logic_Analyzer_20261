@@ -107,14 +107,20 @@ class Device:
         if kind != ACK:
             raise RuntimeError('expected ACK, got 0x%02x' % kind)
 
-    def analyze(self, op, arg=0, arg32=0, timeout=5.0):
-        """Send ANALYZE command and return RESULT payload."""
+    def analyze(self, op, arg=0, arg32=0, timeout=5.0, strip_status=True):
+        """Send ANALYZE command and return RESULT payload.
+
+        The text replies (DECODE/DECODE_ALL) start with the payload itself,
+        every other op starts with a status byte.
+        """
         payload = analyze_payload(op, arg, arg32)
         kind, seq, resp = self.command(ANALYZE, payload, timeout=timeout)
         if kind == ERROR:
             raise RuntimeError('ANALYZE rejected: %s' % resp.decode('utf-8', 'replace'))
         if kind != RESULT:
             raise RuntimeError('expected RESULT, got 0x%02x' % kind)
+        if not strip_status:
+            return resp
         status = resp[0] if resp else RESULT_ERROR
         if status == RESULT_ERROR:
             raise RuntimeError('ANALYZE error from device')
@@ -123,7 +129,7 @@ class Device:
         return resp[1:]
 
     def decode(self, proto_mask=PROTO_ALL, baud=0):
-        return self.analyze(ANALYZE_DECODE, proto_mask, baud)
+        return self.analyze(ANALYZE_DECODE, proto_mask, baud, strip_status=False)
 
     def decode_all(self, uart_baud=115200, can_baud=250000):
         """Decode the fixed 8 channel test map in one shot.
@@ -132,7 +138,8 @@ class Device:
         CAN CH7. UART baud travels in units of 100 because the ANALYZE
         argument is 16 bit.
         """
-        return self.analyze(ANALYZE_DECODE_ALL, uart_baud // 100, can_baud)
+        return self.analyze(ANALYZE_DECODE_ALL, uart_baud // 100, can_baud,
+                            strip_status=False)
 
     def save_session(self, slot):
         self.analyze(ANALYZE_SAVE, slot)
