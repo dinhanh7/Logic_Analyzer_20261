@@ -202,7 +202,9 @@ int main(int argc, char **argv)
         ui_handle_command('o');
     }
     /* Optional row selection: DOWN moves the grid selection and the preview
-     * follows it, which is how each packet's strip gets checked. */
+     * follows it, which is how each packet's strip gets checked. The first
+     * DOWN lands in edit mode (OK entered it on the way here), so press OK
+     * once to leave edit before walking the rows. */
     int row = argc > 5 ? atoi(argv[5]) : 0;
     for (int i = 0; i < row; i++) ui_handle_command('d');
     /* Optional zoom steps (long DOWN = 'D') applied on the waveform screen. */

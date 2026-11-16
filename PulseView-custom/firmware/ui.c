@@ -1297,9 +1297,9 @@ static uint32_t demo_can(uint32_t pos, uint32_t bit)
     logical[n++] = 0;                                  /* RTR = data frame */
     logical[n++] = 0;                                  /* IDE = standard */
     logical[n++] = 0;                                  /* r0 */
-    for (int b = 3; b >= 0; b--) logical[n++] = (uint8_t)((2u >> b) & 1u);
-    const uint8_t data[2] = { 0xDE, 0xAD };
-    for (k = 0; k < 2; k++)
+    for (int b = 3; b >= 0; b--) logical[n++] = (uint8_t)((6u >> b) & 1u);
+    const uint8_t data[6] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xC0, 0xFF };
+    for (k = 0; k < sizeof data; k++)
         for (int b = 7; b >= 0; b--) logical[n++] = (uint8_t)((data[k] >> b) & 1u);
 
     uint8_t last = 1;
