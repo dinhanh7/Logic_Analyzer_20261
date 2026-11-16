@@ -227,3 +227,17 @@ Các tài liệu trong `dinhanh/` mới đề xuất khung LAR2, chưa gán type
 Phiên bản 1.1 bổ sung trigger cạnh và trigger mẫu bit cùng pre-trigger, theo hợp
 đồng CONFIG 28 byte mở rộng. Driver v1 không đổi, vẫn gửi CONFIG 20 byte và nhận
 capture manual như trước.
+
+## Phím tắt USB (kênh phụ, không phải frame LAR2)
+
+UI trên TFT nhận thêm các ký tự đơn khi parser LAR2 đang rảnh (`parser.used == 0`)
+và ký tự khác `L` — do đó không thể lẫn với header `LAR2`:
+
+| Ký tự | Ý nghĩa |
+|---|---|
+| `u` / `d` / `o` / `b` | nhấn ngắn UP / DOWN / OK / BACK |
+| `U` / `D` / `O` / `B` | nhấn giữ UP / DOWN / OK / BACK |
+
+Đây là đường điều khiển song song với 4 nút vật lý: cả hai cùng đẩy sự kiện vào
+một hàng đợi duy nhất trong `ui.c`. Ký tự lạ bị bỏ qua. Host tool:
+`tools/ui_keys.py`.

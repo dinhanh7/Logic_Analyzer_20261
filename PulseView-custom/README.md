@@ -183,6 +183,32 @@ Kiểm chứng lần đầu: dùng nguồn vuông 1 kHz mức 3,3 V trên CH0. �
 
 Firmware đặt `clk_sys=100 MHz`; mỗi mẫu gồm 4 chu kỳ PIO. Các rate công bố đều dùng divider nguyên. PIO dừng sau số mẫu làm tròn lên bội 4 để DMA nhận đủ word; chỉ truyền đúng số mẫu được yêu cầu. Có kiểm tra FIFO stall/DMA error. Đã capture trên board thật tại cấu hình 25 MHz với đủ mẫu và đúng CRC; **độ chính xác timing với tín hiệu ngoài chưa được đo kiểm**.
 
+## Giao diện trên TFT 128×160
+
+Firmware vẽ UI 4 màn hình lên module ST7735 1,8" (GP10–GP16), không cần PC:
+
+| Màn | Nội dung |
+|---|---|
+| 01 CAU HINH | `FS`, `N`, `CH`, `PRE`, `[ BAT DAU ]` |
+| 02 TRIGGER | mode EDGE/PATTERN/UART, kênh, cạnh, giá trị pattern, byte UART |
+| 03 WAVEFORM | 4 track/lật trang CH0-3 ↔ CH4-7, cuộn, zoom x1/x2/x4/x8 |
+| 04 DECODE | chọn UART/I2C/SPI/CAN, giải mã on-device trên buffer hiện tại |
+
+Bốn nút (chưa đấu dây): UP GP8, DOWN GP9, OK GP12, BACK GP22, active low.
+Lệnh USB một ký tự chạy song song với nút — `u`/`d`/`o`/`b` nhấn ngắn,
+`U`/`D`/`O`/`B` nhấn giữ:
+
+```bash
+python3 tools/ui_keys.py --port /dev/ttyACM0        # gõ phím trực tiếp
+python3 tools/ui_keys.py --port /dev/ttyACM0 --send oo   # OK, OK = [ BAT DAU ]
+```
+
+Kiến trúc: `firmware/ui.c` chỉ dựng từng dải 128×8 điểm ảnh rồi đẩy một lần
+bằng `tft_blit()` (không framebuffer, không nháy), `firmware/buttons.c` lọc dội
+25 ms và tách nhấn ngắn/nhấn giữ 600 ms, `firmware/font6x8.c` là font 6×8
+(21 ký tự/dòng). Logic UI không gọi thẳng SPI/PIO: nó đặt yêu cầu capture,
+`main.c` chạy capture và trả buffer về qua `ui_set_capture()`.
+
 ## Demo không cần phần cứng
 
 Terminal A:
@@ -224,7 +250,7 @@ Driver hiện dùng POSIX `termios/poll` cho CDC trên Linux (PTY test cũng dù
 - `driver/`: mã driver được duy trì; `scripts/integrate.py` chép vào libsigrok và thêm build registration.
 - `protocol/lar2.h`, [protocol/PROTOCOL.md](protocol/PROTOCOL.md): codec C và hợp đồng binary.
 - `protocol/trigger_match.h`: logic so khớp trigger, dùng chung cho firmware và test host.
-- `firmware/`: Pico SDK, PIO, DMA, TinyUSB CDC; cùng firmware dùng cho Pico 2/2 W.
+- `firmware/`: Pico SDK, PIO, DMA, TinyUSB CDC, UI TFT (`ui.c`, `buttons.c`, `font6x8.c`), driver ST7735; cùng firmware dùng cho Pico 2/2 W.
 - `patches/`: thay đổi tiêu đề PulseView; giao tiếp phần cứng luôn đi qua libsigrok.
 - `tools/`, `tests/`: codec Python độc lập, giả lập, host tool `host_la.py` và kiểm thử driver.
 - `scripts/`: build, launch, kiểm tra quyền và capture đã xác minh.
