@@ -21,6 +21,7 @@ from lar2 import (ACK, ARM, CAPS, CONFIG, END, ERROR, GET_CAPS, HELLO, ID, INFO,
                   ANALYZE_DECODE, ANALYZE_SAVE, ANALYZE_LOAD, ANALYZE_SIG_SAVE,
                   ANALYZE_SIG_COMPARE, ANALYZE_DIFF, ANALYZE_SESSION, ANALYZE_REPLAY,
                   ANALYZE_PINPROBE,
+                  ANALYZE_DECODE_ALL,
                   PROTO_ALL, RESULT_OK, RESULT_ERROR, RESULT_ABSENT)
 
 TRIGGER_MANUAL, TRIGGER_EDGE, TRIGGER_PATTERN = 0, 1, 2
@@ -124,6 +125,15 @@ class Device:
     def decode(self, proto_mask=PROTO_ALL, baud=0):
         return self.analyze(ANALYZE_DECODE, proto_mask, baud)
 
+    def decode_all(self, uart_baud=115200, can_baud=250000):
+        """Decode the fixed 8 channel test map in one shot.
+
+        UART CH0, I2C SCL/SDA CH1/CH2, SPI CS/SCK/MOSI/MISO CH3..CH6,
+        CAN CH7. UART baud travels in units of 100 because the ANALYZE
+        argument is 16 bit.
+        """
+        return self.analyze(ANALYZE_DECODE_ALL, uart_baud // 100, can_baud)
+
     def save_session(self, slot):
         self.analyze(ANALYZE_SAVE, slot)
 
@@ -218,6 +228,10 @@ def main():
     ap.add_argument('--out', help='write the raw samples to this file')
     ap.add_argument('--pinprobe', choices=('down', 'up', 'float'),
                     help='apply a pull to CH0..CH7, print the levels and exit')
+    ap.add_argument('--decode-all', action='store_true',
+                    help='decode UART/I2C/SPI/CAN at once with the 8 channel test map')
+    ap.add_argument('--uart-baud', type=int, default=115200)
+    ap.add_argument('--can-baud', type=int, default=250000)
     ap.add_argument('--timeout', type=float, default=60.0)
     args = ap.parse_args()
 
@@ -252,6 +266,7 @@ def main():
         dev.configure(rate, args.count, int(args.mask, 0), pre, trigger)
         dev.arm()
         samples, info = dev.capture(args.timeout)
+        decoded = dev.decode_all(args.uart_baud, args.can_baud) if args.decode_all else None
     finally:
         dev.close()
 
@@ -260,6 +275,9 @@ def main():
                                  else info['trigger_index']))
     print('pre-trigger samples: %d, mask 0x%02x, flags 0x%02x'
           % (info['pretrigger'], info['mask'], info['flags']))
+    if decoded:
+        print('--- on-device decode (8 channel map) ---')
+        print(decoded.decode('utf-8', 'replace').rstrip())
     if args.out:
         with open(args.out, 'wb') as handle:
             handle.write(samples)
