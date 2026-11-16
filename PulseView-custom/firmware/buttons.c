@@ -13,12 +13,13 @@ static btn_event queue[QUEUE_LEN];
 static uint8_t qhead, qtail;
 static btn_filter filter;
 
-static void push(btn_id id, bool long_press)
+static void push(btn_id id, bool long_press, uint32_t held_ms)
 {
     uint8_t next = (uint8_t)((qhead + 1) % QUEUE_LEN);
     if (next == qtail) return;          /* full: drop the newest event */
     queue[qhead].id = id;
     queue[qhead].long_press = long_press;
+    queue[qhead].held_ms = held_ms;
     qhead = next;
 }
 
@@ -50,8 +51,8 @@ void buttons_update(void)
     btn_filter_feed(&filter, read_raw(),
                     to_ms_since_boot(get_absolute_time()), &short_mask, &long_mask);
     for (unsigned i = 0; i < BTN_COUNT; i++) {
-        if (short_mask & (1u << i)) push((btn_id)i, false);
-        if (long_mask & (1u << i)) push((btn_id)i, true);
+        if (short_mask & (1u << i)) push((btn_id)i, false, filter.last_held[i]);
+        if (long_mask & (1u << i)) push((btn_id)i, true, filter.last_held[i]);
     }
 }
 
@@ -65,5 +66,12 @@ bool buttons_get_event(btn_event *ev)
 
 void buttons_inject(btn_id id, bool long_press)
 {
-    if (id < BTN_COUNT) push(id, long_press);
+    if (id < BTN_COUNT)
+        push(id, long_press, long_press ? BTN_LONG_MS : 0u);
+}
+
+void buttons_inject_held(btn_id id, uint32_t held_ms)
+{
+    if (id < BTN_COUNT)
+        push(id, held_ms >= BTN_LONG_MS, held_ms);
 }

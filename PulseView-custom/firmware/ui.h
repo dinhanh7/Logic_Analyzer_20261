@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * On-device UI: four screens on the 128x160 ST7735, four buttons, and a
- * serial key path that injects the same button events.
+ * On-device UI: six screens on the 128x160 ST7735 (boot STANDBY + the five
+ * measurement screens), four buttons, and a serial key path that injects the
+ * same button events.
  *
  * The UI never touches PIO, DMA or SPI directly. It owns the measurement
  * configuration, asks main.c for a capture through ui_take_capture_request(),
@@ -27,16 +28,21 @@ typedef struct {
 extern ui_config ui_cfg;
 
 void ui_init(void);
+/* main.c pushes a monotonic millisecond clock so the STANDBY prompt can blink
+ * without ui.c depending on the pico SDK. Call before ui_tick() each loop. */
+void ui_set_now_ms(uint32_t ms);
 /* Poll the buttons and redraw whatever changed. Call from the main loop. */
 void ui_tick(void);
 /* USB side of the parallel control: 'u'/'d'/'o'/'b' are a short press of
- * UP/DOWN/OK/BACK, the uppercase letter is a long press. */
+ * UP/DOWN/OK/BACK, the uppercase letter is a long press. 'B' is special: it
+ * injects BACK held 800 ms, the STANDBY shortcut. */
 void ui_handle_command(char c);
 /* Consume a pending "[ BAT DAU ]" request. */
 bool ui_take_capture_request(void);
 /* Which screen is on the panel: 0 capture, 1 trigger, 2 waveform CH0-3,
- * 3 waveform CH4-7, 4 decode. Reported through LAR2_ANALYZE_RUNTIME so a host
- * can verify navigation without eyes on the TFT. */
+ * 3 waveform CH4-7, 4 decode, 5 STANDBY (the boot screen, "màn 0"). Reported
+ * through LAR2_ANALYZE_RUNTIME so a host can verify navigation without eyes
+ * on the TFT. The original five ids are unchanged for the cycle test. */
 uint8_t ui_screen_id(void);
 /* Number of UI events dispatched since boot, saturating at 255. */
 uint8_t ui_event_count(void);

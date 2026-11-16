@@ -44,6 +44,15 @@ void buttons_inject(btn_id id, bool long_press)
     if (evq_head >= 64) return;
     evq[evq_head].id = id;
     evq[evq_head].long_press = long_press;
+    evq[evq_head].held_ms = long_press ? BTN_LONG_MS : 0u;
+    evq_head++;
+}
+void buttons_inject_held(btn_id id, uint32_t held_ms)
+{
+    if (evq_head >= 64) return;
+    evq[evq_head].id = id;
+    evq[evq_head].long_press = held_ms >= BTN_LONG_MS;
+    evq[evq_head].held_ms = held_ms;
     evq_head++;
 }
 
@@ -155,9 +164,20 @@ int main(int argc, char **argv)
     crc_init();
 
     int proto = argc > 3 ? atoi(argv[3]) : 0;
-    int screen = argc > 4 ? atoi(argv[4]) : 4;   /* 2 = CH0-3, 3 = CH4-7 */
+    int screen = argc > 4 ? atoi(argv[4]) : 4;   /* 2 = CH0-3, 3 = CH4-7, 5 = STANDBY */
 
     ui_init();
+    if (screen == 5) {
+        /* STANDBY is where ui_init() lands; argv[5] picks the blink phase. */
+        int phase = argc > 5 ? atoi(argv[5]) : 0;
+        ui_set_now_ms(phase ? 600u : 0u);
+        ui_tick();
+        if (!frame_valid) return 1;
+        if (write_png(out, scale)) return 1;
+        printf("%s  screen=%u  blink=%d\n", out, ui_screen_id(), phase);
+        return 0;
+    }
+    ui_set_now_ms(0);
     ui_load_demo();                 /* 3/5 WAVE CH0-3 */
     if (screen == 2) {              /* 3/5 WAVE CH0-3 */
         ui_tick();

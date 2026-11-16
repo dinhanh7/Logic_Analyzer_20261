@@ -27,9 +27,10 @@ from host_la import open_port  # noqa: E402
 from lar2 import (ANALYZE, ANALYZE_RUNTIME, ANALYZE_UI_DEMO,  # noqa: E402
                   ANALYZE_UI_TEXT, ANALYZE_UI_TABLE, analyze_payload)
 
-# Indexed by the firmware's screen id (0..4); the label is the 1..5 header.
+# Indexed by the firmware's screen id (0..4, plus 5 = boot STANDBY); the label
+# is the 1..5 header. STANDBY is "màn 0" to the user, host id 5.
 SCREEN_NAME = ['1/5 CONFIG', '2/5 TRIGGER', '3/5 WAVE CH0-3', '4/5 WAVE CH4-7',
-               '5/5 DECODE']
+               '5/5 DECODE', '0 STANDBY']
 
 SCREEN_HINT = [
     'header 1/5, 4 dong gia tri + dong BAT DAU THU',
@@ -37,6 +38,7 @@ SCREEN_HINT = [
     'header 3/5, 4 track CH0-3, vach do trigger, cursor giua',
     'header 4/5, 4 track CH4-7, cung 4 mau, khong con trong',
     'header 5/5, < UART >, dong decode ben duoi duong ke',
+    'man cho, logo xung vuong, nhan nut bat ky de vao config',
 ]
 
 # (key, expected screen, note)

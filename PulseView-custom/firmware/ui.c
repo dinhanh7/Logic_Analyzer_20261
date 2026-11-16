@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * 128x160 ST7735 UI: five screens, full-frame framebuffer, 4-button state
+ * 128x160 ST7735 UI: six screens, full-frame framebuffer, 4-button state
  * machine.
  *
  * The panel is portrait. Everything is composed into a 128x160 RGB565
@@ -9,9 +9,13 @@
  *
  * Screens and flow (BACK leaves edit mode before it changes screen):
  *
- *   1 CONFIG --BACK--> 2 TRIGGER --BACK--> 1 CONFIG
+ *   0 STANDBY --any key--> 1 CONFIG --BACK--> 2 TRIGGER --BACK--> 1 CONFIG
  *   1 CONFIG --OK on BAT DAU--> 3 WAVE CH0-3 --OK--> 4 WAVE CH4-7 --OK--> 5 DECODE
- *   5 DECODE --BACK--> 4 WAVE CH4-7 --BACK--> 3 WAVE CH0-3 --BACK--> 1 CONFIG
+ *   5 DECODE --OK held--> 0 STANDBY   (BACK still walks 5 -> 4 -> 3 -> 1)
+ *   1 CONFIG --BACK held 800ms--> 0 STANDBY
+ *
+ * STANDBY is host id 5; the five original screens keep ids 0..4 so the host
+ * cycle test and RUNTIME.st[30] values do not move.
  *
  * Layout: 6x8 font (21 characters per line), header bar 14 px, list rows on a
  * 22 px pitch with an 18 px highlight box, waveform tracks 26 px.
@@ -69,10 +73,18 @@ typedef enum {
     SCR_TRIGGER,
     SCR_WAVE_LO,        /* CH0-3 */
     SCR_WAVE_HI,        /* CH4-7 */
-    SCR_DECODE
+    SCR_DECODE,
+    SCR_STANDBY         /* boot screen ("màn 0"), host id 5 */
 } ui_screen;
 
 static ui_screen screen;
+
+/* STANDBY prompt blink. main.c pushes a monotonic millisecond clock; keeping
+ * it here (instead of calling the pico SDK) lets the host render harness link
+ * the same ui.c. blink_phase starts at 0xFF so the first frame always draws
+ * the prompt regardless of the clock's parity. */
+static uint32_t ui_now_ms;
+static uint8_t blink_phase = 0xFF;
 
 /* Config screen: rows 0..3 are values, row 4 starts the capture. */
 static uint8_t cfg_row;
@@ -301,6 +313,50 @@ static const char *bus_config(char *buf, size_t n)
     default: snprintf(buf, n, "RX:CH7 250K"); break;
     }
     return buf;
+}
+
+/* ---------- screen 0: standby / boot ---------- */
+/* Two interleaved square waves with a red trigger line, as the device's
+ * signature. Drawn from samples, not pre-baked, so the edges stay square. */
+static void logo_wave(int yhi, int ylo, unsigned shift, uint16_t color)
+{
+    int last = -1;
+    for (int x = 4; x < 124; x++) {
+        unsigned cur = (((unsigned)(x - 4) + shift) / 12u) & 1u;
+        int y = cur ? yhi : ylo;
+        px(x, y, color);
+        px(x, y + (cur ? 1 : -1), color);   /* 2 px rail */
+        if (last >= 0 && (int)cur != last)
+            vline(x, yhi, ylo - yhi + 1, color);
+        last = (int)cur;
+    }
+}
+
+static void draw_standby(void)
+{
+    /* Every pixel is painted, so nothing from the previous screen survives. */
+    fill(0, 0, SCR_W, SCR_H, C_BG);
+
+    /* Logo: cyan + green square waves, y16..48, red trigger across both. */
+    logo_wave(20, 30, 0, C_ACC);
+    logo_wave(34, 44, 12, C_EDIT_T);
+    vline(68, 16, 33, C_TRIG);
+    hline(64, 16, 9, C_TRIG);               /* trigger marker on top */
+
+    /* Device name + hardware subtitle. */
+    text_center(56, "PICO-LA 8CH", C_CURSOR);
+    text_center(65, "RP2350 | 100MHz", C_ACC);
+
+    /* Info card. Colours are inline so this works before the decode-screen
+     * palette constants (declared further down) come into scope. */
+    fill(8, 86, 112, 27, RGB565(0x16, 0x20, 0x2C));
+    frame_rect(8, 86, 112, 27, RGB565(0x33, 0x41, 0x55));
+    text(14, 91, "Max Fs : 100 MSPS", C_TEXT);
+    text(14, 102, "Buffer : 256K Pts", C_TEXT);
+
+    /* Blinking ready prompt: dim on even 600 ms phases, white on odd. */
+    text_center(128, "[ NHAN OK BAT DAU ]",
+                blink_phase ? C_CURSOR : C_DIM);
 }
 
 /* ---------- screen 1: capture config ---------- */
@@ -795,6 +851,7 @@ static void draw_decode(void)
 static void refresh(void)
 {
     switch (screen) {
+    case SCR_STANDBY:  draw_standby(); break;
     case SCR_CONFIG:   draw_config(); break;
     case SCR_TRIGGER:  draw_trigger(); break;
     case SCR_WAVE_LO:  draw_wave(false); break;
@@ -808,6 +865,7 @@ static void enter(ui_screen s)
 {
     screen = s;
     switch (s) {
+    case SCR_STANDBY: blink_phase = 0xFF; break;
     case SCR_CONFIG:  cfg_edit = false; cfg_row = 0; break;
     case SCR_TRIGGER: trig_edit = false; trig_row = 0; break;
     case SCR_DECODE:
@@ -891,11 +949,16 @@ static void wave_scroll(signed dir)
 }
 
 /* ---------- event dispatch ---------- */
-static void event(btn_id id, bool long_press)
+static void event(btn_id id, bool long_press, uint32_t held_ms)
 {
     if (event_count != 255) event_count++;
 
     switch (screen) {
+    case SCR_STANDBY:
+        /* Any of the four buttons boots us into the config screen. */
+        enter(SCR_CONFIG);
+        break;
+
     case SCR_CONFIG:
         if (id == BTN_UP || id == BTN_DOWN) {
             signed dir = id == BTN_UP ? -1 : +1;
@@ -920,6 +983,7 @@ static void event(btn_id id, bool long_press)
             }
         } else {
             if (cfg_edit) { cfg_edit = false; refresh(); }
+            else if (long_press && held_ms >= BTN_STANDBY_MS) enter(SCR_STANDBY);
             else enter(SCR_TRIGGER);
         }
         break;
@@ -970,7 +1034,12 @@ static void event(btn_id id, bool long_press)
     case SCR_DECODE:
         if (id == BTN_UP || id == BTN_DOWN) {
             signed dir = id == BTN_UP ? -1 : +1;
-            if (dec_edit) {
+            /* Long UP/DOWN in browse mode swaps which selector OK edits:
+             * PROTO <-> bus config (baud for UART). This used to be long OK,
+             * which is now reserved for returning to STANDBY. */
+            if (long_press && !dec_edit) {
+                dec_focus ^= 1;
+            } else if (dec_edit) {
                 cycle_decode(dir);
             } else if (dec_pkts.n) {
                 /* Move the selection; the window follows so the selected row
@@ -986,9 +1055,11 @@ static void event(btn_id id, bool long_press)
             refresh();
         } else if (id == BTN_OK) {
             if (long_press) {
-                dec_focus ^= 1;
-                dec_edit = false;
-            } else if (dec_edit) {
+                /* OK held ends the session and returns to the boot screen. */
+                enter(SCR_STANDBY);
+                break;              /* enter() already flushed the frame */
+            }
+            if (dec_edit) {
                 dec_edit = false;
                 run_decode();
                 dec_scroll = 0;
@@ -1211,14 +1282,28 @@ void ui_init(void)
     ui_cfg.trig_mask = 0xFF;
 
     buttons_init();
-    enter(SCR_CONFIG);
+    enter(SCR_STANDBY);
+}
+
+void ui_set_now_ms(uint32_t ms)
+{
+    ui_now_ms = ms;
 }
 
 void ui_tick(void)
 {
     buttons_update();
     btn_event ev;
-    while (buttons_get_event(&ev)) event(ev.id, ev.long_press);
+    while (buttons_get_event(&ev)) event(ev.id, ev.long_press, ev.held_ms);
+
+    /* Blink the standby prompt only when the 600 ms phase actually flips,
+     * and only while standby is on screen: one flush per phase, no flicker
+     * and no redraw on an unrelated key press. */
+    uint8_t ph = (uint8_t)((ui_now_ms / 600u) & 1u);
+    if (screen == SCR_STANDBY && ph != blink_phase) {
+        blink_phase = ph;
+        refresh();
+    }
 }
 
 uint8_t ui_screen_id(void)
@@ -1271,7 +1356,7 @@ void ui_handle_command(char c)
     case 'o': buttons_inject(BTN_OK, false); break;
     case 'O': buttons_inject(BTN_OK, true); break;
     case 'b': buttons_inject(BTN_BACK, false); break;
-    case 'B': buttons_inject(BTN_BACK, true); break;
+    case 'B': buttons_inject_held(BTN_BACK, BTN_STANDBY_MS); break;
     default: break;
     }
 }

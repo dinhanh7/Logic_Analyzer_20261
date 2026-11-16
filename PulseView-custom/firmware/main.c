@@ -725,6 +725,7 @@ int main(void)
             ui_pending = false;
             ui_set_capture(win_base, win_len, rate, pretrigger, !capture_faulted());
         }
+        ui_set_now_ms(to_ms_since_boot(get_absolute_time()));
         ui_tick();
         connected = now; tight_loop_contents();
     }

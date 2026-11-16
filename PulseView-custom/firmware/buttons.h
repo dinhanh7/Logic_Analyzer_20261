@@ -29,10 +29,12 @@ typedef enum {
 typedef struct {
     btn_id id;
     bool long_press;
+    uint32_t held_ms;           /* how long the button was held on release */
 } btn_event;
 
 #define BTN_DEBOUNCE_MS 25u
 #define BTN_LONG_MS     600u
+#define BTN_STANDBY_MS  800u    /* BACK held this long returns to STANDBY */
 
 /* Pure debounce state. `raw` bit n set means button n is pressed. */
 typedef struct {
@@ -40,6 +42,7 @@ typedef struct {
     uint8_t cand;
     uint32_t cand_ms;
     uint32_t press_ms[BTN_COUNT];
+    uint32_t last_held[BTN_COUNT];  /* hold time of the last release */
 } btn_filter;
 
 static inline void btn_filter_init(btn_filter *f)
@@ -47,7 +50,10 @@ static inline void btn_filter_init(btn_filter *f)
     f->stable = 0;
     f->cand = 0;
     f->cand_ms = 0;
-    for (unsigned i = 0; i < BTN_COUNT; i++) f->press_ms[i] = 0;
+    for (unsigned i = 0; i < BTN_COUNT; i++) {
+        f->press_ms[i] = 0;
+        f->last_held[i] = 0;
+    }
 }
 
 /* Feed one raw sample. Emits a bit per button that produced a short release
@@ -72,6 +78,7 @@ static inline void btn_filter_feed(btn_filter *f, uint8_t raw, uint32_t now_ms,
             f->press_ms[i] = now_ms;              /* just pressed */
         } else {
             uint32_t held = now_ms - f->press_ms[i];
+            f->last_held[i] = held;
             if (held >= BTN_LONG_MS) *long_mask |= bit;
             else *short_mask |= bit;
         }
@@ -85,5 +92,8 @@ void buttons_update(void);
 bool buttons_get_event(btn_event *ev);
 /* Push an event as if the physical button fired (used by the USB key path). */
 void buttons_inject(btn_id id, bool long_press);
+/* Push an event with an explicit hold time, so the host can drive the
+ * 800 ms BACK->STANDBY tier that the physical debounce normally measures. */
+void buttons_inject_held(btn_id id, uint32_t held_ms);
 
 #endif
