@@ -7,6 +7,8 @@ cc -std=c11 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Iprotocol tes
 build/tests/test_protocol
 cc -std=c11 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Iprotocol tests/test_trigger.c -o build/tests/test_trigger
 build/tests/test_trigger
+cc -std=c11 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Ifirmware -Iprotocol firmware/decoders.c tests/test_decode.c -o build/tests/test_decode
+build/tests/test_decode
 python3 tests/test_host_la.py
 # The sigrok driver tests need the host stack built with scripts/build.sh host.
 if [[ -x "$RP2350_ROOT/.local/bin/sigrok-cli" ]]; then
