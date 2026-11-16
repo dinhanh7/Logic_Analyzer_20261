@@ -24,7 +24,8 @@
 #include "trigger_match.h"
 #include "decoders.h"
 #include "tft_st7735.h"
-#include "test_image.h"
+#include "buttons.h"
+#include "ui.h"
 
 #define CAPTURE_WORDS (LAR2_MAX_SAMPLES / 4u)
 #define CAPTURE_BYTES (LAR2_MAX_SAMPLES)
@@ -602,16 +603,16 @@ int main(void)
 {
     set_sys_clock_khz(100000, true);
     tft_init();
-    tft_fill_color(0x0000);
-    tft_draw_image((TFT_WIDTH - TEST_IMG_W) / 2,
-                    (TFT_HEIGHT - TEST_IMG_H) / 2,
-                    TEST_IMG_W, TEST_IMG_H, test_image);
+    /* The UI owns the panel from here on: capture config, trigger config,
+     * waveform and on-device decode. */
+    ui_init();
     stdio_init_all();
     for (uint i = 0; i < 8; i++) { pio_gpio_init(pio, i); gpio_disable_pulls(i); }
     sm = pio_claim_unused_sm(pio, true);
     offset = pio_add_program(pio, &logic_capture_program);
     dma_ch = dma_claim_unused_channel(true);
     bool connected = false;
+    bool ui_pending = false;
     while (true) {
         tud_task();
         bool now = tud_cdc_connected();
@@ -620,12 +621,35 @@ int main(void)
         } else {
             while (tud_cdc_available()) {
                 uint8_t b; if (tud_cdc_read(&b, 1) != 1) break;
+                /* Single key commands are the button side of the parallel
+                 * control. They only make sense while no LAR2 frame is being
+                 * assembled, and 'L' can never be a key. */
+                if (!parser.used && b != 'L' && strchr("udobUDOB", b)) {
+                    ui_handle_command((char)b);
+                    continue;
+                }
                 int r = lar2_feed(&parser, b);
                 if (r < 0) { abort_capture(); configured = false; error("frame CRC/header"); }
                 if (r == 1) { command(); break; }
             }
-            capture_task();
         }
+        /* UI capture: the buttons and the serial keys feed the same event
+         * queue, and a request runs the very same capture path as LAR2 ARM. */
+        if (!capturing && !sending && ui_take_capture_request()) {
+            rate = ui_cfg.rate; count = ui_cfg.count; mask = ui_cfg.mask;
+            pretrigger = ui_cfg.pretrigger; trig_mode = ui_cfg.trig_mode;
+            trig_channel = ui_cfg.trig_channel; trig_edge = ui_cfg.trig_edge;
+            trig_value = ui_cfg.trig_value; trig_mask = ui_cfg.trig_mask;
+            trigger_restarts = 0;
+            start_capture();
+            ui_pending = true;
+        }
+        capture_task();
+        if (ui_pending && !capturing) {
+            ui_pending = false;
+            ui_set_capture(win_base, win_len, rate, pretrigger, !capture_faulted());
+        }
+        ui_tick();
         connected = now; tight_loop_contents();
     }
 }
