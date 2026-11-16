@@ -45,6 +45,9 @@
                                         UART CH0, I2C CH1/CH2, SPI CH3..CH6, CAN CH7.
                                         arg = UART baud / 100 (0 = 115200)
                                         arg32 = CAN baud (0 = 250000) */
+#define LAR2_ANALYZE_RUNTIME     11u /* trigger state, see the REPLY in main.c */
+#define LAR2_ANALYZE_BOOTLOADER  10u /* reboot into the UF2 bootloader so the
+                                        host can flash without pressing BOOTSEL */
 
 /* Protocol selection bits for LAR2_ANALYZE_DECODE. */
 #define LAR2_PROTO_UART 0x01u

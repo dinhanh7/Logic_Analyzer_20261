@@ -11,6 +11,7 @@
  */
 #include "pico/stdlib.h"
 #include "pico/stdio_usb.h"
+#include "pico/bootrom.h"
 #include "pico/multicore.h"
 #include "hardware/clocks.h"
 #include "hardware/dma.h"
@@ -115,7 +116,11 @@ static void send_frame(uint8_t type, const uint8_t *p, size_t n)
     uint8_t frame[LAR2_MAX_FRAME];
     size_t len = lar2_encode(frame, type, tx_seq++, p, n), pos = 0;
     absolute_time_t deadline = make_timeout_time_ms(3000);
-    while (pos < len && tud_cdc_connected() && !time_reached(deadline)) {
+    /* Do not gate on tud_cdc_connected(): it can read false while the host
+     * port is open (DTR churn), and dropping the frame there left the host
+     * waiting until its own timeout with no error at all. The deadline
+     * bounds the case where nobody reads. */
+    while (pos < len && !time_reached(deadline)) {
         tud_task();
         uint32_t wrote = tud_cdc_write(frame + pos, len - pos);
         pos += wrote; tud_cdc_write_flush();
@@ -268,7 +273,13 @@ static void command(void)
     }
     if (lar2_u16(f + 6) != rx_seq++) { abort_capture(); configured = false; error("sequence"); return; }
     if (type == LAR2_ABORT && !n) { abort_capture(); configured = false; ack(type); return; }
-    if (capturing || sending) { error("busy"); return; }
+    if (capturing || sending) {
+        /* RUNTIME is the diagnostic probe: it must answer while busy, that is
+         * exactly when its state is interesting. */
+        bool peek = type == LAR2_ANALYZE && n == LAR2_ANALYZE_SIZE &&
+                    p[0] == LAR2_ANALYZE_RUNTIME;
+        if (!peek) { error("busy"); return; }
+    }
     switch (type) {
     case LAR2_GET_CAPS: {
         if (n) { error("caps length"); break; }
@@ -379,6 +390,30 @@ static void command(void)
         case LAR2_ANALYZE_REPLAY:
             start_sending(win_len, LAR2_NO_TRIGGER, 0, 0);
             break;
+        case LAR2_ANALYZE_RUNTIME: {
+            /* Why a triggered capture is not finishing: one block of state. */
+            uint8_t st[30] = { LAR2_RESULT_OK };
+            st[1] = (capturing ? 1 : 0) | (sending ? 2 : 0) |
+                    (configured ? 4 : 0) | (trigger_found ? 8 : 0);
+            lar2_put32(st + 2, produced_samples());
+            lar2_put32(st + 6, scan_pos);
+            lar2_put32(st + 10, trigger_abs);
+            lar2_put32(st + 14, trigger_restarts);
+            lar2_put32(st + 18, dma_channel_is_busy(dma_ch) ? 1u : 0u);
+            lar2_put32(st + 22, pio->fdebug);
+            lar2_put32(st + 26, count);
+            send_frame(LAR2_RESULT, st, 30);
+            break;
+        }
+        case LAR2_ANALYZE_BOOTLOADER:
+            /* The UF2 bootloader cannot be reached from software on this board
+             * without BOOTSEL, so the running firmware hands itself over. Ack
+             * first, then let the USB stack flush before rebooting. */
+            result[0] = LAR2_RESULT_OK;
+            send_frame(LAR2_RESULT, result, 1);
+            busy_wait_ms(50);
+            reset_usb_boot(0, 0);
+            break;
         case LAR2_ANALYZE_PINPROBE: {
             /* Board bring-up aid: apply an internal pull to CH0..CH7 and read
              * the pads back. A floating input follows the pull, a driven input
@@ -434,20 +469,32 @@ static void capture_task(void)
         } else {
             trigger_scan();
             if (trigger_found) {
-                uint32_t post = count - pretrigger;
-                if (produced_samples() >= trigger_abs + post) {
-                    pio_sm_set_enabled(pio, sm, false);
-                    dma_channel_abort(dma_ch);
-                    pio_sm_clear_fifos(pio, sm);
-                    capturing = false;
-                    if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
-                    win_base = (const uint8_t *)samples + (trigger_abs - pretrigger);
-                    win_len = count;
-                    start_sending(count, pretrigger, pretrigger, LAR2_INFO_TRIGGER_FOUND);
+                /* Keep the trigger inside the window and keep the sample count
+                 * exact. When the trigger lands too late for the requested
+                 * pretrigger, slide the window right instead of starting over:
+                 * re-arming a full buffer has a free-running period, and a
+                 * periodic signal (a CAN burst every 100 ms, say) can lock that
+                 * period to its own so the late trigger repeats forever and the
+                 * capture never completes. */
+                uint32_t max_prod = CAPTURE_BYTES - DMA_LAG_BYTES;
+                uint32_t base = trigger_abs >= pretrigger ? trigger_abs - pretrigger : 0;
+                if (base + count > max_prod && count <= max_prod) base = max_prod - count;
+                if (base + count <= max_prod) {
+                    if (produced_samples() >= base + count) {
+                        pio_sm_set_enabled(pio, sm, false);
+                        dma_channel_abort(dma_ch);
+                        pio_sm_clear_fifos(pio, sm);
+                        capturing = false;
+                        if (capture_faulted()) { configured = false; error("capture FIFO stall/DMA error"); return; }
+                        win_base = (const uint8_t *)samples + base;
+                        win_len = count;
+                        start_sending(count, trigger_abs - base, trigger_abs - base,
+                                      LAR2_INFO_TRIGGER_FOUND);
+                    }
                 } else if (dma_done) {
-                    /* The trigger landed too close to the end of the window
-                     * for the post-trigger samples to fit. Start a new window
-                     * instead of failing. */
+                    /* Only reachable when count is nearly the whole buffer, so
+                     * no window can hold both the trigger and that many
+                     * samples. Re-arm and hope for an earlier trigger. */
                     if (++trigger_restarts > 2000) {
                         pio_sm_set_enabled(pio, sm, false); capturing = false;
                         configured = false; error("trigger too late"); return;

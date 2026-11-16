@@ -227,8 +227,10 @@ def main():
             gen.cmd('set spi %d' % khz)
             exp = {1: 'P', 2: 'P', 3: 'P', 4: 'P', 5: 'P', 6: 'P', 7: 'P',
                    8: 'P', 9: 'P', 10: 'M', 11: 'M', 12: 'M', 13: 'F',
-                   14: 'F', 15: 'F', 16: 'F', 17: 'F', 18: 'P', 19: 'P',
-                   20: 'P'}[i]
+                   14: 'F', 15: 'F', 16: 'F', 17: 'F', 18: 'P',
+                   # 19 samples a 1 MHz SPI clock at 1 MHz: one sample per bit,
+                   # so the decode depends on where the sample lands -> F.
+                   19: 'F', 20: 'P'}[i]
             ok, tot, last = run_case(link, 'spi', i, khz, rate, count, pre)
             report('spi', i, exp, '%d kHz' % khz, rate, count, pre, ok, tot, last)
 
