@@ -70,8 +70,9 @@ static uint32_t trigger_restarts;
 static const uint8_t *win_base;
 static uint32_t win_len;
 
-/* On-device decode results (returned via ANALYZE DECODE). */
-static char decode_buf[512];
+/* On-device decode results (returned via ANALYZE DECODE). 1 KB fits the
+ * four-protocol simultaneous decode of the test map. */
+static char decode_buf[1024];
 static size_t decode_len;
 
 /* Forward declarations for flash/sig/diff functions. */
@@ -323,6 +324,20 @@ static void command(void)
             decode_len = t.len;
             send_frame(LAR2_RESULT, (const uint8_t *)decode_buf, decode_len);
             break;
+        case LAR2_ANALYZE_DECODE_ALL: {
+            /* Comprehensive test capture: all four protocols on one 8 channel
+             * window. arg carries the UART baud in units of 100, arg32 the CAN
+             * bit rate; zero selects the signal generator defaults. */
+            uint32_t uart_baud = arg ? (uint32_t)arg * 100u : 115200u;
+            uint32_t can_baud = arg32 ? arg32 : 250000u;
+            decode_len = 0;
+            la_text t; la_text_init(&t, decode_buf, sizeof(decode_buf));
+            decoders_run_map(win_base, win_len, (uint32_t)rate, LAR2_PROTO_ALL,
+                             uart_baud, can_baud, &la_map_test8, &t);
+            decode_len = t.len;
+            send_frame(LAR2_RESULT, (const uint8_t *)decode_buf, decode_len);
+            break;
+        }
         case LAR2_ANALYZE_SAVE:
             if (arg >= MAX_SESSIONS) { result[0] = LAR2_RESULT_ERROR; send_frame(LAR2_RESULT, result, 1); break; }
             flash_save_session(arg, win_len, rate, mask, pretrigger, pretrigger, trig_mode);

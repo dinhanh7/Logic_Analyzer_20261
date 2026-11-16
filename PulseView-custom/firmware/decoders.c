@@ -40,13 +40,13 @@ static inline unsigned sample_bit(const uint8_t *buf, uint32_t i, unsigned ch)
  * otherwise the shortest run in the stream is used, which is one bit for any
  * byte other than 0x00/0xff. */
 static uint32_t uart_bit_width_q16(const uint8_t *buf, uint32_t len, uint32_t rate,
-                                   uint32_t baud)
+                                   uint32_t baud, unsigned ch)
 {
     if (baud) return (uint32_t)(((uint64_t)rate << 16) / baud);
 
     uint32_t min_run = UINT32_MAX, start = 0, i;
     for (i = 1; i < len; i++) {
-        if (sample_bit(buf, i, 0) != sample_bit(buf, i - 1, 0)) {
+        if (sample_bit(buf, i, ch) != sample_bit(buf, i - 1, ch)) {
             uint32_t w = i - start;
             if (w >= 2 && w < min_run) min_run = w;
             start = i;
@@ -60,7 +60,7 @@ static uint32_t uart_bit_width_q16(const uint8_t *buf, uint32_t len, uint32_t ra
     uint32_t n = 0;
     start = 0;
     for (i = 1; i < len; i++) {
-        if (sample_bit(buf, i, 0) != sample_bit(buf, i - 1, 0)) {
+        if (sample_bit(buf, i, ch) != sample_bit(buf, i - 1, ch)) {
             uint32_t w = i - start;
             if (w >= min_run && w * 2 <= min_run * 3) { sum += w; n++; }
             start = i;
@@ -69,10 +69,11 @@ static uint32_t uart_bit_width_q16(const uint8_t *buf, uint32_t len, uint32_t ra
     return n ? (uint32_t)((sum << 16) / n) : 0;
 }
 
-void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud, la_text *t)
+void decode_uart_ch(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud,
+                    unsigned ch, la_text *t)
 {
     if (len < 20) { la_text_addf(t, "UART: no data\n"); return; }
-    uint32_t bw = uart_bit_width_q16(buf, len, rate, baud);
+    uint32_t bw = uart_bit_width_q16(buf, len, rate, baud, ch);
     if (!bw) { la_text_addf(t, "UART: no transitions\n"); return; }
 
     uint64_t found_baud = ((uint64_t)rate << 16) / bw;
@@ -81,17 +82,17 @@ void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud,
     uint32_t i = 1;
 
     while (i + 1 < len && pos < sizeof(text) - 1) {
-        if (sample_bit(buf, i, 0) || !sample_bit(buf, i - 1, 0)) { i++; continue; }
+        if (sample_bit(buf, i, ch) || !sample_bit(buf, i - 1, ch)) { i++; continue; }
         uint32_t start = i;
         uint8_t byte = 0;
         int ok = 1;
         for (int b = 0; b < 8; b++) {
             uint32_t s = start + (uint32_t)(((uint64_t)bw * (2u * (unsigned)b + 3u)) >> 17);
             if (s >= len) { ok = 0; break; }
-            if (sample_bit(buf, s, 0)) byte |= (uint8_t)(1u << b);
+            if (sample_bit(buf, s, ch)) byte |= (uint8_t)(1u << b);
         }
         uint32_t stop = start + (uint32_t)(((uint64_t)bw * 19u) >> 17);
-        if (!ok || stop >= len || !sample_bit(buf, stop, 0)) {
+        if (!ok || stop >= len || !sample_bit(buf, stop, ch)) {
             i = start + (uint32_t)(bw >> 16);   /* resync one bit later */
             if (i <= start) i = start + 1;
             continue;
@@ -108,18 +109,24 @@ void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud,
         la_text_addf(t, "UART: no bytes at %llu bps\n", (unsigned long long)found_baud);
 }
 
+void decode_uart(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud, la_text *t)
+{
+    decode_uart_ch(buf, len, rate, baud, 0, t);
+}
+
 /* ---------- I2C ---------- */
-/* SCL = CH0, SDA = CH1. Bytes are MSB first, ACK is the ninth clock. */
-static int i2c_wait_rise(const uint8_t *buf, uint32_t *i, uint32_t len)
+/* Bytes are MSB first, ACK is the ninth clock. */
+static int i2c_wait_rise(const uint8_t *buf, uint32_t *i, uint32_t len, unsigned scl_ch)
 {
     while (*i < len) {
-        if (sample_bit(buf, *i, 0) && !sample_bit(buf, *i - 1, 0)) return 1;
+        if (sample_bit(buf, *i, scl_ch) && !sample_bit(buf, *i - 1, scl_ch)) return 1;
         (*i)++;
     }
     return 0;
 }
 
-void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
+void decode_i2c_ch(const uint8_t *buf, uint32_t len, uint32_t rate,
+                   unsigned scl_ch, unsigned sda_ch, la_text *t)
 {
     (void)rate;
     if (len < 20) { la_text_addf(t, "I2C: no data\n"); return; }
@@ -131,7 +138,8 @@ void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
 
     while (i + 1 < len && bytes < 8) {
         /* START: SDA falls while SCL is high. */
-        if (!(sample_bit(buf, i, 0) && !sample_bit(buf, i, 1) && sample_bit(buf, i - 1, 1))) {
+        if (!(sample_bit(buf, i, scl_ch) && !sample_bit(buf, i, sda_ch) &&
+              sample_bit(buf, i - 1, sda_ch))) {
             i++;
             continue;
         }
@@ -141,15 +149,15 @@ void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
             uint8_t byte = 0;
             int ok = 1;
             for (int b = 0; b < 8; b++) {
-                if (!i2c_wait_rise(buf, &i, len)) { ok = 0; break; }
+                if (!i2c_wait_rise(buf, &i, len, scl_ch)) { ok = 0; break; }
                 i++;
-                if (sample_bit(buf, i - 1, 1)) byte |= (uint8_t)(1u << (7 - b));
+                if (sample_bit(buf, i - 1, sda_ch)) byte |= (uint8_t)(1u << (7 - b));
             }
             if (!ok) break;
             int ack = 0;
-            if (!i2c_wait_rise(buf, &i, len)) break;
+            if (!i2c_wait_rise(buf, &i, len, scl_ch)) break;
             i++;
-            ack = !sample_bit(buf, i - 1, 1);
+            ack = !sample_bit(buf, i - 1, sda_ch);
 
             if (first) {
                 pos += (size_t)snprintf(out + pos, sizeof(out) - pos, "0x%02X %c %s",
@@ -163,9 +171,9 @@ void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
             bytes++;
             if (!ack) break;
             /* STOP (SDA rises) or repeated START ends the transfer. */
-            if (i + 1 < len && sample_bit(buf, i, 0)) {
-                if (sample_bit(buf, i, 1) && !sample_bit(buf, i - 1, 1)) break;
-                if (!sample_bit(buf, i, 1) && sample_bit(buf, i - 1, 1)) break;
+            if (i + 1 < len && sample_bit(buf, i, scl_ch)) {
+                if (sample_bit(buf, i, sda_ch) && !sample_bit(buf, i - 1, sda_ch)) break;
+                if (!sample_bit(buf, i, sda_ch) && sample_bit(buf, i - 1, sda_ch)) break;
             }
         }
     }
@@ -174,11 +182,19 @@ void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
     else la_text_addf(t, "I2C: no transaction found\n");
 }
 
+void decode_i2c(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
+{
+    decode_i2c_ch(buf, len, rate, 0, 1, t);
+}
+
 /* ---------- SPI ---------- */
-/* CS = CH0, SCK = CH1, MOSI = CH2, MISO = CH3, mode 0 (sample on rising). */
-void decode_spi(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
+/* mode 0 (sample on rising). */
+void decode_spi_ch(const uint8_t *buf, uint32_t len, uint32_t rate,
+                   unsigned cs_ch, unsigned sck_ch, unsigned mosi_ch,
+                   unsigned miso_ch, la_text *t)
 {
     (void)rate;
+    (void)miso_ch;   /* MOSI is enough to show the frame bytes */
     if (len < 20) { la_text_addf(t, "SPI: no data\n"); return; }
 
     char out[160];
@@ -188,14 +204,14 @@ void decode_spi(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
 
     while (i < len && frames < 4 && pos + 24 < sizeof(out)) {
         /* CS falling edge starts a transaction. */
-        if (sample_bit(buf, i, 0) || !sample_bit(buf, i - 1, 0)) { i++; continue; }
+        if (sample_bit(buf, i, cs_ch) || !sample_bit(buf, i - 1, cs_ch)) { i++; continue; }
         frames++;
         i++;
         unsigned nbits = 0, nbytes = 0;
         uint8_t byte = 0;
-        while (i < len && !sample_bit(buf, i, 0)) {
-            if (sample_bit(buf, i, 1) && !sample_bit(buf, i - 1, 1)) {
-                byte = (uint8_t)((byte << 1) | sample_bit(buf, i, 2));
+        while (i < len && !sample_bit(buf, i, cs_ch)) {
+            if (sample_bit(buf, i, sck_ch) && !sample_bit(buf, i - 1, sck_ch)) {
+                byte = (uint8_t)((byte << 1) | sample_bit(buf, i, mosi_ch));
                 if (++nbits == 8) {
                     if (nbytes < 8) {
                         pos += (size_t)snprintf(out + pos, sizeof(out) - pos, "%s%02X",
@@ -219,8 +235,13 @@ void decode_spi(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
     else la_text_addf(t, "SPI: no transaction found\n");
 }
 
+void decode_spi(const uint8_t *buf, uint32_t len, uint32_t rate, la_text *t)
+{
+    decode_spi_ch(buf, len, rate, 0, 1, 2, 3, t);
+}
+
 /* ---------- CAN ---------- */
-/* CH0 carries the single ended TX line: dominant = 0, recessive = 1.
+/* The channel carries the single ended TX line: dominant = 0, recessive = 1.
  * Only standard 11 bit data frames are decoded; the CRC field is skipped
  * because it needs no information the host does not already have. */
 typedef struct {
@@ -230,6 +251,7 @@ typedef struct {
     uint32_t start;  /* first sample of the SOF bit */
     uint32_t bit;    /* next bit index, 0 = SOF */
     uint32_t run;    /* consecutive identical bits on the wire */
+    unsigned ch;
     uint8_t last;
     int overflow;
 } can_reader;
@@ -244,14 +266,15 @@ static uint8_t can_next_bit(can_reader *r)
     uint32_t idx = r->start + (uint32_t)(((uint64_t)r->bw * (2u * r->bit + 1u)) >> 17);
     r->bit++;
     uint8_t b = 1;
-    if (idx < r->len) b = (uint8_t)sample_bit(r->buf, idx, 0);
+    if (idx < r->len) b = (uint8_t)sample_bit(r->buf, idx, r->ch);
     else r->overflow = 1;
     if (b == r->last) r->run++;
     else { r->run = 1; r->last = b; }
     return b;
 }
 
-void decode_can(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud, la_text *t)
+void decode_can_ch(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud,
+                   unsigned ch, la_text *t)
 {
     if (!baud) { la_text_addf(t, "CAN: needs the bit rate (pass baud)\n"); return; }
     if (len < 50) { la_text_addf(t, "CAN: no data\n"); return; }
@@ -262,11 +285,11 @@ void decode_can(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud, 
     uint32_t start = 0;
     int found = 0;
     for (uint32_t i = 1; i < len; i++) {
-        if (!sample_bit(buf, i, 0) && sample_bit(buf, i - 1, 0)) { start = i; found = 1; break; }
+        if (!sample_bit(buf, i, ch) && sample_bit(buf, i - 1, ch)) { start = i; found = 1; break; }
     }
     if (!found) { la_text_addf(t, "CAN: no SOF\n"); return; }
 
-    can_reader r = { buf, len, bw, start, 1, 1, 0, 0 };
+    can_reader r = { buf, len, bw, start, 1, 1, ch, 0, 0 };
     uint32_t id = 0;
     for (int k = 0; k < 11; k++) id = (id << 1) | can_next_bit(&r);
     uint8_t rtr = can_next_bit(&r);
@@ -290,6 +313,30 @@ void decode_can(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud, 
     }
     if (r.overflow) la_text_addf(t, "CAN: truncated frame\n");
     else la_text_addf(t, "%s\n", out);
+}
+
+void decode_can(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t baud, la_text *t)
+{
+    decode_can_ch(buf, len, rate, baud, 0, t);
+}
+
+const la_channel_map la_map_single = { 0, 0, 1, 0, 1, 2, 3, 0 };
+const la_channel_map la_map_test8  = { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+unsigned decoders_run_map(const uint8_t *buf, uint32_t len, uint32_t rate,
+                          uint8_t mask, uint32_t uart_baud, uint32_t can_baud,
+                          const la_channel_map *map, la_text *t)
+{
+    if (!buf || !len) { la_text_addf(t, "no samples\n"); return 0; }
+    const la_channel_map m = map ? *map : la_map_single;
+    unsigned n = 0;
+    if (mask & LAR2_PROTO_UART) { decode_uart_ch(buf, len, rate, uart_baud, m.uart, t); n++; }
+    if (mask & LAR2_PROTO_I2C)  { decode_i2c_ch(buf, len, rate, m.i2c_scl, m.i2c_sda, t); n++; }
+    if (mask & LAR2_PROTO_SPI)  { decode_spi_ch(buf, len, rate, m.spi_cs, m.spi_sck,
+                                                m.spi_mosi, m.spi_miso, t); n++; }
+    if (mask & LAR2_PROTO_CAN)  { decode_can_ch(buf, len, rate, can_baud, m.can, t); n++; }
+    if (!n) la_text_addf(t, "no protocol selected\n");
+    return n;
 }
 
 unsigned decoders_run(const uint8_t *buf, uint32_t len, uint32_t rate,
