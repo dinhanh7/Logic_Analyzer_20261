@@ -367,7 +367,10 @@ static void pkt_push(la_pktlist *l, uint8_t value, uint8_t flags,
     p->flags = flags;
     p->at = at;
     p->end = end;
-    p->gap = l->n ? at - l->pkt[l->n - 1].end : 0;
+    /* Rows are pushed in wire order, so this is normally positive; clamp it so
+     * a row that shares a span with the one before cannot print a wrapped
+     * 4-billion-sample gap. */
+    p->gap = (l->n && at > l->pkt[l->n - 1].end) ? at - l->pkt[l->n - 1].end : 0;
     l->n++;
 }
 
@@ -508,10 +511,18 @@ static unsigned packets_can(const uint8_t *buf, uint32_t len, uint32_t rate,
     if (dlc > 8) dlc = 8;
 
     /* The header is not a payload byte, but showing it is what makes a CAN row
-     * readable: the ID and DLC are the frame, the data is only part of it. */
-    pkt_push(l, (uint8_t)(id >> 8), LA_PKT_ID, start, start);
-    pkt_push(l, (uint8_t)(id & 0xFF), LA_PKT_ID, start, start);
-    pkt_push(l, dlc, LA_PKT_ID, start, start);
+     * readable: the ID and DLC are the frame, the data is only part of it.
+     * Each header row gets the bit field it covers, so the preview can draw
+     * those bits instead of collapsing to a single sample. Bit numbering is
+     * from the SOF: 0 = SOF, 1..11 = ID, 12 = RTR, 13 = IDE, 14 = r0,
+     * 15..18 = DLC, 19.. = data. */
+    #define CAN_BIT(n) (start + (uint32_t)(((uint64_t)bw * (2u * (n) + 1u)) >> 17))
+    /* The 11 ID bits split 6/5 so both rows have their own span: sharing one
+     * span made the second row's gap negative and it printed as a huge time. */
+    pkt_push(l, (uint8_t)(id >> 8), LA_PKT_ID | LA_PKT_ID_HI, CAN_BIT(1), CAN_BIT(6));
+    pkt_push(l, (uint8_t)(id & 0xFF), LA_PKT_ID, CAN_BIT(6), CAN_BIT(12));
+    pkt_push(l, dlc, LA_PKT_ID | LA_PKT_ID_DLC, CAN_BIT(15), CAN_BIT(19));
+    #undef CAN_BIT
 
     for (unsigned d = 0; d < dlc && l->n < LA_PKT_MAX; d++) {
         uint32_t at = start + (uint32_t)(((uint64_t)bw * (2u * r.bit + 1u)) >> 17);
@@ -536,6 +547,7 @@ unsigned decoders_packets(const uint8_t *buf, uint32_t len, uint32_t rate,
     out->ch = 0;
     out->win_at = 0;
     out->win_end = 0;
+    out->bitw = 0;
     if (!buf || !len) return 0;
     const la_channel_map m = map ? *map : la_map_single;
 
@@ -564,6 +576,25 @@ unsigned decoders_packets(const uint8_t *buf, uint32_t len, uint32_t rate,
     if (n && !out->win_end) {
         out->win_at = out->pkt[0].at;
         out->win_end = out->pkt[n - 1].end;
+    }
+    /* Samples per bit, so the preview can zoom to one byte at a readable
+     * width. UART knows its own bit time; the others are derived from the
+     * width of a data byte, which is 8 bits on the wire. */
+    if (n) {
+        if (proto == LAR2_PROTO_UART) {
+            uint32_t bwq = uart_bit_width_q16(buf, len, rate, uart_baud, out->ch);
+            out->bitw = bwq >> 16;
+        } else if (proto == LAR2_PROTO_CAN) {
+            out->bitw = (uint32_t)(((uint64_t)rate << 16) / (can_baud ? can_baud : 1)) >> 16;
+        }
+        if (!out->bitw) {
+            for (unsigned i = 0; i < n; i++) {
+                if (out->pkt[i].flags & (LA_PKT_ID | LA_PKT_ACK | LA_PKT_NAK)) continue;
+                uint32_t sp = out->pkt[i].end - out->pkt[i].at;
+                if (sp > 8) { out->bitw = sp / 8; break; }
+            }
+        }
+        if (!out->bitw) out->bitw = 1;
     }
     return n;
 }

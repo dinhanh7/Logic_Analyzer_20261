@@ -67,6 +67,8 @@ extern const la_channel_map la_map_test8;
 #define LA_PKT_START 0x08
 #define LA_PKT_STOP  0x10
 #define LA_PKT_ID    0x20   /* CAN identifier / DLC header, not payload */
+#define LA_PKT_ID_HI 0x40   /* CAN ID, high byte */
+#define LA_PKT_ID_DLC 0x80  /* CAN DLC field */
 
 typedef struct {
     uint8_t value;      /* the byte as it appeared on the wire */
@@ -81,9 +83,12 @@ typedef struct {
     unsigned n;
     uint32_t rate;
     unsigned ch;        /* channel the payload rides on, for the preview */
-    /* The whole transaction on the wire. A CAN header row has no width of its
-     * own, so the preview needs this to have anything to draw. */
+    /* The whole transaction on the wire, for the overview bar. */
     uint32_t win_at, win_end;
+    /* Samples per bit. The preview zooms to one byte, and without this it
+     * cannot tell a 10-bit UART byte from a 4-bit CAN DLC field, so every
+     * edge ends up a few pixels wide and reads as a slope instead of a step. */
+    uint32_t bitw;
 } la_pktlist;
 
 /* Extract the bytes of one protocol (a single LAR2_PROTO_* value). Returns the

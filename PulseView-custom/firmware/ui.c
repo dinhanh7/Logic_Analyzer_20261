@@ -453,8 +453,8 @@ static void draw_wave(bool high_page)
 #define CARD_Y      17
 #define CARD_H      22
 #define STRIP_Y     41
-#define STRIP_H     34
-#define GRID_Y      77
+#define STRIP_H     30
+#define GRID_Y      73
 #define GRID_HDR_H  12
 #define GRID_ROW_H  13
 #define GRID_ROWS   5
@@ -464,13 +464,13 @@ static void draw_wave(bool high_page)
 
 /* Column x and width, in pixels. 6 px per character. */
 #define COL_IDX_X   4
-#define COL_IDX_W   18      /* 3 chars: "01 " */
+#define COL_IDX_W   18      /* 3 chars: "01" */
 #define COL_HEX_X   24
-#define COL_HEX_W   30      /* 5 chars: "0x48 " */
+#define COL_HEX_W   30      /* 5 chars: "0x48" */
 #define COL_ASC_X   56
-#define COL_ASC_W   36      /* 6 chars: "'H'   " */
+#define COL_ASC_W   36      /* 6 chars: "'H'" / "ID-hi" */
 #define COL_DT_X    94
-#define COL_DT_W    32      /* 5 chars: "+86u " */
+#define COL_DT_W    32      /* 5 chars: "82us" */
 
 static const uint16_t C_CARD_BD  = RGB565(0x33, 0x41, 0x55);
 static const uint16_t C_CARD_ON  = RGB565(0x02, 0x84, 0xC7);
@@ -532,7 +532,18 @@ static void card(int x, int w, const char *label, const char *value,
               editing ? C_TEXT : (focused ? C_ACC : C_TEXT), bg);
 }
 
-/* Mini waveform of the selected packet: the real samples, decimated to fit. */
+/* Mini waveform of the selected row, zoomed to that row's own bits.
+ *
+ * The old version squeezed the whole transaction into 118 px. A UART byte is
+ * ten bit times, so at 25 MHz/115200 that is 2170 samples in 118 px: eighteen
+ * samples per column, every edge a two-pixel ramp. That is the "curved" edge:
+ * decimation, not the signal. Here the window is the row's own extent plus a
+ * bit of air, so a bit is several pixels wide and an edge is one column.
+ *
+ * When a bit is still narrower than a pixel (a very fast bus), the edge is
+ * drawn as a vertical line and the run is drawn at the level it holds, which
+ * is the honest way to decimate: no diagonal, ever.
+ */
 static void draw_strip(void)
 {
     fill(GRID_X, STRIP_Y, GRID_W, STRIP_H, C_STRIP_BG);
@@ -545,29 +556,28 @@ static void draw_strip(void)
     }
 
     const la_packet *p = &dec_pkts.pkt[dec_sel];
-    /* Draw the whole transaction with a little air either side, and mark the
-     * selected byte inside it. A CAN header row has no width of its own, so
-     * using the row's own extent would leave the strip empty. */
-    uint32_t wa = dec_pkts.win_at, wb = dec_pkts.win_end;
-    if (wb <= wa) { wa = p->at; wb = p->end > p->at ? p->end : p->at + 1; }
-    uint32_t span = wb - wa;
-    uint32_t pad = span / 8 ? span / 8 : 1;
-    uint32_t a = wa > pad ? wa - pad : 0;
-    uint32_t b = wb + pad;
+    uint32_t bitw = dec_pkts.bitw ? dec_pkts.bitw : 1;
+
+    /* Window = this row, padded by one bit either side so the start and stop
+     * edges are visible rather than clipped at the frame. */
+    uint32_t at = p->at, en = p->end > p->at ? p->end : p->at + bitw;
+    uint32_t a = at > bitw ? at - bitw : 0;
+    uint32_t b = en + bitw;
     if (b > cap_len) b = cap_len;
     if (b <= a) b = a + 1;
 
     int wx = GRID_X + 3, wy = STRIP_Y + 4;
-    int ww = GRID_W - 6, wh = 16;
+    int ww = GRID_W - 6, wh = 15;
     unsigned ch = dec_pkts.ch;
+    int hi = wy, lo = wy + wh - 1;
 
-    /* Baseline + the trace, one column per pixel. */
+    /* One column per pixel. A column that contains any transition is drawn as
+     * a full-height bar, which is a vertical edge and never a slope. */
     for (int col = 0; col < ww; col++) {
         uint32_t s0 = a + (uint32_t)((uint64_t)(b - a) * (unsigned)col / (unsigned)ww);
         uint32_t s1 = a + (uint32_t)((uint64_t)(b - a) * (unsigned)(col + 1) / (unsigned)ww);
         if (s1 <= s0) s1 = s0 + 1;
         if (s1 > cap_len) s1 = cap_len;
-        int hi = wy, lo = wy + wh - 1;
         unsigned level = (cap_samples[s0] >> ch) & 1u;
         bool edge = false;
         for (uint32_t i = s0; i < s1; i++)
@@ -577,21 +587,33 @@ static void draw_strip(void)
         else fill(x, level ? hi : lo, 1, 2, C_ACC);
     }
 
-    /* Field bar: a full-width track with the selected byte's span lit, so it
-     * reads as a position inside the frame rather than a second waveform. */
+    /* Bit ruler: a tick per bit boundary, so the row reads as bits and not as
+     * an abstract squiggle. Only drawn when the ticks do not merge. */
+    uint32_t nbits = (b - a) / (bitw ? bitw : 1);
+    int tick_y = STRIP_Y + 21;
+    if (nbits && nbits <= 24) {
+        for (uint32_t k = 0; k <= nbits; k++) {
+            int tx = wx + (int)((uint64_t)k * (unsigned)ww / nbits);
+            if (tx >= wx + ww) tx = wx + ww - 1;
+            fill(tx, tick_y, 1, 2, C_STRIP_BD);
+        }
+    }
+
+    /* Field bar: where this row sits inside the whole transaction. */
     int by = STRIP_Y + 24;
     int track_h = 3;
     fill(wx, by, ww, track_h, C_STRIP_BD);
-
-    uint32_t sel_end = p->end > p->at ? p->end : p->at + 1;
-    uint32_t pa = p->at > a ? p->at - a : 0;
-    uint32_t pb = sel_end > a ? sel_end - a : pa + 1;
-    int bx0 = wx + (int)((uint64_t)pa * (unsigned)ww / (b - a));
-    int bx1 = wx + (int)((uint64_t)pb * (unsigned)ww / (b - a));
-    if (bx1 <= bx0) bx1 = bx0 + 2;          /* a 1-sample row still shows */
-    if (bx0 < wx) bx0 = wx;
-    if (bx1 > wx + ww) bx1 = wx + ww;
-    fill(bx0, by, bx1 - bx0, track_h, C_CH[ch & 3u]);
+    uint32_t wa = dec_pkts.win_at, wb = dec_pkts.win_end;
+    if (wb > wa) {
+        uint32_t pa = at > wa ? at - wa : 0;
+        uint32_t pb = en > wa ? en - wa : pa + 1;
+        int bx0 = wx + (int)((uint64_t)pa * (unsigned)ww / (wb - wa));
+        int bx1 = wx + (int)((uint64_t)pb * (unsigned)ww / (wb - wa));
+        if (bx1 <= bx0) bx1 = bx0 + 2;
+        if (bx0 < wx) bx0 = wx;
+        if (bx1 > wx + ww) bx1 = wx + ww;
+        fill(bx0, by, bx1 - bx0, track_h, C_CH[ch & 3u]);
+    }
 }
 
 /* "+86u" / "+1.2m" / "+0" from a sample gap. */
@@ -600,13 +622,13 @@ static const char *gap_text(uint32_t gap, uint32_t rate, char *buf, size_t n)
     if (!rate) { snprintf(buf, n, "-"); return buf; }
     /* nanoseconds = gap * 1e9 / rate, kept in 64 bit. */
     uint64_t ns = (uint64_t)gap * 1000000000ull / rate;
-    if (!gap) snprintf(buf, n, "+0");
-    else if (ns < 1000) snprintf(buf, n, "+%uns", (unsigned)ns);
-    else if (ns < 1000000) snprintf(buf, n, "+%uu", (unsigned)(ns / 1000));
-    else if (ns < 1000000000ull) snprintf(buf, n, "+%u.%um",
+    if (!gap) snprintf(buf, n, "0");
+    else if (ns < 1000) snprintf(buf, n, "%uns", (unsigned)ns);
+    else if (ns < 1000000) snprintf(buf, n, "%uus", (unsigned)(ns / 1000));
+    else if (ns < 1000000000ull) snprintf(buf, n, "%u.%ums",
                                           (unsigned)(ns / 1000000),
                                           (unsigned)((ns / 100000) % 10));
-    else snprintf(buf, n, "+%u.%us", (unsigned)(ns / 1000000000ull),
+    else snprintf(buf, n, "%u.%us", (unsigned)(ns / 1000000000ull),
                   (unsigned)((ns / 100000000ull) % 10));
     return buf;
 }
@@ -617,7 +639,12 @@ static void asc_text(const la_packet *p, char *buf, size_t n)
     if (p->flags & LA_PKT_ACK) { snprintf(buf, n, "ACK"); return; }
     if (p->flags & LA_PKT_NAK) { snprintf(buf, n, "NAK"); return; }
     if (p->flags & LA_PKT_ADDR) { snprintf(buf, n, "ADR"); return; }
-    if (p->flags & LA_PKT_ID) { snprintf(buf, n, "ID"); return; }
+    if (p->flags & LA_PKT_ID) {
+        /* A CAN header is three rows; say which part each one is. */
+        snprintf(buf, n, "%s", p->flags & LA_PKT_ID_DLC ? "DLC" :
+                              (p->flags & LA_PKT_ID_HI ? "ID-hi" : "ID-lo"));
+        return;
+    }
     if (p->value >= 32 && p->value < 127) snprintf(buf, n, "'%c'", p->value);
     else snprintf(buf, n, ".");
 }
@@ -629,10 +656,12 @@ static void draw_grid(void)
     frame_rect(GRID_X, GRID_Y, GRID_W, GRID_HDR_H + GRID_ROWS * GRID_ROW_H,
                C_STRIP_BD);
 
+    /* Headers are words, not abbreviations: the old HEX/ASC/DT told nobody
+     * what the column meant. */
     text_clip(COL_IDX_X, GRID_Y + 2, COL_IDX_W, "#", C_DIM, C_BROWSE);
-    text_clip(COL_HEX_X, GRID_Y + 2, COL_HEX_W, "HEX", C_DIM, C_BROWSE);
-    text_clip(COL_ASC_X, GRID_Y + 2, COL_ASC_W, "ASC", C_DIM, C_BROWSE);
-    text_clip(COL_DT_X, GRID_Y + 2, COL_DT_W, "DT", C_DIM, C_BROWSE);
+    text_clip(COL_HEX_X, GRID_Y + 2, COL_HEX_W, "BYTE", C_DIM, C_BROWSE);
+    text_clip(COL_ASC_X, GRID_Y + 2, COL_ASC_W, "ASCII", C_DIM, C_BROWSE);
+    text_clip(COL_DT_X, GRID_Y + 2, COL_DT_W, "TIME", C_DIM, C_BROWSE);
 
     for (int r = 0; r < GRID_ROWS; r++) {
         int y = GRID_Y + GRID_HDR_H + r * GRID_ROW_H;
@@ -705,6 +734,9 @@ static void draw_decode(void)
 
     /* Band 4: the framed data grid. */
     draw_grid();
+
+    /* Footer: what the buttons do here, and what a row is. */
+    text_clip(2, 150, 124, "UP/DN:dong  OK:chuan", C_DIM, C_BG);
 }
 
 /* ---------- screen switching ---------- */
