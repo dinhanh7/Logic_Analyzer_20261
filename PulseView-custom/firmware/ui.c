@@ -88,7 +88,11 @@ static bool trig_edit;
  * square: at one sample per pixel a 115200 baud bit is 27 px wide, while
  * "whole buffer in 112 px" turns every edge into a diagonal ramp. */
 static uint8_t zoom_idx;
+/* Samples per pixel. The last entry is not a fixed zoom: it means "fit the
+ * whole capture", which is what makes the four-protocol demo visible at once
+ * instead of opening on 896 samples of idle line. */
 static const uint8_t zoom_spp[] = { 1, 2, 4, 8, 16, 32, 64, 128 };
+#define ZOOM_FIT 0xFF
 #define ZOOM_N (sizeof(zoom_spp) / sizeof(zoom_spp[0]))
 static uint32_t wave_t;
 static uint32_t cap_trigger;
@@ -230,7 +234,9 @@ static void text_center(int y, const char *s, uint16_t fg)
 static void header(const char *title)
 {
     fill(0, 0, SCR_W, HDR_H, C_HDR);
-    text(4, 3, title, C_ACC);
+    /* 21 characters fit at 6 px each; anything longer is clipped rather than
+     * run off the panel edge, which is what cut "CH0-3 [25M]" in half. */
+    text_clip(4, 3, SCR_W - 8, title, C_ACC, C_HDR);
     hline(0, HDR_H, SCR_W, C_BROWSE);
 }
 
@@ -350,10 +356,21 @@ static void draw_trigger(void)
 }
 
 /* ---------- screens 3/4: waveform ---------- */
+static bool zoom_is_fit(void) { return zoom_idx == ZOOM_FIT; }
+
 static uint32_t visible_samples(void)
 {
+    if (zoom_is_fit()) return cap_len ? cap_len : 1;
     uint32_t v = (uint32_t)WAVE_W * zoom_spp[zoom_idx];
     return (cap_len && v > cap_len) ? cap_len : v;
+}
+
+/* "FIT" or "X8", for the header line. */
+static const char *zoom_label(char *buf, size_t n)
+{
+    if (zoom_is_fit()) snprintf(buf, n, "FIT");
+    else snprintf(buf, n, "X%u", zoom_spp[zoom_idx]);
+    return buf;
 }
 
 static unsigned sample_bit(uint32_t i, unsigned ch)
@@ -402,12 +419,14 @@ static void draw_wave(bool high_page)
 {
     char buf[24];
     unsigned first = high_page ? 4 : 0;
-    snprintf(buf, sizeof buf, "%u/5 SONG CH%u-%u [%s]",
+    /* 21 characters is the whole header; "3/5 SONG CH0-3 25M" is exactly 20. */
+    snprintf(buf, sizeof buf, "%u/5 SONG CH%u-%u %s",
              high_page ? 4u : 3u, first, first + 3, rate_lbl[rate_idx]);
     header(buf);
     fill(0, HDR_H, SCR_W, SCR_H - HDR_H, C_BG);
 
-    snprintf(buf, sizeof buf, "Z:X%u  %s", zoom_spp[zoom_idx],
+    char zl[8];
+    snprintf(buf, sizeof buf, "Z:%s  %s", zoom_label(zl, sizeof zl),
              high_page ? "OK:GIAI MA" : "OK:CH4-7");
     text(4, 17, buf, C_DIM);
 
@@ -559,10 +578,33 @@ static void draw_strip(void)
     uint32_t bitw = dec_pkts.bitw ? dec_pkts.bitw : 1;
 
     /* Window = this row, padded by one bit either side so the start and stop
-     * edges are visible rather than clipped at the frame. */
+     * edges are visible rather than clipped at the frame.
+     *
+     * Rows record the *centre* of their first and last bit, not the edge, so
+     * padding from `at` directly lands half a bit inside the row and cuts off
+     * the leading edge. That is why the CAN strip was missing a falling edge:
+     * the SOF edge sits at 34400 while the first ID row starts at 34550, and
+     * one bit of padding back only reached 34450. Snap the window out to the
+     * bit grid instead, measured from the start of the transaction. */
     uint32_t at = p->at, en = p->end > p->at ? p->end : p->at + bitw;
-    uint32_t a = at > bitw ? at - bitw : 0;
-    uint32_t b = en + bitw;
+    uint32_t grid = dec_pkts.win_at;
+    uint32_t a, b;
+    if (at > grid && bitw) {
+        uint32_t k0 = (at - grid) / bitw;            /* bit holding `at` */
+        a = grid + (k0 > 0 ? (k0 - 1) * bitw : 0);   /* one whole bit of air */
+        /* If that lands on the very first bit (a CAN SOF row), the edge would
+         * sit on the left border and read as "no edge". Step one more bit back
+         * so the idle level before it is on screen. */
+        if (a <= grid) a = a > bitw ? a - bitw : 0;
+    } else {
+        a = at > bitw ? at - bitw : 0;
+    }
+    if (en > grid && bitw) {
+        uint32_t k1 = (en - grid + bitw - 1) / bitw; /* bit holding `en` */
+        b = grid + (k1 + 1) * bitw;
+    } else {
+        b = en + bitw;
+    }
     if (b > cap_len) b = cap_len;
     if (b <= a) b = a + 1;
 
@@ -578,10 +620,20 @@ static void draw_strip(void)
         uint32_t s1 = a + (uint32_t)((uint64_t)(b - a) * (unsigned)(col + 1) / (unsigned)ww);
         if (s1 <= s0) s1 = s0 + 1;
         if (s1 > cap_len) s1 = cap_len;
-        unsigned level = (cap_samples[s0] >> ch) & 1u;
+        /* Compare against the sample BEFORE the column, not the first sample
+         * in it. If a transition lands exactly on s0, reading level at s0 gives
+         * the post-edge value and the loop finds no change: the edge vanishes.
+         * That is the "missing falling edge" seen on the CAN data rows. A
+         * transition is a change between consecutive samples, so walk s0-1..s1
+         * and flag the column on any such change. */
+        unsigned level = s0 ? ((cap_samples[s0 - 1] >> ch) & 1u)
+                            : ((cap_samples[s0] >> ch) & 1u);
         bool edge = false;
-        for (uint32_t i = s0; i < s1; i++)
-            if (((cap_samples[i] >> ch) & 1u) != level) { edge = true; break; }
+        for (uint32_t i = s0; i < s1; i++) {
+            unsigned cur = (cap_samples[i] >> ch) & 1u;
+            if (cur != level) { edge = true; break; }
+            level = cur;
+        }
         int x = wx + col;
         if (edge) fill(x, hi, 1, wh, C_ACC);
         else fill(x, level ? hi : lo, 1, 2, C_ACC);
@@ -892,7 +944,10 @@ static void event(btn_id id, bool long_press)
         if (id == BTN_UP || id == BTN_DOWN) {
             bool up = id == BTN_UP;
             if (long_press && !up) {
-                zoom_idx = (uint8_t)((zoom_idx + 1) % ZOOM_N);
+                /* X1..X128, then FIT, then back to X1. */
+                if (zoom_is_fit()) zoom_idx = 0;
+                else if ((unsigned)zoom_idx + 1u >= ZOOM_N) zoom_idx = ZOOM_FIT;
+                else zoom_idx++;
                 wave_t = 0;
             } else if (long_press) {
                 /* Jump so the trigger sits in the middle of the view. */
@@ -1129,7 +1184,7 @@ void ui_load_demo(void)
     count_idx = 0;                                  /* 16K */
     apply_config();
     wave_t = 0;
-    zoom_idx = 3;                                   /* X8: 896 samples */
+    zoom_idx = ZOOM_FIT;                            /* whole demo on screen */
     dec_scroll = 0;
     enter(SCR_WAVE_LO);
 }
@@ -1142,7 +1197,7 @@ void ui_init(void)
     mask_idx = 0;                                   /* CH 0-7 */
     pre_idx = 1;                                    /* 25 % */
     baud_idx = 2;                                   /* 115200 */
-    zoom_idx = 3;                                   /* X8: 896 samples */
+    zoom_idx = ZOOM_FIT;                            /* whole demo on screen */
     proto_sel = 0;
     cap_ok = true;
     cfg_row = 0;

@@ -155,10 +155,25 @@ int main(int argc, char **argv)
     crc_init();
 
     int proto = argc > 3 ? atoi(argv[3]) : 0;
+    int screen = argc > 4 ? atoi(argv[4]) : 4;   /* 2 = CH0-3, 3 = CH4-7 */
 
     ui_init();
     ui_load_demo();                 /* 3/5 WAVE CH0-3 */
-    ui_handle_command('o');         /* -> 4/5 */
+    if (screen == 2) {              /* 3/5 WAVE CH0-3 */
+        ui_tick();
+        if (!frame_valid) return 1;
+        if (write_png(out, scale)) return 1;
+        printf("%s  screen=%u\n", out, ui_screen_id());
+        return 0;
+    }
+    ui_handle_command('o');         /* -> 4/5 WAVE CH4-7 */
+    if (screen == 3) {
+        ui_tick();
+        if (!frame_valid) return 1;
+        if (write_png(out, scale)) return 1;
+        printf("%s  screen=%u\n", out, ui_screen_id());
+        return 0;
+    }
     ui_handle_command('o');         /* -> 5/5 DECODE */
     /* OK enters edit on the protocol card, DOWN steps it, OK applies. */
     for (int i = 0; i < proto; i++) {
@@ -166,6 +181,10 @@ int main(int argc, char **argv)
         ui_handle_command('d');
         ui_handle_command('o');
     }
+    /* Optional row selection: DOWN moves the grid selection and the preview
+     * follows it, which is how each packet's strip gets checked. */
+    int row = argc > 5 ? atoi(argv[5]) : 0;
+    for (int i = 0; i < row; i++) ui_handle_command('d');
     ui_tick();
     if (!frame_valid) { fprintf(stderr, "no frame flushed\n"); return 1; }
     if (write_png(out, scale)) { fprintf(stderr, "png write failed\n"); return 1; }

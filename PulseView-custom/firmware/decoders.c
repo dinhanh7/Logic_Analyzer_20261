@@ -499,38 +499,49 @@ static unsigned packets_can(const uint8_t *buf, uint32_t len, uint32_t rate,
     if (!found) return 0;
 
     can_reader r = { buf, len, bw, start, 1, 1, ch, 0, 0 };
+
+    /* Sample index of the bit the reader is about to consume.
+     *
+     * CAN inserts a stuff bit after five identical bits, so the wire position
+     * of logical bit n is NOT start + n * bit_time: every stuffed bit before n
+     * pushes it one bit later. Computing positions with a formula therefore
+     * drifts, and by the DLC field it is a whole bit off, which is why the
+     * preview lost the edges of that row. r.bit already counts stuffed bits,
+     * so asking the reader is the only correct answer. */
+    #define CAN_AT() (start + (uint32_t)(((uint64_t)bw * (2u * r.bit + 1u)) >> 17))
+
+    uint32_t id_at = CAN_AT();
     uint32_t id = 0;
     for (int k = 0; k < 11; k++) id = (id << 1) | can_next_bit(&r);
+    uint32_t id_end = CAN_AT();
     uint8_t rtr = can_next_bit(&r);
     uint8_t ide = can_next_bit(&r);
-    (void)can_next_bit(&r);
+    (void)can_next_bit(&r);                 /* r0 */
+    uint32_t dlc_at = CAN_AT();
     uint8_t dlc = 0;
     for (int k = 0; k < 4; k++) dlc = (uint8_t)((dlc << 1) | can_next_bit(&r));
+    uint32_t dlc_end = CAN_AT();
 
     if (r.overflow || ide || rtr) return 0;
     if (dlc > 8) dlc = 8;
 
     /* The header is not a payload byte, but showing it is what makes a CAN row
      * readable: the ID and DLC are the frame, the data is only part of it.
-     * Each header row gets the bit field it covers, so the preview can draw
-     * those bits instead of collapsing to a single sample. Bit numbering is
-     * from the SOF: 0 = SOF, 1..11 = ID, 12 = RTR, 13 = IDE, 14 = r0,
-     * 15..18 = DLC, 19.. = data. */
-    #define CAN_BIT(n) (start + (uint32_t)(((uint64_t)bw * (2u * (n) + 1u)) >> 17))
-    /* The 11 ID bits split 6/5 so both rows have their own span: sharing one
-     * span made the second row's gap negative and it printed as a huge time. */
-    pkt_push(l, (uint8_t)(id >> 8), LA_PKT_ID | LA_PKT_ID_HI, CAN_BIT(1), CAN_BIT(6));
-    pkt_push(l, (uint8_t)(id & 0xFF), LA_PKT_ID, CAN_BIT(6), CAN_BIT(12));
-    pkt_push(l, dlc, LA_PKT_ID | LA_PKT_ID_DLC, CAN_BIT(15), CAN_BIT(19));
-    #undef CAN_BIT
+     * The ID splits 6/5 so each row has its own span. */
+    uint32_t id_mid = id_at + (id_end - id_at) / 2;
+    pkt_push(l, (uint8_t)(id >> 8), LA_PKT_ID | LA_PKT_ID_HI, id_at, id_mid);
+    pkt_push(l, (uint8_t)(id & 0xFF), LA_PKT_ID, id_mid, id_end);
+    pkt_push(l, dlc, LA_PKT_ID | LA_PKT_ID_DLC, dlc_at, dlc_end);
 
     for (unsigned d = 0; d < dlc && l->n < LA_PKT_MAX; d++) {
-        uint32_t at = start + (uint32_t)(((uint64_t)bw * (2u * r.bit + 1u)) >> 17);
+        uint32_t at = CAN_AT();
         uint8_t byte = 0;
         for (int k = 0; k < 8; k++) byte = (uint8_t)((byte << 1) | can_next_bit(&r));
-        uint32_t end = start + (uint32_t)(((uint64_t)bw * (2u * r.bit + 1u)) >> 17);
+        uint32_t end = CAN_AT();
         pkt_push(l, byte, LA_PKT_DATA, at, end);
     }
+    #undef CAN_AT
+
     /* SOF through the last data bit: what the preview should show. */
     l->win_at = start;
     l->win_end = start + (uint32_t)(((uint64_t)bw * (2u * r.bit + 1u)) >> 17);
