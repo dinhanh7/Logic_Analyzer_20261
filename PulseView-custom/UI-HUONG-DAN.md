@@ -107,12 +107,19 @@ Các dòng: `Che do`, `Kenh`, `Dieu kien`, `Baud/Clk`.
 | OK | Màn 3 → màn 4; màn 4 → màn 5/5 DECODE |
 | BACK | Màn 4 → màn 3; màn 3 → màn 1/5 CẤU HÌNH ĐO |
 
-- **Zoom FIT** = hiển thị toàn bộ buffer (dùng với dữ liệu mô phỏng 4 giao
-  thức). **X8** là mức mặc định sau khi thu thật, giúp cạnh xung vuông.
+- **Zoom FIT** = hiển thị toàn bộ buffer. **X16** là mức mở đầu với dữ liệu mô
+  phỏng (tâm đúng vạch trigger, một bit UART ~13 px); **X8** là mức mặc định
+  sau khi thu thật. Giữ DOWN đổi zoom **không nhảy về mẫu 0**: mẫu dưới con
+  trỏ giữa được giữ nguyên vị trí.
 - Vạch **đỏ** là vị trí trigger. Đường **trắng đứt nét** giữa màn là cursor đo;
   dữ liệu trượt bên dưới cursor.
-- Dòng dưới cùng `T:<samples>` là thời điểm mẫu tại giữa màn; `STOP` / `RUN` /
-  `FAIL` là trạng thái thu.
+- **Thước thời gian** dưới các track: vạch chia theo thang 1-2-5, nhãn là
+  thời gian **tuyệt đối tính từ mẫu 0** (cùng đơn vị với cột TIME ở màn
+  DECODE). Nhãn tự né nhau khi chật.
+- **Thanh cuộn ngang** dưới cùng của vùng sóng: chiều dài thumb = tỉ lệ cửa
+  sổ/buffer, vị trí = đang xem đoạn nào. FIT thì thumb phủ hết track.
+- Dòng dưới cùng `T:<thời gian>` (ví dụ `T:80us`) là thời điểm của mẫu tại
+  giữa màn; `STOP` / `RUN` / `FAIL` là trạng thái thu.
 
 ### Màn 5/5 - DECODE
 

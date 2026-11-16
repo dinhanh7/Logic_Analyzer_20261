@@ -18,7 +18,8 @@
  * cycle test and RUNTIME.st[30] values do not move.
  *
  * Layout: 6x8 font (21 characters per line), header bar 14 px, list rows on a
- * 22 px pitch with an 18 px highlight box, waveform tracks 26 px.
+ * 22 px pitch with an 18 px highlight box, waveform tracks 24 px with a
+ * time ruler and a horizontal scrollbar below them.
  */
 #include "ui.h"
 
@@ -60,10 +61,23 @@ static const uint16_t C_CH[4] = {
 #define BOTTOM_Y 138
 #define HINT_Y 152
 
-#define WAVE_TOP 30
-#define WAVE_TRACK_H 26
+#define WAVE_TOP 26
+#define WAVE_TRACK_H 24
+#define WAVE_BOT (WAVE_TOP + 4 * WAVE_TRACK_H)   /* 122: last waveform row */
 #define WAVE_X0 16
 #define WAVE_W (SCR_W - WAVE_X0)
+
+/* Below the tracks: a time ruler, then a horizontal scrollbar. Both end at
+ * y=137 so the status bar at BOTTOM_Y=138 is untouched. */
+#define RULER_Y      (WAVE_BOT + 1)      /* 123 */
+#define RULER_H      8
+#define RULER_TICK_Y (RULER_Y + 8)       /* 131 */
+#define RULER_TICK_H 2
+#define RULER_TICK_PX 48                /* aim for a tick every ~48 px */
+#define WSBAR_X      WAVE_X0
+#define WSBAR_Y      134
+#define WSBAR_W      WAVE_W
+#define WSBAR_H      4
 
 
 ui_config ui_cfg;
@@ -98,11 +112,13 @@ static bool trig_edit;
 /* Waveform screens. `zoom_idx` indexes zoom_spp, the number of samples one
  * pixel column covers. Keeping it at 8 by default is what makes an edge look
  * square: at one sample per pixel a 115200 baud bit is 27 px wide, while
- * "whole buffer in 112 px" turns every edge into a diagonal ramp. */
+ * "whole buffer in 112 px" turns every edge into a diagonal ramp. Zooming
+ * keeps the sample under the centre cursor; FIT is still one long-DOWN away. */
 static uint8_t zoom_idx;
-/* Samples per pixel. The last entry is not a fixed zoom: it means "fit the
- * whole capture", which is what makes the four-protocol demo visible at once
- * instead of opening on 896 samples of idle line. */
+/* Samples per pixel. The last entry is not a fixed zoom: ZOOM_FIT means
+ * "fit the whole capture", which makes the four-protocol demo visible at
+ * once. The demo opens at X16 instead, centred on the trigger, so the
+ * opening view is readable rather than the whole buffer in 112 px. */
 static const uint8_t zoom_spp[] = { 1, 2, 4, 8, 16, 32, 64, 128 };
 #define ZOOM_FIT 0xFF
 #define ZOOM_N (sizeof(zoom_spp) / sizeof(zoom_spp[0]))
@@ -445,7 +461,7 @@ static void draw_track(unsigned ch, int y)
     uint32_t span = WAVE_W ? visible / WAVE_W : 0;
     if (!span) span = 1;
 
-    const int hi = y + 6, lo = y + 18;
+    const int hi = y + 5, lo = y + 17;
     fill(WAVE_X0, y, WAVE_W, WAVE_TRACK_H - 1, C_BG);
 
     char label[4];
@@ -469,6 +485,67 @@ static void draw_track(unsigned ch, int y)
     }
     hline(WAVE_X0, y + WAVE_TRACK_H - 1, WAVE_W, C_BROWSE);
     text(2, y + 8, label, color);
+}
+
+/* ---------- time ruler + scrollbar (below the tracks) ---------- */
+
+/* Defined with the decode grid; the ruler labels share its formatting. */
+static const char *gap_text(uint32_t gap, uint32_t rate, char *buf, size_t n);
+
+/* 1-2-5 ladder pitch in samples, aiming for a tick every RULER_TICK_PX. */
+static uint32_t ruler_pitch(uint32_t span)
+{
+    uint64_t want = (uint64_t)span * RULER_TICK_PX / WAVE_W;
+    uint32_t ladder[] = { 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000,
+                          10000, 20000, 50000, 100000, 200000, 500000, 1000000 };
+    const unsigned n = sizeof(ladder) / sizeof(ladder[0]);
+    for (unsigned i = 0; i < n; i++)
+        if ((uint64_t)ladder[i] * 2 >= want) return ladder[i];
+    return ladder[n - 1];
+}
+
+/* Absolute time from sample 0, one tick per pitch. Labels are clipped and
+ * skipped when they would collide, so nothing ever overlaps. */
+static void draw_time_ruler(void)
+{
+    fill(WAVE_X0, RULER_Y, WAVE_W, RULER_H, C_BG);
+    if (!cap_rate || !cap_len) return;
+
+    uint32_t visible = visible_samples();
+    uint32_t span = WAVE_W ? visible / WAVE_W : 0;
+    if (!span) span = 1;
+    uint32_t pitch = ruler_pitch(span);
+
+    hline(WAVE_X0, RULER_TICK_Y, WAVE_W, C_BROWSE);
+    int last_right = -1000;
+    for (uint32_t t = (wave_t / pitch) * pitch; t < wave_t + visible; t += pitch) {
+        if (t < wave_t) continue;
+        int x = WAVE_X0 + (int)((t - wave_t) / span);
+        if (x < WAVE_X0 || x >= SCR_W) continue;
+        fill(x, RULER_TICK_Y, 1, RULER_TICK_H, C_DIM);
+        char lb[12];
+        gap_text(t, (uint32_t)cap_rate, lb, sizeof lb);
+        int w = (int)strlen(lb) * FONT6X8_W;
+        if (x - w / 2 < last_right + 4) continue;   /* label would collide */
+        text_clip(x - w / 2, RULER_Y, w + 2, lb, C_DIM, C_BG);
+        last_right = x - w / 2 + w;
+    }
+}
+
+/* Horizontal pan indicator: thumb length = window/buffer, position = view. */
+static void draw_scrollbar(void)
+{
+    fill(WSBAR_X, WSBAR_Y, WSBAR_W, WSBAR_H, C_BROWSE);
+    if (!cap_len) return;
+    uint32_t visible = visible_samples();
+    uint32_t vis = visible > cap_len ? cap_len : visible;
+    int th = (int)((uint64_t)WSBAR_W * vis / cap_len);
+    if (th < 4) th = 4;
+    if (th > WSBAR_W) th = WSBAR_W;
+    uint32_t max = cap_len > vis ? cap_len - vis : 0;
+    int tx = WSBAR_X;
+    if (max) tx += (int)((uint64_t)(WSBAR_W - th) * (wave_t > max ? max : wave_t) / max);
+    fill(tx, WSBAR_Y, th, WSBAR_H, C_ACC);
 }
 
 static void draw_wave(bool high_page)
@@ -503,8 +580,15 @@ static void draw_wave(bool high_page)
     for (int y = WAVE_TOP; y < WAVE_TOP + 4 * WAVE_TRACK_H; y += 4)
         vline(cx, y, 2, C_CURSOR);
 
+    draw_time_ruler();
+    draw_scrollbar();
+
     fill(0, BOTTOM_Y, SCR_W, 12, C_HDR);
-    snprintf(buf, sizeof buf, "T:%u", (unsigned)(wave_t + visible / 2));
+    /* Same clock as the DECODE grid's TIME column: absolute time of the
+     * sample under the centre cursor, not a bare sample count. */
+    char tb[12];
+    gap_text(wave_t + visible / 2, (uint32_t)cap_rate, tb, sizeof tb);
+    snprintf(buf, sizeof buf, "T:%s", tb);
     text(4, BOTTOM_Y + 2, buf, C_TEXT);
     text_right(SCR_W - 4, BOTTOM_Y + 2,
                capturing ? "RUN" : (cap_ok ? "STOP" : "FAIL"),
@@ -938,6 +1022,16 @@ static void cycle_decode(signed dir)
     }
 }
 
+/* Centre the view on a sample, clamped to the buffer. FIT-safe: when the
+ * whole capture is visible the clamp lands at 0. */
+static void wave_centre_on(uint32_t target)
+{
+    uint32_t visible = visible_samples();
+    uint32_t max = cap_len > visible ? cap_len - visible : 0;
+    wave_t = target > visible / 2 ? target - visible / 2 : 0;
+    if (wave_t > max) wave_t = max;
+}
+
 static void wave_scroll(signed dir)
 {
     uint32_t visible = visible_samples();
@@ -1008,17 +1102,15 @@ static void event(btn_id id, bool long_press, uint32_t held_ms)
         if (id == BTN_UP || id == BTN_DOWN) {
             bool up = id == BTN_UP;
             if (long_press && !up) {
-                /* X1..X128, then FIT, then back to X1. */
+                /* X1..X128, then FIT, then back to X1. Zooming keeps the
+                 * sample under the centre cursor instead of jumping to 0. */
+                uint32_t centre = wave_t + visible_samples() / 2;
                 if (zoom_is_fit()) zoom_idx = 0;
                 else if ((unsigned)zoom_idx + 1u >= ZOOM_N) zoom_idx = ZOOM_FIT;
                 else zoom_idx++;
-                wave_t = 0;
+                wave_centre_on(centre);
             } else if (long_press) {
-                /* Jump so the trigger sits in the middle of the view. */
-                uint32_t visible = visible_samples();
-                wave_t = cap_trigger > visible / 2 ? cap_trigger - visible / 2 : 0;
-                uint32_t max = cap_len > visible ? cap_len - visible : 0;
-                if (wave_t > max) wave_t = max;
+                wave_centre_on(cap_trigger);
             } else {
                 wave_scroll(up ? -1 : +1);
             }
@@ -1255,7 +1347,8 @@ void ui_load_demo(void)
     count_idx = 0;                                  /* 16K */
     apply_config();
     wave_t = 0;
-    zoom_idx = ZOOM_FIT;                            /* whole demo on screen */
+    zoom_idx = 4;                                   /* X16: a bit is ~13 px */
+    wave_centre_on(cap_trigger);
     dec_scroll = 0;
     enter(SCR_WAVE_LO);
 }
@@ -1268,7 +1361,8 @@ void ui_init(void)
     mask_idx = 0;                                   /* CH 0-7 */
     pre_idx = 1;                                    /* 25 % */
     baud_idx = 2;                                   /* 115200 */
-    zoom_idx = ZOOM_FIT;                            /* whole demo on screen */
+    zoom_idx = 4;                                   /* X16: a bit is ~13 px */
+    wave_centre_on(cap_trigger);
     proto_sel = 0;
     cap_ok = true;
     cfg_row = 0;
@@ -1379,12 +1473,8 @@ void ui_set_capture(const uint8_t *samples, uint32_t len, uint64_t rate,
     cap_ok = ok;
     dec_scroll = 0;
     /* Open on the trigger: a captured window is far wider than one view, and
-     * the interesting edge is where the user put it. */
-    uint32_t visible = (uint32_t)WAVE_W * zoom_spp[zoom_idx];
-    wave_t = trigger_index > visible / 2 ? trigger_index - visible / 2 : 0;
-    {
-        uint32_t max = len > visible ? len - visible : 0;
-        if (wave_t > max) wave_t = max;
-    }
+     * the interesting edge is where the user put it. wave_centre_on() is
+     * FIT-safe; indexing zoom_spp[] with a possible ZOOM_FIT was not. */
+    wave_centre_on(trigger_index);
     if (screen == SCR_WAVE_LO || screen == SCR_WAVE_HI) refresh();
 }

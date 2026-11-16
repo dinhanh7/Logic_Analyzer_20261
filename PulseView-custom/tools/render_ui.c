@@ -205,6 +205,9 @@ int main(int argc, char **argv)
      * follows it, which is how each packet's strip gets checked. */
     int row = argc > 5 ? atoi(argv[5]) : 0;
     for (int i = 0; i < row; i++) ui_handle_command('d');
+    /* Optional zoom steps (long DOWN = 'D') applied on the waveform screen. */
+    int zooms = argc > 6 ? atoi(argv[6]) : 0;
+    for (int i = 0; i < zooms; i++) ui_handle_command('D');
     ui_tick();
     if (!frame_valid) { fprintf(stderr, "no frame flushed\n"); return 1; }
     if (write_png(out, scale)) { fprintf(stderr, "png write failed\n"); return 1; }
