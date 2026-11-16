@@ -15,5 +15,8 @@ void tft_draw_image(int x, int y, int w, int h, const uint16_t *data);
  * buffer is caller owned, which is how the UI composes one text row at a time
  * without a full screen framebuffer. */
 void tft_blit(int x, int y, int w, int h, const uint16_t *px);
+/* Push a whole 128x160 frame with one window write over SPI DMA. The buffer
+ * holds RGB565 words in panel byte order (high byte first). */
+void tft_flush_fb(const uint16_t *fb);
 
 #endif

@@ -1,10 +1,20 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * 128x160 ST7735 UI: four screens, dirty-line redraw, no framebuffer.
+ * 128x160 ST7735 UI: four screens, full-frame framebuffer, 4-button state
+ * machine.
  *
- * Rendering: every text line is composed into a 128x8 RGB565 band and flushed
- * with one tft_blit(), so a line is never shown half drawn -> no flicker. The
- * screen background is painted once on entry; after that only changed lines
- * (or waveform tracks) are rewritten.
+ * The panel is portrait. Everything is composed into a 128x160 RGB565
+ * framebuffer held in panel byte order and pushed with one SPI DMA window
+ * write, so a screen never shows a half-drawn frame: no flicker, no tearing
+ * between a label and its value.
+ *
+ * Screen flow (BACK leaves edit mode before it changes screen):
+ *
+ *   CONFIG --BACK--> TRIGGER --BACK--> CONFIG
+ *   CONFIG --OK on [BAT DAU THU]--> WAVEFORM --OK--> DECODE --BACK--> WAVEFORM
+ *   WAVEFORM --BACK--> CONFIG
+ *
+ * Layout rules: 6x8 font, 21 characters per line, header bar 14 px, body rows
+ * 20 px, waveform tracks 26 px.
  */
 #include "ui.h"
 
@@ -19,431 +29,512 @@
 
 #define RGB565(r, g, b) ((uint16_t)((((r) & 0xF8u) << 8) | (((g) & 0xFCu) << 3) | ((b) >> 3)))
 
-#define C_BG     RGB565(0x0D, 0x13, 0x1A)
-#define C_HEADER RGB565(0x2B, 0x7B, 0xB9)
-#define C_SEL    RGB565(0x45, 0xB3, 0x76)
-#define C_TEXT   RGB565(0xE0, 0xE6, 0xED)
-#define C_FOOT   RGB565(0x7A, 0x86, 0x9A)
+/* Palette: dark, high contrast, one accent. */
+#define C_BG      RGB565(0x0A, 0x0E, 0x14)
+#define C_HDR     RGB565(0x16, 0x20, 0x2C)
+#define C_ACC     RGB565(0x38, 0xBD, 0xF8)
+#define C_BROWSE  RGB565(0x1E, 0x29, 0x3B)
+#define C_EDIT    RGB565(0x06, 0x5F, 0x46)
+#define C_EDIT_T  RGB565(0x34, 0xD3, 0x99)
+#define C_TEXT    RGB565(0xE2, 0xE8, 0xF0)
+#define C_DIM     RGB565(0x64, 0x74, 0x8B)
+#define C_TRIG    RGB565(0xEF, 0x44, 0x44)
+#define C_CURSOR  RGB565(0xF8, 0xFA, 0xFC)
 
+/* CH0-3 and the same four hues reused for CH4-7, as specified. */
 static const uint16_t C_CH[4] = {
-    RGB565(0x4E, 0xA8, 0xDE), RGB565(0xF4, 0xA2, 0x61),
-    RGB565(0x52, 0xB7, 0x88), RGB565(0x9D, 0x4E, 0xDD)
+    RGB565(0x38, 0xBD, 0xF8), RGB565(0xFB, 0x92, 0x3C),
+    RGB565(0x4A, 0xDE, 0x80), RGB565(0xC0, 0x84, 0xFC)
 };
 
-/* Fixed layout. Text rows are 8 px tall, menus use 16 px spacing. */
-#define ROW_HEADER  2
-#define ROW_MENU    24
-#define ROW_FOOTER  148
-#define MENU_LINES  5
-#define WAVE_TOP    28
-#define WAVE_TRACK_H 22
-#define WAVE_X0     24
-#define WAVE_W      (TFT_WIDTH - WAVE_X0)
+#define SCR_W TFT_WIDTH
+#define SCR_H TFT_HEIGHT
+#define HDR_H 14
+#define ROW_Y0 22
+#define ROW_H 20
+#define ROW_BOX 18
+#define BOTTOM_Y 138
+#define HINT_Y 152
 
-#define UI_CAN_BAUD 250000u
-
-typedef enum { SCR_CAPTURE, SCR_TRIGGER, SCR_WAVE, SCR_DECODE } ui_screen;
+#define WAVE_TOP 30
+#define WAVE_TRACK_H 26
+#define WAVE_X0 16
+#define WAVE_W (SCR_W - WAVE_X0)
 
 ui_config ui_cfg;
 
+typedef enum { SCR_CONFIG = 0, SCR_TRIGGER, SCR_WAVE, SCR_DECODE } ui_screen;
+
 static ui_screen screen;
-static uint8_t sel;
-static bool editing;
-static uint8_t pat_field;    /* 0 = value, 1 = mask */
+
+/* Config screen: row 0..3 are values, row 4 is the start button. */
+static uint8_t cfg_row;
+static bool cfg_edit;
+static uint8_t rate_idx, count_idx, mask_idx, pre_idx;
+
+/* Trigger screen. */
+static uint8_t trig_row;
+static bool trig_edit;
+
+/* Waveform screen. */
 static uint8_t wave_page;
-static uint8_t zoom;         /* 1, 2, 4, 8 */
+static uint8_t zoom;                /* 1, 2, 4, 8 */
 static uint32_t wave_t;
+static uint32_t cap_trigger;
+
+/* Decode screen. */
 static uint8_t proto_sel;
-static bool capturing;
+static uint8_t dec_focus;           /* 0 = protocol, 1 = bus config */
+static bool dec_edit;
+static uint32_t dec_scroll;
+
+static uint8_t event_count;
 
 static const uint8_t *cap_samples;
 static uint32_t cap_len;
 static uint64_t cap_rate;
 static bool cap_ok;
+static bool capturing;
 
 static bool capture_request;
 
-static char dec_text[512];
+static char dec_text[1024];
 
-static const uint64_t rates[LAR2_RATE_COUNT] = {
+static const uint64_t rates[] = {
     1000, 10000, 100000, 250000, 500000, 1000000, 5000000, 25000000
 };
-static const uint32_t counts[] = { 1000, 10000, 40000, 65536, 131072, 262144 };
-static const uint32_t pres[] = { 0, 1000, 2000, 8192, 16384, 32768, 65536 };
-static const uint8_t masks[] = { 0xFF, 0x0F, 0x03, 0x01 };
+static const char *const rate_lbl[] = {
+    "1K", "10K", "100K", "250K", "500K", "1M", "5M", "25M"
+};
+/* The PIO samples a fixed set of rates; the UI only offers those. */
+#define RATE_N (sizeof(rates) / sizeof(rates[0]))
 
-/* ---------- band canvas ---------- */
-static uint16_t band[TFT_WIDTH * FONT6X8_H];
+static const uint32_t counts[] = { 16384, 65536, 131072, 262144 };
+static const char *const count_lbl[] = { "16K", "64K", "131K", "262K" };
+#define COUNT_N (sizeof(counts) / sizeof(counts[0]))
 
-static void band_fill(uint16_t color)
+static const uint8_t masks[] = { 0xFF, 0x0F };
+static const char *const mask_lbl[] = { "CH 0-7", "CH 0-3" };
+#define MASK_N (sizeof(masks) / sizeof(masks[0]))
+
+static const uint8_t pre_pct[] = { 0, 25, 50, 75 };
+#define PRE_N (sizeof(pre_pct) / sizeof(pre_pct[0]))
+
+static const uint32_t bauds[] = { 0, 9600, 115200 };
+static const char *const baud_lbl[] = { "AUTO", "9600", "115200" };
+#define BAUD_N (sizeof(bauds) / sizeof(bauds[0]))
+static uint8_t baud_idx;
+
+static const uint8_t proto_mask[4] = {
+    LAR2_PROTO_UART, LAR2_PROTO_I2C, LAR2_PROTO_SPI, LAR2_PROTO_CAN
+};
+static const char *const proto_name[4] = { "UART", "I2C", "SPI", "CAN" };
+
+/* ---------- graphics ---------- */
+static uint16_t fb[SCR_W * SCR_H];
+
+static inline void px(int x, int y, uint16_t c)
 {
-    for (unsigned i = 0; i < TFT_WIDTH * FONT6X8_H; i++) band[i] = color;
+    if (x < 0 || y < 0 || x >= SCR_W || y >= SCR_H) return;
+    fb[y * SCR_W + x] = __builtin_bswap16(c);
 }
 
-static void band_glyph(int x, unsigned ch, uint16_t fg, uint16_t bg)
+static void fill(int x, int y, int w, int h, uint16_t c)
+{
+    if (x < 0) { w += x; x = 0; }
+    if (y < 0) { h += y; y = 0; }
+    if (x + w > SCR_W) w = SCR_W - x;
+    if (y + h > SCR_H) h = SCR_H - y;
+    if (w <= 0 || h <= 0) return;
+    for (int r = y; r < y + h; r++)
+        for (int i = x; i < x + w; i++)
+            fb[r * SCR_W + i] = __builtin_bswap16(c);
+}
+
+static void hline(int x, int y, int w, uint16_t c)
+{
+    fill(x, y, w, 1, c);
+}
+
+static void vline(int x, int y, int h, uint16_t c)
+{
+    fill(x, y, 1, h, c);
+}
+
+static void frame_rect(int x, int y, int w, int h, uint16_t c)
+{
+    hline(x, y, w, c);
+    hline(x, y + h - 1, w, c);
+    vline(x, y, h, c);
+    vline(x + w - 1, y, h, c);
+}
+
+static void glyph(int x, int y, unsigned ch, uint16_t fg)
 {
     if (ch < FONT6X8_FIRST || ch >= FONT6X8_FIRST + FONT6X8_COUNT) ch = '?';
     const uint8_t *g = font6x8[ch - FONT6X8_FIRST];
-    for (int r = 0; r < FONT6X8_H; r++) {
-        uint16_t *dst = band + r * TFT_WIDTH;
-        for (int c = 0; c < FONT6X8_W; c++) {
-            int px = x + c;
-            if (px < 0 || px >= TFT_WIDTH) continue;
-            dst[px] = (g[r] >> c) & 1u ? fg : bg;
-        }
+    for (int r = 0; r < FONT6X8_H; r++)
+        for (int c = 0; c < FONT6X8_W; c++)
+            if ((g[r] >> c) & 1u) px(x + c, y + r, fg);
+}
+
+static void text(int x, int y, const char *s, uint16_t fg)
+{
+    for (; *s; s++, x += FONT6X8_W) glyph(x, y, (unsigned char)*s, fg);
+}
+
+static int text_w(const char *s)
+{
+    return FONT6X8_W * (int)strlen(s);
+}
+
+static void text_right(int x_right, int y, const char *s, uint16_t fg)
+{
+    text(x_right - text_w(s), y, s, fg);
+}
+
+static void text_center(int y, const char *s, uint16_t fg)
+{
+    text((SCR_W - text_w(s)) / 2, y, s, fg);
+}
+
+static void flush(void)
+{
+    tft_flush_fb(fb);
+}
+
+static void header(const char *title)
+{
+    fill(0, 0, SCR_W, HDR_H, C_HDR);
+    text(4, 3, title, C_ACC);
+    hline(0, HDR_H, SCR_W, C_BROWSE);
+}
+
+/* ---------- generic list row ---------- */
+static void row(int y, const char *label, const char *value,
+                bool selected, bool edit, bool enabled)
+{
+    if (selected) {
+        fill(0, y - 2, SCR_W, ROW_BOX, edit ? C_EDIT : C_BROWSE);
+        vline(0, y - 2, ROW_BOX, C_ACC);
+        vline(1, y - 2, ROW_BOX, C_ACC);
     }
-}
-
-static void band_str(int x, const char *s, uint16_t fg, uint16_t bg)
-{
-    for (; *s; s++, x += FONT6X8_W) band_glyph(x, (unsigned char)*s, fg, bg);
-}
-
-static void band_flush(int y, int h)
-{
-    tft_blit(0, y, TFT_WIDTH, h, band);
-}
-
-/* One text line at (2, y). */
-static void draw_line(int y, const char *text, uint16_t fg)
-{
-    band_fill(C_BG);
-    band_str(2, text, fg, C_BG);
-    band_flush(y, FONT6X8_H);
-}
-
-/* Menu row: optional '>' cursor, label and value, bracket while editing. */
-static void draw_row(int y, bool selected, bool edit, const char *label,
-                     const char *value, uint16_t value_fg)
-{
-    char line[32];
-    band_fill(C_BG);
-    if (selected) band_str(0, ">", C_SEL, C_BG);
-    uint16_t label_fg = selected ? C_SEL : C_TEXT;
-    band_str(8, label, label_fg, C_BG);
-    int x = 8 + FONT6X8_W * (int)strlen(label);
-    if (edit) {
-        snprintf(line, sizeof(line), "[%s]", value);
-        band_str(x, line, C_SEL, C_BG);
-    } else {
-        band_str(x, value, selected ? C_SEL : value_fg, C_BG);
-    }
-    band_flush(y, FONT6X8_H);
+    text(7, y + 2, label, selected && !edit ? C_TEXT : (enabled ? C_TEXT : C_DIM));
+    uint16_t vc = !enabled ? C_DIM : (edit ? C_EDIT_T : (selected ? C_ACC : C_TEXT));
+    text_right(SCR_W - 4, y + 2, value, vc);
 }
 
 /* ---------- formatting ---------- */
-static void fmt_rate(char *out, size_t n)
+static uint32_t pretrigger_samples(void)
 {
-    if (ui_cfg.rate >= 1000000)
-        snprintf(out, n, "%u MHZ", (unsigned)(ui_cfg.rate / 1000000u));
-    else
-        snprintf(out, n, "%u KHZ", (unsigned)(ui_cfg.rate / 1000u));
+    return (uint32_t)((uint64_t)ui_cfg.count * pre_pct[pre_idx] / 100u);
 }
 
-static void fmt_rate_short(char *out, size_t n)
+static void apply_config(void)
 {
-    if (ui_cfg.rate >= 1000000)
-        snprintf(out, n, "%uM", (unsigned)(ui_cfg.rate / 1000000u));
-    else
-        snprintf(out, n, "%uK", (unsigned)(ui_cfg.rate / 1000u));
-}
-
-static void fmt_channels(char *out, size_t n)
-{
-    switch (ui_cfg.mask) {
-    case 0xFF: snprintf(out, n, "0-7"); break;
-    case 0x0F: snprintf(out, n, "0-3"); break;
-    case 0x03: snprintf(out, n, "0-1"); break;
-    default:   snprintf(out, n, "0"); break;
-    }
+    ui_cfg.rate = rates[rate_idx];
+    ui_cfg.count = counts[count_idx];
+    ui_cfg.mask = masks[mask_idx];
 }
 
 static const char *mode_name(void)
 {
     switch (ui_cfg.trig_mode) {
-    case LAR2_TRIGGER_EDGE: return "EDGE";
     case LAR2_TRIGGER_PATTERN: return "PATTERN";
     case LAR2_TRIGGER_UART: return "UART";
-    default: return "MANUAL";
+    default: return "EDGE";
     }
 }
 
-/* ---------- screen 01: capture config ---------- */
-static void draw_capture(void)
+static const char *cond_name(char *buf, size_t n)
 {
-    char v[24];
-    draw_line(ROW_HEADER, "CAU HINH", C_HEADER);
-
-    fmt_rate(v, sizeof(v));
-    draw_row(ROW_MENU + 0 * 16, sel == 0, editing && sel == 0, "FS: ", v, C_TEXT);
-    snprintf(v, sizeof(v), "%u", (unsigned)ui_cfg.count);
-    draw_row(ROW_MENU + 1 * 16, sel == 1, editing && sel == 1, "N: ", v, C_TEXT);
-    char ch[8];
-    fmt_channels(ch, sizeof(ch));
-    draw_row(ROW_MENU + 2 * 16, sel == 2, false, "CH: ", ch, C_TEXT);
-    snprintf(v, sizeof(v), "%u", (unsigned)ui_cfg.pretrigger);
-    draw_row(ROW_MENU + 3 * 16, sel == 3, editing && sel == 3, "PRE: ", v, C_TEXT);
-
-    band_fill(C_BG);
-    band_str(8, "[ BAT DAU ]", sel == 4 ? C_SEL : C_TEXT, C_BG);
-    band_flush(ROW_MENU + 4 * 16, FONT6X8_H);
-
-    draw_line(ROW_FOOTER, "UP/DN OK BACK", C_FOOT);
+    switch (ui_cfg.trig_mode) {
+    case LAR2_TRIGGER_PATTERN:
+        snprintf(buf, n, "0x%02X/0xFF", ui_cfg.trig_value);
+        break;
+    case LAR2_TRIGGER_UART:
+        snprintf(buf, n, "0x%02X", ui_cfg.trig_value);
+        break;
+    default:
+        return ui_cfg.trig_edge == LAR2_EDGE_FALLING ? "FALLING" : "RISING";
+    }
+    return buf;
 }
 
-/* ---------- screen 02: trigger config ---------- */
+static const char *bus_config(char *buf, size_t n)
+{
+    switch (proto_sel) {
+    case 0:
+        snprintf(buf, n, "RX:CH0 %s", baud_idx ? baud_lbl[baud_idx] : "AUTO");
+        break;
+    case 1: snprintf(buf, n, "SCL:CH1 SDA:CH2"); break;
+    case 2: snprintf(buf, n, "SCK:CH4 MOSI:CH5"); break;
+    default: snprintf(buf, n, "RX:CH7 250K"); break;
+    }
+    return buf;
+}
+
+/* ---------- screen 1: capture config ---------- */
+static void draw_config(void)
+{
+    char buf[24];
+    header("1/4 CAU HINH DO");
+    fill(0, HDR_H, SCR_W, SCR_H - HDR_H, C_BG);
+
+    row(ROW_Y0 + 0 * ROW_H, "Tan so", rate_lbl[rate_idx],
+        cfg_row == 0, cfg_edit && cfg_row == 0, true);
+    row(ROW_Y0 + 1 * ROW_H, "So mau", count_lbl[count_idx],
+        cfg_row == 1, cfg_edit && cfg_row == 1, true);
+    row(ROW_Y0 + 2 * ROW_H, "Kenh", mask_lbl[mask_idx],
+        cfg_row == 2, cfg_edit && cfg_row == 2, true);
+    snprintf(buf, sizeof buf, "%u%%", pre_pct[pre_idx]);
+    row(ROW_Y0 + 3 * ROW_H, "Pre-Trig", buf,
+        cfg_row == 3, cfg_edit && cfg_row == 3, true);
+
+    /* Start button: framed, centred, highlighted when selected. */
+    const char *btn = "[ BAT DAU THU ]";
+    int bw = text_w(btn) + 8;
+    int bx = (SCR_W - bw) / 2;
+    int by = 108;
+    if (cfg_row == 4) {
+        fill(bx, by, bw, 16, C_BROWSE);
+        frame_rect(bx, by, bw, 16, C_ACC);
+        text_center(by + 4, btn, C_ACC);
+    } else {
+        frame_rect(bx, by, bw, 16, C_DIM);
+        text_center(by + 4, btn, C_TEXT);
+    }
+
+    text_center(HINT_Y, "UP/DN  OK SUA  BACK", C_DIM);
+}
+
+/* ---------- screen 2: trigger ---------- */
 static void draw_trigger(void)
 {
-    char v[24];
-    draw_line(ROW_HEADER, "TRIGGER", C_HEADER);
+    char buf[24];
+    header("2/4 TRIGGER");
+    fill(0, HDR_H, SCR_W, SCR_H - HDR_H, C_BG);
 
-    draw_row(ROW_MENU + 0 * 16, sel == 0, editing && sel == 0, "MODE: ", mode_name(), C_TEXT);
-    snprintf(v, sizeof(v), "%u", ui_cfg.trig_channel);
-    draw_row(ROW_MENU + 1 * 16, sel == 1, editing && sel == 1, "CH: ", v, C_TEXT);
-    draw_row(ROW_MENU + 2 * 16, sel == 2, editing && sel == 2, "CANH: ",
-             ui_cfg.trig_edge == LAR2_EDGE_FALLING ? "FALLING" : "RISING", C_TEXT);
+    row(ROW_Y0 + 0 * ROW_H, "Che do", mode_name(),
+        trig_row == 0, trig_edit && trig_row == 0, true);
 
-    /* Pattern row: the active half is bracketed while editing. */
-    if (editing && sel == 3)
-        snprintf(v, sizeof(v), pat_field == 0 ? "[%02X]/%02X" : "%02X/[%02X]",
-                 ui_cfg.trig_value, ui_cfg.trig_mask);
+    snprintf(buf, sizeof buf, "CH%u", ui_cfg.trig_channel);
+    row(ROW_Y0 + 1 * ROW_H, "Kenh", buf,
+        trig_row == 1, trig_edit && trig_row == 1, true);
+
+    char cond[16];
+    if (trig_edit && trig_row == 2 && ui_cfg.trig_mode == LAR2_TRIGGER_PATTERN)
+        snprintf(buf, sizeof buf, "[0x%02X]/0xFF", ui_cfg.trig_value);
     else
-        snprintf(v, sizeof(v), "%02X/%02X", ui_cfg.trig_value, ui_cfg.trig_mask);
-    draw_row(ROW_MENU + 3 * 16, sel == 3, false, "PATTERN: ", v, C_TEXT);
+        snprintf(buf, sizeof buf, "%s", cond_name(cond, sizeof cond));
+    row(ROW_Y0 + 2 * ROW_H, "Dieu kien", buf,
+        trig_row == 2, trig_edit && trig_row == 2, true);
 
-    if (ui_cfg.trig_value == 0x4C)
-        draw_row(ROW_MENU + 4 * 16, sel == 4, false, "UART: ", "AUTO", C_TEXT);
-    else {
-        snprintf(v, sizeof(v), "0X%02X", ui_cfg.trig_value);
-        draw_row(ROW_MENU + 4 * 16, sel == 4, editing && sel == 4, "UART: ", v, C_TEXT);
-    }
+    bool uart = ui_cfg.trig_mode == LAR2_TRIGGER_UART;
+    row(ROW_Y0 + 3 * ROW_H, "Baud", baud_lbl[baud_idx],
+        trig_row == 3, trig_edit && trig_row == 3, uart);
 
-    draw_line(ROW_FOOTER, "UP/DN OK BACK", C_FOOT);
+    text_center(HINT_Y, "UP/DN  OK SUA  BACK", C_DIM);
 }
 
-/* ---------- screen 03: waveform ---------- */
-static unsigned sample_bit_at(uint32_t i, unsigned ch)
+/* ---------- screen 3: waveform ---------- */
+static uint32_t visible_samples(void);
+
+static unsigned sample_bit(uint32_t i, unsigned ch)
 {
     if (!cap_samples || i >= cap_len) return 0;
     return (cap_samples[i] >> ch) & 1u;
 }
 
-/* Compose one 22 px track. High level sits on rows 6-7, low on 14-15, and a
- * column that contains a transition draws the vertical connector. */
-static void draw_track(unsigned ch, int y, uint16_t color)
+static void draw_track(unsigned ch, int y)
 {
+    uint16_t color = C_CH[ch & 3u];
     uint32_t visible = cap_len ? cap_len / zoom : 0;
-    if (!cap_samples || !visible) {
-        band_fill(C_BG);
-        band_flush(y + 6, 2);
-        return;
-    }
+    if (visible > cap_len) visible = cap_len;
     uint32_t start = wave_t;
     if (start + visible > cap_len) start = cap_len > visible ? cap_len - visible : 0;
-    uint32_t span = visible / WAVE_W;
+    uint32_t span = WAVE_W ? visible / WAVE_W : 0;
     if (!span) span = 1;
 
-    for (int half = 0; half < 2; half++) {
-        band_fill(C_BG);
-        int base = half * 8;
-        for (int col = 0; col < WAVE_W; col++) {
-            uint32_t lo = start + (uint32_t)col * span;
-            if (lo >= cap_len) break;
-            uint32_t hi = lo + span;
-            if (hi > cap_len) hi = cap_len;
-            unsigned level = sample_bit_at(lo, ch);
-            bool edge = false;
-            for (uint32_t i = lo + 1; i < hi && !edge; i++)
-                if (sample_bit_at(i, ch) != level) edge = true;
+    const int hi = y + 6, lo = y + 18;
+    fill(WAVE_X0, y, WAVE_W, WAVE_TRACK_H - 1, C_BG);
 
-            int px = WAVE_X0 + col;
-            for (int r = 0; r < 8; r++) {
-                int row = base + r;
-                bool on;
-                if (edge) on = (row >= 6 && row <= 15);
-                else if (level) on = (row == 6 || row == 7);
-                else on = (row == 14 || row == 15);
-                if (on) band[r * TFT_WIDTH + px] = color;
-            }
+    char label[4];
+    snprintf(label, sizeof label, "%u", ch);
+
+    for (int col = 0; col < WAVE_W; col++) {
+        uint32_t a = start + (uint32_t)col * span;
+        if (a >= cap_len) break;
+        uint32_t b = a + span;
+        if (b > cap_len) b = cap_len;
+        unsigned level = sample_bit(a, ch);
+        bool edge = false;
+        for (uint32_t i = a + 1; i < b && !edge; i++)
+            if (sample_bit(i, ch) != level) edge = true;
+        int x = WAVE_X0 + col;
+        if (edge) {
+            vline(x, hi, lo - hi + 1, color);
+        } else {
+            fill(x, level ? hi : lo, 1, 2, color);
         }
-        band_flush(y + half * 8, 8);
     }
-
-    /* Label last so it is not covered by the waveform bands. */
-    char label[8];
-    snprintf(label, sizeof(label), "CH%u", ch);
-    band_fill(C_BG);
-    band_str(1, label, color, C_BG);
-    band_flush(y + 7, FONT6X8_H);
+    hline(WAVE_X0, y + WAVE_TRACK_H - 1, WAVE_W, C_BROWSE);
+    text(2, y + 8, label, color);
 }
 
 static void draw_wave(void)
 {
-    char h[24], sub[24], st[24];
-    char fs[8];
-    fmt_rate_short(fs, sizeof(fs));
-    snprintf(h, sizeof(h), "%s FS:%s", capturing ? "RUN" : (cap_ok ? "STOP" : "FAIL"), fs);
-    draw_line(ROW_HEADER, h, capturing ? C_SEL : C_HEADER);
+    char buf[24];
+    snprintf(buf, sizeof buf, "3/4 DANG SONG [%s]",
+             rate_lbl[rate_idx]);
+    header(buf);
+    fill(0, HDR_H, SCR_W, SCR_H - HDR_H, C_BG);
 
     unsigned first = wave_page ? 4 : 0;
-    snprintf(sub, sizeof(sub), "CH%u-%u PAGE %u/2", first, first + 3, wave_page + 1);
-    draw_line(16, sub, C_FOOT);
+    snprintf(buf, sizeof buf, "PG%u/2 CH%u-%u  Z:X%u", wave_page + 1,
+             first, first + 3, zoom);
+    text(4, 17, buf, C_DIM);
 
     for (unsigned i = 0; i < 4; i++)
-        draw_track(first + i, WAVE_TOP + (int)i * WAVE_TRACK_H, C_CH[i]);
+        draw_track(first + i, WAVE_TOP + (int)i * WAVE_TRACK_H);
 
-    snprintf(st, sizeof(st), "T:%u ZOOM:X%u", (unsigned)wave_t, zoom);
-    draw_line(120, st, C_FOOT);
-    draw_line(ROW_FOOTER, "LEFT/RIGHT BACK", C_FOOT);
+    /* Measurement cursor: fixed at the centre so scrolling moves the data
+     * under it, which is how a handheld LA is normally used. */
+    int cx = WAVE_X0 + WAVE_W / 2;
+    for (int y = WAVE_TOP; y < WAVE_TOP + 4 * WAVE_TRACK_H; y += 4) {
+        vline(cx, y, 2, C_CURSOR);
+    }
+
+    /* Trigger marker (red) when it falls inside the visible window. */
+    uint32_t visible = visible_samples();
+    uint32_t span = visible / WAVE_W;
+    if (!span) span = 1;
+    if (cap_trigger >= wave_t && cap_trigger < wave_t + visible) {
+        int tx = WAVE_X0 + (int)((cap_trigger - wave_t) / span);
+        if (tx < SCR_W) vline(tx, WAVE_TOP, 4 * WAVE_TRACK_H, C_TRIG);
+    }
+
+    fill(0, BOTTOM_Y, SCR_W, 12, C_HDR);
+    uint32_t tpos = wave_t + visible / 2;
+    snprintf(buf, sizeof buf, "T:%u", (unsigned)tpos);
+    text(4, BOTTOM_Y + 2, buf, C_TEXT);
+    text_right(SCR_W - 4, BOTTOM_Y + 2, capturing ? "RUN" : (cap_ok ? "STOP" : "FAIL"),
+               capturing ? C_EDIT_T : C_TEXT);
+    text_center(HINT_Y, "OK MA   BACK VE", C_DIM);
 }
 
-/* ---------- screen 04: decode ---------- */
-static const uint8_t proto_mask[4] = {
-    LAR2_PROTO_UART, LAR2_PROTO_I2C, LAR2_PROTO_SPI, LAR2_PROTO_CAN
-};
-static const char *proto_name[4] = { "UART", "I2C", "SPI", "CAN" };
-static const char *proto_pins[4] = {
-    "UART RX: CH0", "I2C SCL: CH1", "SPI SCK: CH4", "CAN RX: CH7"
-};
-
+/* ---------- screen 4: decode ---------- */
 static void run_decode(void)
 {
     dec_text[0] = '\0';
     if (!cap_samples || !cap_len) {
-        snprintf(dec_text, sizeof(dec_text), "NO CAPTURE. BACK, THEN\n[BAT DAU].");
+        snprintf(dec_text, sizeof dec_text, "NO CAPTURE. QUAY LAI MAN 1 VA BAT DAU THU.");
         return;
     }
     la_text t;
-    la_text_init(&t, dec_text, sizeof(dec_text));
+    la_text_init(&t, dec_text, sizeof dec_text);
     decoders_run_map(cap_samples, cap_len, (uint32_t)cap_rate, proto_mask[proto_sel],
-                     0, UI_CAN_BAUD, &la_map_test8, &t);
+                     bauds[baud_idx], 250000, &la_map_test8, &t);
 }
 
-/* Draw uppercase text wrapped at 21 characters, max `max_lines` rows. */
-static void draw_text_block(int y, const char *text, uint16_t fg, int max_lines)
+/* Split the decoder output into 21-character lines counted from `skip`. */
+static void draw_decode_lines(int y, uint32_t skip, int rows)
 {
-    const char *p = text;
-    for (int i = 0; i < max_lines && *p; i++) {
-        char line[24];
+    const char *p = dec_text;
+    uint32_t line = 0;
+    int drawn = 0;
+    char buf[24];
+    /* Keep the newlines the decoders emit; wrap hard at 21 characters. */
+    while (*p && drawn < rows) {
         size_t n = 0;
-        while (*p && *p != '\n' && n < 21) {
-            char c = *p++;
-            if (c >= 'a' && c <= 'z') c = (char)(c - 32);
-            line[n++] = c;
-        }
+        while (*p && *p != '\n' && n < 21) buf[n++] = *p++;
         if (*p == '\n') p++;
-        line[n] = '\0';
-        draw_line(y + i * 10, line, fg);
+        else if (*p && n == 21) {
+            /* long line continues on the next row */
+        }
+        buf[n] = '\0';
+        if (line >= skip) {
+            text(4, y + drawn * 8, buf, C_TEXT);
+            drawn++;
+        }
+        line++;
     }
 }
 
 static void draw_decode(void)
 {
-    draw_line(ROW_HEADER, "DECODE", C_HEADER);
+    char buf[24];
+    header("4/4 GIAI MA BUS");
+    fill(0, HDR_H, SCR_W, SCR_H - HDR_H, C_BG);
 
-    /* 2x2 protocol grid: UART I2C on one row, SPI CAN on the next. */
-    for (int row = 0; row < 2; row++) {
-        band_fill(C_BG);
-        for (int col = 0; col < 2; col++) {
-            int idx = row * 2 + col;
-            int x = col ? 68 : 8;
-            bool on = idx == proto_sel;
-            if (on) band_str(x - 8, ">", C_SEL, C_BG);
-            band_str(x, proto_name[idx], on ? C_SEL : C_TEXT, C_BG);
-        }
-        band_flush(22 + row * 14, FONT6X8_H);
-    }
+    if (dec_focus == 0 && dec_edit) fill(0, 18, SCR_W, ROW_BOX, C_EDIT);
+    if (dec_focus == 1 && dec_edit) fill(0, 30, SCR_W, ROW_BOX, C_EDIT);
+    if (dec_focus == 0) vline(0, 18, ROW_BOX, C_ACC);
+    if (dec_focus == 1) vline(0, 30, ROW_BOX, C_ACC);
 
-    draw_line(56, proto_pins[proto_sel], C_TEXT);
-    draw_line(66, proto_sel == 0 ? "BAUD: AUTO" : "CH MAP: 8CH", C_FOOT);
-    draw_line(80, "DATA:", C_TEXT);
-    draw_text_block(92, dec_text, C_TEXT, 5);
-    draw_line(ROW_FOOTER, "CHON BUS OK", C_FOOT);
+    snprintf(buf, sizeof buf, "< %s >", proto_name[proto_sel]);
+    text(7, 20, "Chuan", C_DIM);
+    text_right(SCR_W - 4, 20, buf, dec_edit && dec_focus == 0 ? C_EDIT_T : C_ACC);
+    text(7, 32, "Cau hinh", C_DIM);
+    text_right(SCR_W - 4, 32, bus_config(buf, sizeof buf),
+               dec_edit && dec_focus == 1 ? C_EDIT_T : C_TEXT);
+
+    hline(0, 44, SCR_W, C_BROWSE);
+    draw_decode_lines(48, dec_scroll, 13);
+    text_center(HINT_Y, "OK CHON  DN CUON", C_DIM);
 }
 
 /* ---------- screen switching ---------- */
 static void refresh(void)
 {
     switch (screen) {
-    case SCR_CAPTURE: draw_capture(); break;
+    case SCR_CONFIG: draw_config(); break;
     case SCR_TRIGGER: draw_trigger(); break;
-    case SCR_WAVE:    draw_wave(); break;
-    case SCR_DECODE:  draw_decode(); break;
+    case SCR_WAVE: draw_wave(); break;
+    case SCR_DECODE: draw_decode(); break;
     }
+    flush();
 }
 
 static void enter(ui_screen s)
 {
     screen = s;
-    editing = false;
-    sel = 0;
-    tft_fill_color(C_BG);
-    if (s == SCR_DECODE) run_decode();
+    switch (s) {
+    case SCR_CONFIG: cfg_edit = false; cfg_row = 0; break;
+    case SCR_TRIGGER: trig_edit = false; trig_row = 0; break;
+    case SCR_DECODE: dec_edit = false; dec_focus = 0; run_decode(); break;
+    default: break;
+    }
     refresh();
 }
 
-/* ---------- value cycling ---------- */
-static int index_of_u64(const uint64_t *tab, int n, uint64_t v)
+/* ---------- value editing ---------- */
+static void cycle_config(signed dir)
 {
-    for (int i = 0; i < n; i++) if (tab[i] == v) return i;
-    return 0;
-}
-
-static int index_of_u32(const uint32_t *tab, int n, uint32_t v)
-{
-    for (int i = 0; i < n; i++) if (tab[i] == v) return i;
-    return 0;
-}
-
-static void cycle_capture_value(signed dir)
-{
-    switch (sel) {
-    case 0: {
-        int i = index_of_u64(rates, LAR2_RATE_COUNT, ui_cfg.rate);
-        i = (i + dir + LAR2_RATE_COUNT) % LAR2_RATE_COUNT;
-        ui_cfg.rate = rates[i];
+    switch (cfg_row) {
+    case 0: rate_idx = (uint8_t)((rate_idx + dir + RATE_N) % RATE_N); break;
+    case 1:
+        count_idx = (uint8_t)((count_idx + dir + COUNT_N) % COUNT_N);
+        ui_cfg.count = counts[count_idx];
         break;
-    }
-    case 1: {
-        int n = (int)(sizeof(counts) / sizeof(counts[0]));
-        int i = index_of_u32(counts, n, ui_cfg.count);
-        i = (i + dir + n) % n;
-        ui_cfg.count = counts[i];
-        if (ui_cfg.pretrigger >= ui_cfg.count)
-            ui_cfg.pretrigger = ui_cfg.count / 2;
-        break;
-    }
-    case 2: {
-        int n = (int)(sizeof(masks) / sizeof(masks[0]));
-        int i = 0;
-        for (int k = 0; k < n; k++) if (masks[k] == ui_cfg.mask) i = k;
-        i = (i + dir + n) % n;
-        ui_cfg.mask = masks[i];
-        break;
-    }
-    case 3: {
-        int n = (int)(sizeof(pres) / sizeof(pres[0]));
-        int i = index_of_u32(pres, n, ui_cfg.pretrigger);
-        i = (i + dir + n) % n;
-        if (pres[i] >= ui_cfg.count) i = 0;
-        ui_cfg.pretrigger = pres[i];
-        break;
-    }
+    case 2: mask_idx = (uint8_t)((mask_idx + dir + MASK_N) % MASK_N); break;
+    case 3: pre_idx = (uint8_t)((pre_idx + dir + PRE_N) % PRE_N); break;
     default: break;
     }
+    apply_config();
+    ui_cfg.pretrigger = pretrigger_samples();
 }
 
-static void cycle_trigger_value(signed dir)
+static void cycle_trigger(signed dir)
 {
-    switch (sel) {
+    switch (trig_row) {
     case 0: {
-        /* EDGE -> PATTERN -> UART -> EDGE */
         static const uint8_t order[] = {
             LAR2_TRIGGER_EDGE, LAR2_TRIGGER_PATTERN, LAR2_TRIGGER_UART
         };
-        int n = 3, i = 0;
-        for (int k = 0; k < n; k++) if (order[k] == ui_cfg.trig_mode) i = k;
-        i = (i + dir + n) % n;
+        int i = 0;
+        for (int k = 0; k < 3; k++) if (order[k] == ui_cfg.trig_mode) i = k;
+        i = (i + dir + 3) % 3;
         ui_cfg.trig_mode = order[i];
         break;
     }
@@ -451,148 +542,232 @@ static void cycle_trigger_value(signed dir)
         ui_cfg.trig_channel = (uint8_t)((ui_cfg.trig_channel + dir + 8) % 8);
         break;
     case 2:
-        ui_cfg.trig_edge = ui_cfg.trig_edge == LAR2_EDGE_FALLING
-                               ? LAR2_EDGE_RISING : LAR2_EDGE_FALLING;
+        if (ui_cfg.trig_mode == LAR2_TRIGGER_EDGE)
+            ui_cfg.trig_edge = ui_cfg.trig_edge == LAR2_EDGE_FALLING
+                                   ? LAR2_EDGE_RISING : LAR2_EDGE_FALLING;
+        else
+            ui_cfg.trig_value = (uint8_t)(ui_cfg.trig_value + dir);
         break;
     case 3:
-        if (pat_field == 0)
-            ui_cfg.trig_value = (uint8_t)(ui_cfg.trig_value + dir);
-        else
-            ui_cfg.trig_mask = (uint8_t)(ui_cfg.trig_mask + dir);
-        break;
-    case 4:
-        ui_cfg.trig_value = (uint8_t)(ui_cfg.trig_value + dir);
+        baud_idx = (uint8_t)((baud_idx + dir + BAUD_N) % BAUD_N);
         break;
     default: break;
     }
 }
 
+static void cycle_decode(signed dir)
+{
+    if (dec_focus == 0) {
+        proto_sel = (uint8_t)((proto_sel + dir + 4) % 4);
+        run_decode();
+        dec_scroll = 0;
+    } else if (proto_sel == 0) {
+        baud_idx = (uint8_t)((baud_idx + dir + BAUD_N) % BAUD_N);
+        run_decode();
+        dec_scroll = 0;
+    }
+}
+
 /* ---------- waveform scrolling ---------- */
+static uint32_t visible_samples(void)
+{
+    uint32_t v = cap_len ? cap_len / zoom : 0;
+    return v > cap_len ? cap_len : v;
+}
+
 static void wave_scroll(signed dir)
 {
-    uint32_t visible = cap_len ? cap_len / zoom : 0;
+    uint32_t visible = visible_samples();
     uint32_t step = visible / 8;
     if (!step) step = 1;
-    if (dir > 0) {
-        uint32_t max = cap_len > visible ? cap_len - visible : 0;
-        wave_t = (wave_t + step > max) ? max : wave_t + step;
-    } else {
-        wave_t = (wave_t > step) ? wave_t - step : 0;
-    }
+    uint32_t max = cap_len > visible ? cap_len - visible : 0;
+    if (dir > 0) wave_t = (wave_t + step > max) ? max : wave_t + step;
+    else wave_t = (wave_t > step) ? wave_t - step : 0;
 }
 
 /* ---------- event dispatch ---------- */
 static void event(btn_id id, bool long_press)
 {
+    if (event_count != 255) event_count++;
+
     switch (screen) {
-    case SCR_CAPTURE:
-        if (id == BTN_UP) {
-            if (editing) cycle_capture_value(+1);
-            else sel = (uint8_t)((sel + MENU_LINES - 1) % MENU_LINES);
-            refresh();
-        } else if (id == BTN_DOWN) {
-            if (editing) cycle_capture_value(-1);
-            else sel = (uint8_t)((sel + 1) % MENU_LINES);
+    case SCR_CONFIG:
+        if (id == BTN_UP || id == BTN_DOWN) {
+            signed dir = id == BTN_UP ? -1 : +1;
+            if (cfg_edit) cycle_config(dir);
+            else {
+                cfg_row = (uint8_t)((cfg_row + dir + 5) % 5);
+                if (cfg_row == 4) cfg_edit = false;
+            }
             refresh();
         } else if (id == BTN_OK) {
-            if (sel == 4) {
+            if (cfg_row == 4) {
                 if (!capturing && !capture_request) {
+                    apply_config();
+                    ui_cfg.pretrigger = pretrigger_samples();
                     capture_request = true;
                     capturing = true;
+                    cap_ok = true;
+                    cap_trigger = 0;
+                    wave_t = 0;
+                    zoom = 1;
+                    wave_page = 0;
                     enter(SCR_WAVE);
                 }
             } else {
-                editing = !editing;
+                cfg_edit = !cfg_edit;
                 refresh();
             }
         } else {
-            if (editing) { editing = false; refresh(); }
+            if (cfg_edit) { cfg_edit = false; refresh(); }
             else enter(SCR_TRIGGER);
         }
         break;
 
     case SCR_TRIGGER:
-        if (id == BTN_UP) {
-            if (editing) cycle_trigger_value(+1);
-            else sel = (uint8_t)((sel + MENU_LINES - 1) % MENU_LINES);
-            refresh();
-        } else if (id == BTN_DOWN) {
-            if (editing) cycle_trigger_value(-1);
-            else sel = (uint8_t)((sel + 1) % MENU_LINES);
+        if (id == BTN_UP || id == BTN_DOWN) {
+            signed dir = id == BTN_UP ? -1 : +1;
+            if (trig_edit) cycle_trigger(dir);
+            else trig_row = (uint8_t)((trig_row + dir + 4) % 4);
             refresh();
         } else if (id == BTN_OK) {
-            if (sel == 3 && editing) pat_field ^= 1;      /* Val <-> Mask */
-            else if (sel == 4 && editing) {
-                /* toggle between the AUTO sync byte and an explicit byte */
-                ui_cfg.trig_value = ui_cfg.trig_value == 0x4C ? 0x00 : 0x4C;
-            } else {
-                editing = !editing;
-            }
+            trig_edit = !trig_edit;
             refresh();
         } else {
-            if (editing) { editing = false; refresh(); }
-            else enter(SCR_CAPTURE);
+            if (trig_edit) { trig_edit = false; refresh(); }
+            else enter(SCR_CONFIG);
         }
         break;
 
     case SCR_WAVE:
-        if (id == BTN_UP) {
-            if (long_press) { wave_page ^= 1; }
-            else wave_scroll(-1);
-            refresh();
-        } else if (id == BTN_DOWN) {
-            if (long_press) { wave_t = 0; }
-            else wave_scroll(+1);
-            refresh();
-        } else if (id == BTN_OK) {
-            if (long_press) {
+        if (id == BTN_UP || id == BTN_DOWN) {
+            bool up = id == BTN_UP;
+            if (long_press && up) {
+                wave_page ^= 1;
+            } else if (long_press) {
                 zoom = (uint8_t)(zoom >= 8 ? 1 : zoom * 2);
                 wave_t = 0;
             } else {
-                wave_page ^= 1;
+                wave_scroll(up ? -1 : +1);
             }
             refresh();
-        } else {
+        } else if (id == BTN_OK) {
             enter(SCR_DECODE);
+        } else {
+            enter(SCR_CONFIG);
         }
         break;
 
     case SCR_DECODE:
-        if (id == BTN_UP) {
-            proto_sel = (uint8_t)((proto_sel + 3) % 4);
-            run_decode();
-            refresh();
-        } else if (id == BTN_DOWN) {
-            proto_sel = (uint8_t)((proto_sel + 1) % 4);
-            run_decode();
+        if (id == BTN_UP || id == BTN_DOWN) {
+            signed dir = id == BTN_UP ? -1 : +1;
+            if (dec_edit) cycle_decode(dir);
+            else if (dir > 0) dec_scroll++;
+            else if (dec_scroll) dec_scroll--;
             refresh();
         } else if (id == BTN_OK) {
-            run_decode();
+            if (long_press) {
+                dec_focus ^= 1;
+                dec_edit = false;
+            } else if (dec_edit) {
+                dec_edit = false;
+                run_decode();
+                dec_scroll = 0;
+            } else {
+                dec_edit = true;
+            }
             refresh();
         } else {
-            enter(SCR_WAVE);
+            if (dec_edit) { dec_edit = false; refresh(); }
+            else enter(SCR_WAVE);
         }
         break;
     }
 }
 
+/* ---------- demo data ---------- */
+/* 40000 samples at 25 MHz: a real UART "HELLO" frame on CH0 (so the decoder
+ * screen has something to show) and square waves on CH1..CH7. This lets the
+ * whole UI be exercised with no signal generator attached. */
+#define DEMO_LEN 40000
+static uint8_t demo_buf[DEMO_LEN];
+
+static void demo_build(void)
+{
+    const uint32_t bit = 25000000u / 115200u;      /* 217 samples */
+    memset(demo_buf, 0x01, sizeof demo_buf);       /* CH0 idle high */
+    uint32_t pos = 2000;
+    const char *msg = "HELLO";
+    for (const char *p = msg; *p; p++) {
+        for (uint32_t j = 0; j < bit && pos < DEMO_LEN; j++, pos++)
+            demo_buf[pos] &= (uint8_t)~0x01u;      /* start bit */
+        for (int k = 0; k < 8; k++) {
+            bool one = (bool)((*p >> k) & 1);
+            for (uint32_t j = 0; j < bit && pos < DEMO_LEN; j++, pos++) {
+                if (one) demo_buf[pos] |= 0x01u;
+                else demo_buf[pos] &= (uint8_t)~0x01u;
+            }
+        }
+        for (uint32_t j = 0; j < bit && pos < DEMO_LEN; j++, pos++)
+            demo_buf[pos] |= 0x01u;                /* stop bit */
+    }
+    for (uint32_t i = 0; i < DEMO_LEN; i++) {
+        if ((i / 12500u) & 1u) demo_buf[i] |= 0x02u;   /* 1 kHz */
+        if ((i / 1250u) & 1u)  demo_buf[i] |= 0x04u;   /* 10 kHz */
+        if ((i / 125u) & 1u)   demo_buf[i] |= 0x08u;   /* 100 kHz */
+        if ((i / 12u) & 1u)    demo_buf[i] |= 0x10u;   /* ~1 MHz */
+        if ((i % 1000u) < 300u) demo_buf[i] |= 0x20u;  /* pulse train */
+        if ((i / 62u) & 1u)    demo_buf[i] |= 0x40u;   /* ~200 kHz */
+        if ((i % 5000u) < 2500u) demo_buf[i] |= 0x80u; /* 2.5 kHz */
+    }
+}
+
+void ui_load_demo(void)
+{
+    demo_build();
+    capturing = false;
+    cap_samples = demo_buf;
+    cap_len = DEMO_LEN;
+    cap_rate = 25000000;
+    cap_trigger = 2000;
+    cap_ok = true;
+    rate_idx = (uint8_t)(RATE_N - 1);              /* 25 MHz */
+    count_idx = 0;                                  /* 16K view of the demo */
+    apply_config();
+    ui_cfg.pretrigger = pretrigger_samples();
+    wave_t = 0;
+    zoom = 1;
+    wave_page = 0;
+    dec_scroll = 0;
+    enter(SCR_WAVE);
+}
+
 /* ---------- public API ---------- */
 void ui_init(void)
 {
-    ui_cfg.rate = 25000000;
-    ui_cfg.count = 40000;
-    ui_cfg.pretrigger = 2000;
-    ui_cfg.mask = 0xFF;
-    ui_cfg.trig_mode = LAR2_TRIGGER_EDGE;
-    ui_cfg.trig_channel = 0;
-    ui_cfg.trig_edge = LAR2_EDGE_RISING;
-    ui_cfg.trig_value = 0x4C;
-    ui_cfg.trig_mask = 0xFF;
+    rate_idx = (uint8_t)(RATE_N - 1);               /* 25 MHz */
+    count_idx = 3;                                  /* 262K */
+    mask_idx = 0;                                   /* CH 0-7 */
+    pre_idx = 1;                                    /* 25 % */
+    baud_idx = 2;                                   /* 115200 */
     zoom = 1;
     proto_sel = 0;
     cap_ok = true;
+    cfg_row = 0;
+    trig_row = 0;
+
+    ui_cfg.rate = rates[rate_idx];
+    ui_cfg.count = counts[count_idx];
+    ui_cfg.mask = masks[mask_idx];
+    ui_cfg.pretrigger = pretrigger_samples();
+    ui_cfg.trig_mode = LAR2_TRIGGER_EDGE;
+    ui_cfg.trig_channel = 0;
+    ui_cfg.trig_edge = LAR2_EDGE_RISING;
+    ui_cfg.trig_value = 0x55;
+    ui_cfg.trig_mask = 0xFF;
+
     buttons_init();
-    enter(SCR_CAPTURE);
+    enter(SCR_CONFIG);
 }
 
 void ui_tick(void)
@@ -600,6 +775,16 @@ void ui_tick(void)
     buttons_update();
     btn_event ev;
     while (buttons_get_event(&ev)) event(ev.id, ev.long_press);
+}
+
+uint8_t ui_screen_id(void)
+{
+    return (uint8_t)screen;
+}
+
+uint8_t ui_event_count(void)
+{
+    return event_count;
 }
 
 void ui_handle_command(char c)
@@ -631,8 +816,9 @@ void ui_set_capture(const uint8_t *samples, uint32_t len, uint64_t rate,
     cap_samples = samples;
     cap_len = len;
     cap_rate = rate;
-    (void)trigger_index;
+    cap_trigger = trigger_index;
     cap_ok = ok;
     wave_t = 0;
+    dec_scroll = 0;
     if (screen == SCR_WAVE) refresh();
 }

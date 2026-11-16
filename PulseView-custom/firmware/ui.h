@@ -34,6 +34,16 @@ void ui_tick(void);
 void ui_handle_command(char c);
 /* Consume a pending "[ BAT DAU ]" request. */
 bool ui_take_capture_request(void);
+/* Which of the four screens is on the panel: 0 capture, 1 trigger,
+ * 2 waveform, 3 decode. Reported through LAR2_ANALYZE_RUNTIME so a host can
+ * verify navigation without eyes on the TFT. */
+uint8_t ui_screen_id(void);
+/* Number of UI events dispatched since boot, saturating at 255. */
+uint8_t ui_event_count(void);
+/* Load the built-in mock waveform (UART "HELLO" on CH0 + square waves) and
+ * jump to the waveform screen, so the UI can be checked with no signal
+ * generator attached. */
+void ui_load_demo(void);
 /* main.c reports a finished capture so the waveform and decode screens can
  * work on it. `samples` must stay valid until the next capture. */
 void ui_set_capture(const uint8_t *samples, uint32_t len, uint64_t rate,

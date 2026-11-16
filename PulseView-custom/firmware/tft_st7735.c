@@ -3,6 +3,7 @@
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "hardware/gpio.h"
+#include "hardware/dma.h"
 
 #define TFT_SPI_PORT spi1
 #define TFT_PIN_SCK   10
@@ -141,6 +142,27 @@ void tft_blit(int x, int y, int w, int h, const uint16_t *px) {
         uint8_t buf[2] = { (uint8_t)(px[i] >> 8), (uint8_t)(px[i] & 0xFF) };
         spi_write_blocking(TFT_SPI_PORT, buf, 2);
     }
+    gpio_put(TFT_PIN_CS, 1);
+}
+
+/* Full 128x160 frame, one window write, DMA from caller memory to the SPI TX
+ * FIFO. `fb` must already be in panel byte order (big-endian per pixel); the
+ * UI keeps its framebuffer that way so this path is a pure copy. */
+void tft_flush_fb(const uint16_t *fb) {
+    static int dma = -1;
+    if (dma < 0) dma = (int)dma_claim_unused_channel(true);
+    tft_set_window(0, 0, TFT_WIDTH - 1, TFT_HEIGHT - 1);
+    gpio_put(TFT_PIN_DC, 1);
+    gpio_put(TFT_PIN_CS, 0);
+    dma_channel_config c = dma_channel_get_default_config((uint)dma);
+    channel_config_set_transfer_data_size(&c, DMA_SIZE_8);
+    channel_config_set_dreq(&c, spi_get_dreq(TFT_SPI_PORT, true));
+    channel_config_set_read_increment(&c, true);
+    channel_config_set_write_increment(&c, false);
+    dma_channel_configure((uint)dma, &c, &spi_get_hw(TFT_SPI_PORT)->dr,
+                          (const uint8_t *)fb,
+                          (size_t)TFT_WIDTH * TFT_HEIGHT * 2, true);
+    dma_channel_wait_for_finish_blocking((uint)dma);
     gpio_put(TFT_PIN_CS, 1);
 }
 

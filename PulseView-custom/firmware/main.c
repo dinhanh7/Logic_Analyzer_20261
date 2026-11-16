@@ -390,9 +390,14 @@ static void command(void)
         case LAR2_ANALYZE_REPLAY:
             start_sending(win_len, LAR2_NO_TRIGGER, 0, 0);
             break;
+        case LAR2_ANALYZE_UI_DEMO:
+            ui_load_demo();
+            result[0] = LAR2_RESULT_OK;
+            send_frame(LAR2_RESULT, result, 1);
+            break;
         case LAR2_ANALYZE_RUNTIME: {
             /* Why a triggered capture is not finishing: one block of state. */
-            uint8_t st[30] = { LAR2_RESULT_OK };
+            uint8_t st[32] = { LAR2_RESULT_OK };
             st[1] = (capturing ? 1 : 0) | (sending ? 2 : 0) |
                     (configured ? 4 : 0) | (trigger_found ? 8 : 0);
             lar2_put32(st + 2, produced_samples());
@@ -402,7 +407,9 @@ static void command(void)
             lar2_put32(st + 18, dma_channel_is_busy(dma_ch) ? 1u : 0u);
             lar2_put32(st + 22, pio->fdebug);
             lar2_put32(st + 26, count);
-            send_frame(LAR2_RESULT, st, 30);
+            st[30] = ui_screen_id();
+            st[31] = ui_event_count();
+            send_frame(LAR2_RESULT, st, 32);
             break;
         }
         case LAR2_ANALYZE_BOOTLOADER:
@@ -677,7 +684,15 @@ int main(void)
                 }
                 int r = lar2_feed(&parser, b);
                 if (r < 0) { abort_capture(); configured = false; error("frame CRC/header"); }
-                if (r == 1) { command(); break; }
+                if (r == 1) {
+                    command();
+                    /* Release the parser now: until the next byte arrives
+                     * used == total, and the serial-key check below treats a
+                     * non-empty parser as "mid-frame", so the first key after
+                     * every LAR2 frame was silently swallowed. */
+                    parser.used = parser.total = 0;
+                    break;
+                }
             }
         }
         /* UI capture: the buttons and the serial keys feed the same event
