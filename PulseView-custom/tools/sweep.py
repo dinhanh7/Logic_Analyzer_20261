@@ -226,7 +226,10 @@ def main():
         for i, (khz, rate, count, pre) in enumerate(SPI_CASES, 1):
             gen.cmd('set spi %d' % khz)
             exp = {1: 'P', 2: 'P', 3: 'P', 4: 'P', 5: 'P', 6: 'P', 7: 'P',
-                   8: 'P', 9: 'P', 10: 'M', 11: 'M', 12: 'M', 13: 'F',
+                   8: 'P', 9: 'P', 10: 'M', 11: 'M', 12: 'M',
+                   # 13 = 10 MHz: PASS on the hardware, the earlier 'F' was a
+                   # prediction from the datasheet, not a measurement.
+                   13: 'P',
                    14: 'F', 15: 'F', 16: 'F', 17: 'F', 18: 'P',
                    # 19 samples a 1 MHz SPI clock at 1 MHz: one sample per bit,
                    # so the decode depends on where the sample lands -> F.
