@@ -41,6 +41,10 @@
 #define LAR2_ANALYZE_REPLAY      7u  /* stream the current window, no ACK */
 #define LAR2_ANALYZE_PINPROBE    8u  /* arg = 0 pull-down, 1 pull-up, 2 float;
                                         returns RESULT[1] = CH0..CH7 levels */
+#define LAR2_ANALYZE_DECODE_ALL  9u  /* four protocols, fixed 8-channel test map:
+                                        UART CH0, I2C CH1/CH2, SPI CH3..CH6, CAN CH7.
+                                        arg = UART baud / 100 (0 = 115200)
+                                        arg32 = CAN baud (0 = 250000) */
 
 /* Protocol selection bits for LAR2_ANALYZE_DECODE. */
 #define LAR2_PROTO_UART 0x01u

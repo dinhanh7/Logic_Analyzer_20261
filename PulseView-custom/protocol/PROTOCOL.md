@@ -62,11 +62,13 @@ Các giá trị `op` hợp lệ:
 | 6 | SESSION | slot | 0 | Đọc header phiên từ flash (trả về qua RESULT). |
 | 7 | REPLAY | 0 | 0 | Stream lại cửa sổ capture hiện tại (không ACK). |
 | 8 | PINPROBE | 0=pull-down, 1=pull-up, 2=float | 0 | Đọc CH0..CH7 với pull áp dụng; RESULT[1]=mức 8 bit. |
+| 9 | DECODE_ALL | UART baud / 100 (0 = 115200) | CAN baud (0 = 250000) | Decode cả 4 giao thức trên map 8 kênh cố định: UART CH0, I2C SCL/SDA CH1/CH2, SPI CS/SCK/MOSI/MISO CH3..CH6, CAN CH7. |
 
 ### RESULT
 
 Payload tùy thuộc vào `op` của ANALYZE tương ứng:
 - `DECODE`: text UTF-8, kết quả decode (UART/I2C/SPI/CAN).
+- `DECODE_ALL`: text UTF-8 gồm 4 dòng, mỗi giao thức một dòng theo thứ tự UART, I2C, SPI, CAN.
 - `SAVE/LOAD/SIG_SAVE`: 1 byte status (`RESULT_OK=0`, `RESULT_ERROR=1`, `RESULT_ABSENT=2`).
 - `SIG_COMPARE`: text UTF-8 (MATCH/MISMATCH).
 - `DIFF`: text UTF-8 (first mismatch hoặc "identical").
