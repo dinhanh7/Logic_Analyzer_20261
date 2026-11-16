@@ -129,6 +129,21 @@ void tft_draw_image(int x, int y, int w, int h, const uint16_t *data) {
     gpio_put(TFT_PIN_CS, 1);
 }
 
+void tft_blit(int x, int y, int w, int h, const uint16_t *px) {
+    if (x < 0 || y < 0 || w <= 0 || h <= 0) return;
+    if (x + w > TFT_WIDTH) w = TFT_WIDTH - x;
+    if (y + h > TFT_HEIGHT) h = TFT_HEIGHT - y;
+    if (w <= 0 || h <= 0) return;
+    tft_set_window(x, y, x + w - 1, y + h - 1);
+    gpio_put(TFT_PIN_DC, 1);
+    gpio_put(TFT_PIN_CS, 0);
+    for (int i = 0; i < w * h; i++) {
+        uint8_t buf[2] = { (uint8_t)(px[i] >> 8), (uint8_t)(px[i] & 0xFF) };
+        spi_write_blocking(TFT_SPI_PORT, buf, 2);
+    }
+    gpio_put(TFT_PIN_CS, 1);
+}
+
 void tft_test_pattern(void) {
     int bar_w = TFT_WIDTH / 8;
     uint16_t colors[] = { 0xF800, 0x07E0, 0x001F, 0xFFE0, 0xF81F, 0x07FF, 0xFFFF, 0x0000 };
