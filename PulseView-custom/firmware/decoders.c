@@ -352,3 +352,218 @@ unsigned decoders_run(const uint8_t *buf, uint32_t len, uint32_t rate,
     return n;
 }
 
+
+/* ---------- structured packets ---------- */
+/* Same bit readers as the text decoders, but each byte is recorded with the
+ * sample it started at. Kept separate from the text path so the log output
+ * cannot change shape, and so a table row always matches what the log says. */
+
+static void pkt_push(la_pktlist *l, uint8_t value, uint8_t flags,
+                     uint32_t at, uint32_t end)
+{
+    if (l->n >= LA_PKT_MAX) return;
+    la_packet *p = &l->pkt[l->n];
+    p->value = value;
+    p->flags = flags;
+    p->at = at;
+    p->end = end;
+    p->gap = l->n ? at - l->pkt[l->n - 1].end : 0;
+    l->n++;
+}
+
+static unsigned packets_uart(const uint8_t *buf, uint32_t len, uint32_t rate,
+                             uint32_t baud, unsigned ch, la_pktlist *l)
+{
+    if (len < 20) return 0;
+    uint32_t bw = uart_bit_width_q16(buf, len, rate, baud, ch);
+    if (!bw) return 0;
+
+    uint32_t i = 1;
+    while (i + 1 < len && l->n < LA_PKT_MAX) {
+        if (sample_bit(buf, i, ch) || !sample_bit(buf, i - 1, ch)) { i++; continue; }
+        uint32_t start = i;
+        uint8_t byte = 0;
+        int ok = 1;
+        for (int b = 0; b < 8; b++) {
+            uint32_t s = start + (uint32_t)(((uint64_t)bw * (2u * (unsigned)b + 3u)) >> 17);
+            if (s >= len) { ok = 0; break; }
+            if (sample_bit(buf, s, ch)) byte |= (uint8_t)(1u << b);
+        }
+        uint32_t stop = start + (uint32_t)(((uint64_t)bw * 19u) >> 17);
+        if (!ok || stop >= len || !sample_bit(buf, stop, ch)) {
+            i = start + (uint32_t)(bw >> 16);
+            if (i <= start) i = start + 1;
+            continue;
+        }
+        pkt_push(l, byte, LA_PKT_DATA, start, stop);
+        i = stop;
+    }
+    return l->n;
+}
+
+static unsigned packets_i2c(const uint8_t *buf, uint32_t len, uint32_t rate,
+                            unsigned scl_ch, unsigned sda_ch, la_pktlist *l)
+{
+    (void)rate;
+    if (len < 20) return 0;
+
+    uint32_t i = 1;
+    while (i + 1 < len && l->n < LA_PKT_MAX) {
+        if (!(sample_bit(buf, i, scl_ch) && !sample_bit(buf, i, sda_ch) &&
+              sample_bit(buf, i - 1, sda_ch))) {
+            i++;
+            continue;
+        }
+        uint32_t start_at = i;
+        i++;
+        int first = 1;
+        for (;;) {
+            uint8_t byte = 0;
+            int ok = 1;
+            uint32_t byte_at = i;
+            for (int b = 0; b < 8; b++) {
+                if (!i2c_wait_rise(buf, &i, len, scl_ch)) { ok = 0; break; }
+                i++;
+                if (sample_bit(buf, i - 1, sda_ch)) byte |= (uint8_t)(1u << (7 - b));
+            }
+            if (!ok) break;
+            uint32_t byte_end = i;
+            int ack = 0;
+            if (!i2c_wait_rise(buf, &i, len, scl_ch)) break;
+            i++;
+            ack = !sample_bit(buf, i - 1, sda_ch);
+
+            pkt_push(l, byte, (uint8_t)(first ? LA_PKT_ADDR : LA_PKT_DATA),
+                     byte_at, byte_end);
+            pkt_push(l, 0, (uint8_t)(ack ? LA_PKT_ACK : LA_PKT_NAK), byte_end, i);
+            if (first) {
+                /* Mark the START so the row list opens with it. */
+                if (l->n >= 1) l->pkt[0].at = start_at;
+                first = 0;
+            }
+            if (!ack) break;
+            if (i + 1 < len && sample_bit(buf, i, scl_ch)) {
+                if (sample_bit(buf, i, sda_ch) && !sample_bit(buf, i - 1, sda_ch)) break;
+                if (!sample_bit(buf, i, sda_ch) && sample_bit(buf, i - 1, sda_ch)) break;
+            }
+        }
+    }
+    return l->n;
+}
+
+static unsigned packets_spi(const uint8_t *buf, uint32_t len, uint32_t rate,
+                            unsigned cs_ch, unsigned sck_ch, unsigned mosi_ch,
+                            la_pktlist *l)
+{
+    (void)rate;
+    if (len < 20) return 0;
+
+    uint32_t i = 1;
+    while (i < len && l->n < LA_PKT_MAX) {
+        if (sample_bit(buf, i, cs_ch) || !sample_bit(buf, i - 1, cs_ch)) { i++; continue; }
+        i++;
+        unsigned nbits = 0;
+        uint8_t byte = 0;
+        uint32_t byte_at = i;
+        while (i < len && !sample_bit(buf, i, cs_ch)) {
+            if (sample_bit(buf, i, sck_ch) && !sample_bit(buf, i - 1, sck_ch)) {
+                if (!nbits) byte_at = i;
+                byte = (uint8_t)((byte << 1) | sample_bit(buf, i, mosi_ch));
+                if (++nbits == 8) {
+                    pkt_push(l, byte, LA_PKT_DATA, byte_at, i);
+                    nbits = 0;
+                    byte = 0;
+                }
+            }
+            i++;
+        }
+    }
+    return l->n;
+}
+
+static unsigned packets_can(const uint8_t *buf, uint32_t len, uint32_t rate,
+                            uint32_t baud, unsigned ch, la_pktlist *l)
+{
+    if (!baud || len < 50) return 0;
+    uint32_t bw = (uint32_t)(((uint64_t)rate << 16) / baud);
+    if (!bw) return 0;
+
+    uint32_t start = 0;
+    int found = 0;
+    for (uint32_t i = 1; i < len; i++) {
+        if (!sample_bit(buf, i, ch) && sample_bit(buf, i - 1, ch)) { start = i; found = 1; break; }
+    }
+    if (!found) return 0;
+
+    can_reader r = { buf, len, bw, start, 1, 1, ch, 0, 0 };
+    uint32_t id = 0;
+    for (int k = 0; k < 11; k++) id = (id << 1) | can_next_bit(&r);
+    uint8_t rtr = can_next_bit(&r);
+    uint8_t ide = can_next_bit(&r);
+    (void)can_next_bit(&r);
+    uint8_t dlc = 0;
+    for (int k = 0; k < 4; k++) dlc = (uint8_t)((dlc << 1) | can_next_bit(&r));
+
+    if (r.overflow || ide || rtr) return 0;
+    if (dlc > 8) dlc = 8;
+
+    /* The header is not a payload byte, but showing it is what makes a CAN row
+     * readable: the ID and DLC are the frame, the data is only part of it. */
+    pkt_push(l, (uint8_t)(id >> 8), LA_PKT_ID, start, start);
+    pkt_push(l, (uint8_t)(id & 0xFF), LA_PKT_ID, start, start);
+    pkt_push(l, dlc, LA_PKT_ID, start, start);
+
+    for (unsigned d = 0; d < dlc && l->n < LA_PKT_MAX; d++) {
+        uint32_t at = start + (uint32_t)(((uint64_t)bw * (2u * r.bit + 1u)) >> 17);
+        uint8_t byte = 0;
+        for (int k = 0; k < 8; k++) byte = (uint8_t)((byte << 1) | can_next_bit(&r));
+        uint32_t end = start + (uint32_t)(((uint64_t)bw * (2u * r.bit + 1u)) >> 17);
+        pkt_push(l, byte, LA_PKT_DATA, at, end);
+    }
+    /* SOF through the last data bit: what the preview should show. */
+    l->win_at = start;
+    l->win_end = start + (uint32_t)(((uint64_t)bw * (2u * r.bit + 1u)) >> 17);
+    return l->n;
+}
+
+unsigned decoders_packets(const uint8_t *buf, uint32_t len, uint32_t rate,
+                          uint8_t proto, uint32_t uart_baud, uint32_t can_baud,
+                          const la_channel_map *map, la_pktlist *out)
+{
+    if (!out) return 0;
+    out->n = 0;
+    out->rate = rate;
+    out->ch = 0;
+    out->win_at = 0;
+    out->win_end = 0;
+    if (!buf || !len) return 0;
+    const la_channel_map m = map ? *map : la_map_single;
+
+    unsigned n;
+    switch (proto) {
+    case LAR2_PROTO_UART:
+        out->ch = m.uart;
+        n = packets_uart(buf, len, rate, uart_baud, m.uart, out);
+        break;
+    case LAR2_PROTO_I2C:
+        out->ch = m.i2c_sda;
+        n = packets_i2c(buf, len, rate, m.i2c_scl, m.i2c_sda, out);
+        break;
+    case LAR2_PROTO_SPI:
+        out->ch = m.spi_mosi;
+        n = packets_spi(buf, len, rate, m.spi_cs, m.spi_sck, m.spi_mosi, out);
+        break;
+    case LAR2_PROTO_CAN:
+        out->ch = m.can;
+        n = packets_can(buf, len, rate, can_baud, m.can, out);
+        break;
+    default:
+        return 0;
+    }
+    /* Protocols that did not set a window get first..last packet. */
+    if (n && !out->win_end) {
+        out->win_at = out->pkt[0].at;
+        out->win_end = out->pkt[n - 1].end;
+    }
+    return n;
+}

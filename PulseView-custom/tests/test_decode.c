@@ -432,6 +432,77 @@ static void test_map8(void)
     assert(strstr(text, "0x123") == NULL);
 }
 
+/* The decode screen's table needs one row per byte with its own sample
+ * position; these check that the structured layer agrees with the text layer
+ * on the same waveform, which is the only way the table can be trusted. */
+static void test_packets(void)
+{
+    static const uint8_t i2c_bytes[] = { 0xD0, 0x01, 0x5A };
+    static const uint8_t spi_bytes[] = { 0xDE, 0xAD };
+    static const uint8_t can_data[] = { 0xDE, 0xAD, 0xBE, 0xEF };
+    la_pktlist l;
+
+    /* Same four-protocol capture the text test uses, rebuilt here so this
+     * test does not depend on test_map8's locals. */
+    t8_clear();
+    t8_uart(100, 0, "LA");
+    t8_i2c(100, 1, 2, i2c_bytes, 3);
+    t8_spi(100, 3, 4, 5, 6, spi_bytes, 2);
+    t8_can(100, 7, 0x123, can_data, 4);
+    for (uint32_t i = 0; i < T8_LEN; i++) {
+        uint8_t v = 0;
+        for (unsigned c = 0; c < 8; c++) v |= (uint8_t)((ch_bits[c][i] & 1u) << c);
+        wf[i] = v;
+    }
+
+    /* UART "LA" on CH0 of the 8-channel map. */
+    unsigned n = decoders_packets(wf, T8_LEN, 25000000, LAR2_PROTO_UART,
+                                  115200, 250000, &la_map_test8, &l);
+    printf("packets uart: n=%u\n", n);
+    assert(n == 2);
+    assert(l.pkt[0].value == 'L');
+    assert(l.pkt[1].value == 'A');
+    assert(l.pkt[0].at < l.pkt[1].at);          /* in capture order */
+    assert(l.pkt[1].gap > 0);                   /* time since the byte before */
+    assert(l.ch == la_map_test8.uart);
+
+    /* I2C: address byte, its ACK, data byte, its ACK. */
+    n = decoders_packets(wf, T8_LEN, 25000000, LAR2_PROTO_I2C,
+                         115200, 250000, &la_map_test8, &l);
+    printf("packets i2c: n=%u\n", n);
+    assert(n >= 4);
+    assert(l.pkt[0].flags & LA_PKT_ADDR);
+    assert(l.pkt[0].value == 0xD0);             /* 0x68 << 1 | W */
+    assert(l.pkt[1].flags & LA_PKT_ACK);
+    assert(l.pkt[2].value == 0x01);
+    assert(l.pkt[4].value == 0x5A);
+
+    /* SPI: the four frame bytes, MSB first. */
+    n = decoders_packets(wf, T8_LEN, 25000000, LAR2_PROTO_SPI,
+                         115200, 250000, &la_map_test8, &l);
+    printf("packets spi: n=%u\n", n);
+    assert(n == 2);
+    assert(l.pkt[0].value == 0xDE);
+    assert(l.pkt[1].value == 0xAD);
+
+    /* CAN: ID high, ID low, DLC, then the payload. */
+    n = decoders_packets(wf, T8_LEN, 25000000, LAR2_PROTO_CAN,
+                         115200, 250000, &la_map_test8, &l);
+    printf("packets can: n=%u\n", n);
+    assert(n == 3 + 4);
+    assert(l.pkt[0].flags & LA_PKT_ID);
+    assert(l.pkt[0].value == 0x01);             /* 0x123 >> 8 */
+    assert(l.pkt[1].value == 0x23);
+    assert(l.pkt[2].value == 4);                /* DLC */
+    assert(l.pkt[3].value == 0xDE);
+    assert(l.pkt[6].value == 0xEF);
+
+    /* No capture, no packets: the screen must not index an empty list. */
+    n = decoders_packets(NULL, 0, 25000000, LAR2_PROTO_UART,
+                         115200, 250000, &la_map_test8, &l);
+    assert(n == 0 && l.n == 0);
+}
+
 int main(void)
 {
     test_text_builder();
@@ -441,6 +512,7 @@ int main(void)
     test_can();
     test_mask_selection();
     test_map8();
+    test_packets();
     printf("test_decode: all assertions passed\n");
     return 0;
 }

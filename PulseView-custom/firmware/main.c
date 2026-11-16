@@ -390,6 +390,20 @@ static void command(void)
         case LAR2_ANALYZE_REPLAY:
             start_sending(win_len, LAR2_NO_TRIGGER, 0, 0);
             break;
+        case LAR2_ANALYZE_UI_TEXT: {
+            /* What screen 5 is showing right now, so the host can check every
+             * protocol without eyes on the panel. */
+            const char *t = ui_decode_text();
+            send_frame(LAR2_RESULT, (const uint8_t *)t, strlen(t));
+            break;
+        }
+        case LAR2_ANALYZE_UI_TABLE: {
+            /* The grid rows themselves, so a check covers the table the panel
+             * draws and not only the decoder's summary line. */
+            const char *t = ui_decode_table();
+            send_frame(LAR2_RESULT, (const uint8_t *)t, strlen(t));
+            break;
+        }
         case LAR2_ANALYZE_UI_DEMO:
             ui_load_demo();
             result[0] = LAR2_RESULT_OK;

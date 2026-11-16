@@ -51,6 +51,47 @@ extern const la_channel_map la_map_single;
 /* Four protocols at once: UART CH0, I2C CH1/2, SPI CH3-6, CAN CH7. */
 extern const la_channel_map la_map_test8;
 
+/* ---------- structured packets ----------
+ * The text decoders above collapse a transfer into one summary line, which is
+ * all a log needs but not enough for a table: the decode screen shows one row
+ * per byte with its hex value, its ASCII, and the time since the byte before.
+ * These extract that, keeping the sample index of every byte so the UI can
+ * also draw the real waveform behind the selected row. */
+#define LA_PKT_MAX 64
+
+/* What the byte is, so the row can say ACK/NAK instead of a bare number. */
+#define LA_PKT_DATA 0x00
+#define LA_PKT_ADDR 0x01
+#define LA_PKT_ACK  0x02
+#define LA_PKT_NAK  0x04
+#define LA_PKT_START 0x08
+#define LA_PKT_STOP  0x10
+#define LA_PKT_ID    0x20   /* CAN identifier / DLC header, not payload */
+
+typedef struct {
+    uint8_t value;      /* the byte as it appeared on the wire */
+    uint8_t flags;      /* LA_PKT_* */
+    uint32_t at;        /* sample index of the byte's first bit */
+    uint32_t end;       /* sample index just past its last bit */
+    uint32_t gap;       /* samples since the previous packet's end */
+} la_packet;
+
+typedef struct {
+    la_packet pkt[LA_PKT_MAX];
+    unsigned n;
+    uint32_t rate;
+    unsigned ch;        /* channel the payload rides on, for the preview */
+    /* The whole transaction on the wire. A CAN header row has no width of its
+     * own, so the preview needs this to have anything to draw. */
+    uint32_t win_at, win_end;
+} la_pktlist;
+
+/* Extract the bytes of one protocol (a single LAR2_PROTO_* value). Returns the
+ * number of packets found; the list is empty when the decode found nothing. */
+unsigned decoders_packets(const uint8_t *buf, uint32_t len, uint32_t rate,
+                          uint8_t proto, uint32_t uart_baud, uint32_t can_baud,
+                          const la_channel_map *map, la_pktlist *out);
+
 /* Run every protocol selected by mask (LAR2_PROTO_*). */
 unsigned decoders_run(const uint8_t *buf, uint32_t len, uint32_t rate,
                       uint8_t mask, uint32_t baud, la_text *t);
