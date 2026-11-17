@@ -82,7 +82,10 @@ def snapshot(d):
             # a 5-10 ms window often lands between the generator's 100 ms
             # tasks. CAPTURE_BYTES/2 is used because a full-buffer trigger has
             # no valid window (see fit_trigger_window in main.c).
-            d.configure(rate, 131072, 0xFF, pre=32768,
+            # Keep the trigger in the middle of the window: with a large
+            # count the firmware slides a late trigger to the end, leaving too
+            # few post-trigger samples for a whole UART message.
+            d.configure(rate, 65536, 0xFF, pre=32768,
                         trigger=(TRIGGER_EDGE, ch, EDGE_FALLING, 0, 0xFF))
             d.arm()
             _, info = d.capture(timeout=20)
