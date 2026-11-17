@@ -79,10 +79,16 @@ class Device:
         return self._read(time.time() + timeout)
 
     def hello(self):
-        kind, seq, payload = self.command(HELLO)
-        if kind != ID:
-            raise RuntimeError('expected ID, got 0x%02x' % kind)
-        return payload.decode('utf-8', 'replace')
+        """Start a session. Frames still in flight from a previous capture
+        (a streaming run leaves tens of KB queued) arrive before the ID, so
+        drain until the ID shows up instead of failing on the first frame."""
+        os.write(self.fd, frame(HELLO, self.tx_seq))
+        self.tx_seq = (self.tx_seq + 1) & 0xffff
+        deadline = time.time() + 3.0
+        while True:
+            kind, seq, payload = self._read(deadline)
+            if kind == ID:
+                return payload.decode('utf-8', 'replace')
 
     def caps(self):
         kind, seq, payload = self.command(GET_CAPS)

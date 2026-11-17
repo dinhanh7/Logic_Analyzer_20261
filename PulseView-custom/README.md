@@ -142,6 +142,13 @@ Giới hạn và cách dùng:
   vòng, thiết bị bỏ khe cũ và ghi số mẫu mất vào `.json` cạnh file, để chỗ đó
   là mức 0 chứ không ghép dữ liệu cũ vào như liền mạch.
 - TFT đứng yên ở màn cuối trong lúc stream (CPU dành cho USB).
+- **Đo trên board thật (17/11):** 1 MHz + RLE, tín hiệu UART 115200 đảo liên
+  tục → 30 s, 30.016.488 mẫu, **0 mất**. Raw @ 1 MHz thì **không kịp** (~1,2
+  triệu mẫu mất trong 3 s) vì 500 mẫu/block + 21 byte header vượt trần ~1 MB/s
+  của CDC; raw chạy tốt ở 500 kHz. Tín hiệu mà RLE không nén được (đảo mỗi
+  mẫu) cũng rơi vào trường hợp này — hạ rate hoặc dùng snapshot.
+- 1 MHz = 4 mẫu/bit với CAN 250 kbps: ID vẫn đúng nhưng byte dữ liệu dễ sai
+  pha lấy mẫu. CAN/I2C/SPI nhanh nên capture bằng snapshot 5–25 MHz rồi decode.
 - Trần tuyệt đối của bộ đếm mẫu PIO là ~71 phút @ 1 MHz.
 
 Kiểm thử không cần board: `python3 tests/test_stream.py` chạy CLI thật trên

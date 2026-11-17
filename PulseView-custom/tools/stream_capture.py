@@ -173,6 +173,9 @@ def main():
         json.dump(meta, f, indent=2)
     print('\nwrote %s: %d samples @ %d Hz, %d dropped, %.2f s'
           % (args.out, len(out), args.rate, dropped, time.time() - t0))
+    if dropped:
+        print('dropped samples: USB CDC tops out near 1 MB/s. Keep RLE on '
+              'or lower the rate (raw is comfortable up to 500 kHz).')
     if stop_result:
         sent = int.from_bytes(stop_result[1:5], 'little')
         lost = int.from_bytes(stop_result[5:9], 'little')
