@@ -10,7 +10,7 @@
  * Screens and flow (BACK leaves edit mode before it changes screen):
  *
  *   0 STANDBY --any key--> 1 CONFIG --BACK--> 2 TRIGGER --BACK--> 1 CONFIG
- *   1 CONFIG --OK on BAT DAU--> 3 WAVE CH0-3 --OK--> 4 WAVE CH4-7 --OK--> 5 DECODE
+ *   1 CONFIG --hold OK--> 3 WAVE CH0-3 --OK--> 4 WAVE CH4-7 --OK--> 5 DECODE
  *   5 DECODE --OK held--> 0 STANDBY   (BACK still walks 5 -> 4 -> 3 -> 1)
  *   1 CONFIG --BACK held 800ms--> 0 STANDBY
  *
@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "autodetect.h"
 #include "buttons.h"
 #include "decoders.h"
 #include "font6x8.h"
@@ -137,6 +138,9 @@ static bool dec_edit;
 static uint32_t dec_scroll;         /* first visible packet row */
 static uint8_t dec_sel;             /* selected packet, for the preview */
 static la_pktlist dec_pkts;
+static la_detect dec_auto;          /* last AUTO result (proto + channel map) */
+static la_channel_map dec_map;      /* map the current decode is using */
+static uint8_t dec_proto;           /* LAR2_PROTO_* actually decoded */
 
 static uint8_t event_count;
 
@@ -174,10 +178,23 @@ static const char *const baud_lbl[] = { "AUTO", "9600", "115200" };
 #define BAUD_N (sizeof(bauds) / sizeof(bauds[0]))
 static uint8_t baud_idx;
 
-static const uint8_t proto_mask[4] = {
-    LAR2_PROTO_UART, LAR2_PROTO_I2C, LAR2_PROTO_SPI, LAR2_PROTO_CAN
+/* Index 0 is AUTO: the mask is filled in by run_decode() after detection. */
+static const uint8_t proto_mask[5] = {
+    0, LAR2_PROTO_UART, LAR2_PROTO_I2C, LAR2_PROTO_SPI, LAR2_PROTO_CAN
 };
-static const char *const proto_name[4] = { "UART", "I2C", "SPI", "CAN" };
+static const char *const proto_name[5] = { "AUTO", "UART", "I2C", "SPI", "CAN" };
+#define PROTO_N 5
+
+static const char *proto_short(uint8_t p)
+{
+    switch (p) {
+    case LAR2_PROTO_UART: return "UART";
+    case LAR2_PROTO_I2C:  return "I2C";
+    case LAR2_PROTO_SPI:  return "SPI";
+    case LAR2_PROTO_CAN:  return "CAN";
+    default:              return "?";
+    }
+}
 
 /* ---------- graphics ---------- */
 static uint16_t fb[SCR_W * SCR_H];
@@ -328,10 +345,11 @@ static const char *cond_name(char *buf, size_t n)
 static const char *bus_config(char *buf, size_t n)
 {
     switch (proto_sel) {
-    case 0: snprintf(buf, n, "RX:CH0 %s", baud_lbl[baud_idx]); break;
-    case 1: snprintf(buf, n, "SCL:CH1 SDA:CH2"); break;
-    case 2: snprintf(buf, n, "SCK:CH4 MOSI:CH5"); break;
-    default: snprintf(buf, n, "RX:CH7 250K"); break;
+    case 0: snprintf(buf, n, "AUTO %s", baud_lbl[baud_idx]); break;
+    case 1: snprintf(buf, n, "RX %s", baud_lbl[baud_idx]); break;
+    case 2: snprintf(buf, n, "SCL/SDA"); break;
+    case 3: snprintf(buf, n, "CS/SCK/MOSI"); break;
+    default: snprintf(buf, n, "CAN 250K"); break;
     }
     return buf;
 }
@@ -376,7 +394,7 @@ static void draw_standby(void)
     text(14, 102, "Buffer : 256K Pts", C_TEXT);
 
     /* Blinking ready prompt: dim on even 600 ms phases, white on odd. */
-    text_center(128, "[ NHAN OK BAT DAU ]",
+    text_center(128, "[ PRESS OK TO START ]",
                 blink_phase ? C_CURSOR : C_DIM);
 }
 
@@ -384,24 +402,21 @@ static void draw_standby(void)
 static void draw_config(void)
 {
     char buf[24];
-    header("1/5 CAU HINH DO");
+    header("1/5 CONFIG");
     fill(0, HDR_H, SCR_W, SCR_H - HDR_H, C_BG);
 
-    list_row(ROW_Y0 + 0 * ROW_H, "Tan so", rate_lbl[rate_idx],
+    list_row(ROW_Y0 + 0 * ROW_H, "Rate", rate_lbl[rate_idx],
              cfg_row == 0, cfg_edit && cfg_row == 0, true);
-    list_row(ROW_Y0 + 1 * ROW_H, "So mau", count_lbl[count_idx],
+    list_row(ROW_Y0 + 1 * ROW_H, "Samples", count_lbl[count_idx],
              cfg_row == 1, cfg_edit && cfg_row == 1, true);
-    list_row(ROW_Y0 + 2 * ROW_H, "Kenh", mask_lbl[mask_idx],
+    list_row(ROW_Y0 + 2 * ROW_H, "Chan", mask_lbl[mask_idx],
              cfg_row == 2, cfg_edit && cfg_row == 2, true);
     snprintf(buf, sizeof buf, "%u%%", pre_pct[pre_idx]);
     list_row(ROW_Y0 + 3 * ROW_H, "Pre-Trig", buf,
              cfg_row == 3, cfg_edit && cfg_row == 3, true);
 
-    /* Start row, same shape as the others so the screen stays a clean list. */
-    list_row(ROW_Y0 + 4 * ROW_H, "BAT DAU THU", "OK >",
-             cfg_row == 4, false, true);
-
-    text_center(HINT_Y, "UP/DN  OK SUA  BACK", C_DIM);
+    /* No start row: hold OK on any row to arm a capture, short OK edits. */
+    text_center(HINT_Y, "OK:EDIT  HOLD OK:RUN", C_DIM);
 }
 
 /* ---------- screen 2: trigger ---------- */
@@ -411,25 +426,25 @@ static void draw_trigger(void)
     header("2/5 TRIGGER");
     fill(0, HDR_H, SCR_W, SCR_H - HDR_H, C_BG);
 
-    list_row(ROW_Y0 + 0 * ROW_H, "Che do", mode_name(),
+    list_row(ROW_Y0 + 0 * ROW_H, "Mode", mode_name(),
              trig_row == 0, trig_edit && trig_row == 0, true);
 
     snprintf(buf, sizeof buf, "CH%u", ui_cfg.trig_channel);
-    list_row(ROW_Y0 + 1 * ROW_H, "Kenh", buf,
+    list_row(ROW_Y0 + 1 * ROW_H, "Chan", buf,
              trig_row == 1, trig_edit && trig_row == 1, true);
 
     if (trig_edit && trig_row == 2 && ui_cfg.trig_mode == LAR2_TRIGGER_PATTERN)
         snprintf(buf, sizeof buf, "[0x%02X]/0xFF", ui_cfg.trig_value);
     else
         snprintf(buf, sizeof buf, "%s", cond_name(cond, sizeof cond));
-    list_row(ROW_Y0 + 2 * ROW_H, "Dieu kien", buf,
+    list_row(ROW_Y0 + 2 * ROW_H, "Condition", buf,
              trig_row == 2, trig_edit && trig_row == 2, true);
 
     list_row(ROW_Y0 + 3 * ROW_H, "Baud/Clk", baud_lbl[baud_idx],
              trig_row == 3, trig_edit && trig_row == 3,
              ui_cfg.trig_mode == LAR2_TRIGGER_UART);
 
-    text_center(HINT_Y, "UP/DN  OK SUA  BACK", C_DIM);
+    text_center(HINT_Y, "UP/DN  OK EDIT  BACK", C_DIM);
 }
 
 /* ---------- screens 3/4: waveform ---------- */
@@ -578,15 +593,15 @@ static void draw_wave(bool high_page)
 {
     char buf[24];
     unsigned first = high_page ? 4 : 0;
-    /* 21 characters is the whole header; "3/5 SONG CH0-3 25M" is exactly 20. */
-    snprintf(buf, sizeof buf, "%u/5 SONG CH%u-%u %s",
+    /* 21 characters is the whole header; "3/5 WAVE CH0-3 25M" is exactly 20. */
+    snprintf(buf, sizeof buf, "%u/5 WAVE CH%u-%u %s",
              high_page ? 4u : 3u, first, first + 3, rate_lbl[rate_idx]);
     header(buf);
     fill(0, HDR_H, SCR_W, SCR_H - HDR_H, C_BG);
 
     char zl[8];
     snprintf(buf, sizeof buf, "Z:%s  %s", zoom_label(zl, sizeof zl),
-             high_page ? "OK:GIAI MA" : "OK:CH4-7");
+             high_page ? "OK:DECODE" : "OK:CH4-7");
     text(4, 17, buf, C_DIM);
     /* Capture state moved up here to leave the caption bar for the two time
      * values. */
@@ -628,7 +643,7 @@ static void draw_wave(bool high_page)
         text_right(SCR_W - 3, BOTTOM_Y + 2, buf, C_ACC);
     }
 
-    text_center(HINT_Y, high_page ? "OK GIAI MA  BACK" : "OK CH4-7  BACK", C_DIM);
+    text_center(HINT_Y, high_page ? "OK DECODE  BACK" : "OK CH4-7  BACK", C_DIM);
 }
 
 /* ---------- screen 5: decode ----------
@@ -676,16 +691,40 @@ static void run_decode(void)
 {
     dec_text[0] = '\0';
     dec_pkts.n = 0;
+    dec_proto = 0;
+    dec_map = la_map_test8;
+    memset(&dec_auto, 0, sizeof dec_auto);
     if (!cap_samples || !cap_len) {
-        snprintf(dec_text, sizeof dec_text, "NO CAPTURE. QUAY LAI MAN 1.");
+        snprintf(dec_text, sizeof dec_text, "NO CAPTURE. GO TO SCREEN 1.");
         return;
     }
+
+    uint32_t uart_baud = bauds[baud_idx];
+    uint32_t can_baud = 250000;
+
+    if (proto_sel == 0) {
+        /* AUTO: detect protocol + channels, then decode with that map. The
+         * bit-time gate needs a concrete UART baud; when the card says AUTO
+         * fall back to 115200, which is what the demo uses. */
+        uint32_t detect_baud = uart_baud ? uart_baud : 115200u;
+        dec_auto = decoders_autodetect(cap_samples, cap_len, (uint32_t)cap_rate,
+                                       detect_baud, can_baud);
+        if (!dec_auto.proto) {
+            snprintf(dec_text, sizeof dec_text, "AUTO: no bus found");
+            return;
+        }
+        dec_proto = dec_auto.proto;
+        dec_map = dec_auto.map;
+    } else {
+        dec_proto = proto_mask[proto_sel];
+    }
+
     la_text t;
     la_text_init(&t, dec_text, sizeof dec_text);
-    decoders_run_map(cap_samples, cap_len, (uint32_t)cap_rate, proto_mask[proto_sel],
-                     bauds[baud_idx], 250000, &la_map_test8, &t);
-    decoders_packets(cap_samples, cap_len, (uint32_t)cap_rate, proto_mask[proto_sel],
-                     bauds[baud_idx], 250000, &la_map_test8, &dec_pkts);
+    decoders_run_map(cap_samples, cap_len, (uint32_t)cap_rate, dec_proto,
+                     uart_baud, can_baud, &dec_map, &t);
+    decoders_packets(cap_samples, cap_len, (uint32_t)cap_rate, dec_proto,
+                     uart_baud, can_baud, &dec_map, &dec_pkts);
     if (dec_sel >= dec_pkts.n) dec_sel = dec_pkts.n ? (uint8_t)(dec_pkts.n - 1) : 0;
 }
 
@@ -700,15 +739,29 @@ static const char *rate_badge(char *buf, size_t n)
     return buf;
 }
 
-/* The channel(s) the selected protocol listens on. */
+/* The channel(s) the active protocol listens on (dynamic after AUTO). */
 static const char *chan_badge(char *buf, size_t n)
 {
-    switch (proto_sel) {
-    case 0: snprintf(buf, n, "CH:0"); break;
-    case 1: snprintf(buf, n, "1/2"); break;
-    case 2: snprintf(buf, n, "3-6"); break;
-    default: snprintf(buf, n, "CH:7"); break;
+    uint8_t p = dec_proto ? dec_proto : proto_mask[proto_sel];
+    switch (p) {
+    case LAR2_PROTO_UART: snprintf(buf, n, "CH:%u", dec_map.uart); break;
+    case LAR2_PROTO_I2C:  snprintf(buf, n, "%u/%u", dec_map.i2c_scl, dec_map.i2c_sda); break;
+    case LAR2_PROTO_SPI:  snprintf(buf, n, "%u-%u", dec_map.spi_cs, dec_map.spi_mosi); break;
+    case LAR2_PROTO_CAN:  snprintf(buf, n, "CH:%u", dec_map.can); break;
+    default:              snprintf(buf, n, "-"); break;
     }
+    return buf;
+}
+
+/* PROTO card value: "AUTO:CAN" after a successful detect, else the fixed name. */
+static const char *proto_badge(char *buf, size_t n)
+{
+    if (proto_sel != 0) {
+        snprintf(buf, n, "%s", proto_name[proto_sel]);
+        return buf;
+    }
+    if (dec_auto.proto) snprintf(buf, n, "AUTO:%s", proto_short(dec_auto.proto));
+    else                snprintf(buf, n, "AUTO:?");
     return buf;
 }
 
@@ -952,11 +1005,14 @@ static void draw_decode(void)
     text_clip_right(SCR_W - 4, 4, 42, buf, C_BADGE, C_HDR);
     hline(0, DEC_HDR_H - 1, SCR_W, C_BROWSE);
 
-    /* Band 2: three selector cards, 2 px apart. */
-    card(2, 42, "PROTO", proto_name[proto_sel], dec_focus == 0,
-         dec_edit && dec_focus == 0);
-    card(46, 40, "CHAN", chan_badge(buf, sizeof buf), false, false);
-    card(88, 38, "RATE", rate_badge(buf, sizeof buf), false, false);
+    /* Band 2: three selector cards. PROTO is wider so "AUTO:CAN" fits. */
+    {
+        char pbuf[12];
+        card(2, 60, "PROTO", proto_badge(pbuf, sizeof pbuf), dec_focus == 0,
+             dec_edit && dec_focus == 0);
+    }
+    card(64, 32, "CHAN", chan_badge(buf, sizeof buf), false, false);
+    card(98, 30, "RATE", rate_badge(buf, sizeof buf), false, false);
 
     /* Band 3: mini waveform of the selected packet. */
     draw_strip();
@@ -965,7 +1021,7 @@ static void draw_decode(void)
     draw_grid();
 
     /* Footer: what the buttons do here, and what a row is. */
-    text_clip(2, 150, 124, "UP/DN:dong  OK:chuan", C_DIM, C_BG);
+    text_clip(2, 150, 124, "UP/DN:row  OK:edit", C_DIM, C_BG);
 }
 
 /* ---------- screen switching ---------- */
@@ -1047,11 +1103,12 @@ static void cycle_trigger(signed dir)
 static void cycle_decode(signed dir)
 {
     if (dec_focus == 0) {
-        proto_sel = (uint8_t)((proto_sel + dir + 4) % 4);
+        proto_sel = (uint8_t)((proto_sel + dir + PROTO_N) % PROTO_N);
         run_decode();
         dec_scroll = 0;
         dec_sel = 0;
-    } else if (proto_sel == 0) {
+    } else if (proto_sel == 0 || proto_sel == 1) {
+        /* Baud applies to AUTO (UART bit-time gate) and manual UART. */
         baud_idx = (uint8_t)((baud_idx + dir + BAUD_N) % BAUD_N);
         run_decode();
         dec_scroll = 0;
@@ -1094,10 +1151,12 @@ static void event(btn_id id, bool long_press, uint32_t held_ms)
         if (id == BTN_UP || id == BTN_DOWN) {
             signed dir = id == BTN_UP ? -1 : +1;
             if (cfg_edit) cycle_config(dir);
-            else cfg_row = (uint8_t)((cfg_row + dir + 5) % 5);
+            else cfg_row = (uint8_t)((cfg_row + dir + 4) % 4);
             refresh();
         } else if (id == BTN_OK) {
-            if (cfg_row == 4) {
+            /* The start row is gone: hold OK in browse mode to arm a capture,
+             * short OK still edits the focused row. */
+            if (!cfg_edit && long_press) {
                 if (!capturing && !capture_request) {
                     apply_config();
                     capture_request = true;
@@ -1387,6 +1446,8 @@ void ui_load_demo(void)
     zoom_idx = 4;                                   /* X16: a bit is ~13 px */
     wave_centre_on(cap_trigger);
     dec_scroll = 0;
+    proto_sel = 0;                                  /* AUTO on every demo load */
+    memset(&dec_auto, 0, sizeof dec_auto);
     enter(SCR_WAVE_LO);
 }
 
@@ -1445,6 +1506,16 @@ uint8_t ui_screen_id(void)
 uint8_t ui_event_count(void)
 {
     return event_count;
+}
+
+uint8_t ui_proto_sel(void) { return proto_sel; }
+
+uint8_t ui_dec_auto_proto(void) { return dec_auto.proto; }
+
+const char *ui_decode_proto_badge(void)
+{
+    static char buf[16];
+    return proto_badge(buf, sizeof buf);
 }
 
 const char *ui_decode_text(void)

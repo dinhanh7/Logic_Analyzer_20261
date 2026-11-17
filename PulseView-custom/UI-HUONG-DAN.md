@@ -11,11 +11,11 @@ mô phỏng 4 giao thức, nên có thể thử toàn bộ mà không cần máy
 | Màn (hiển thị) | ID firmware | Tên | Nội dung chính |
 |---|---|---|---|
 | Màn 0 | 5 | STANDBY (chờ) | Logo xung vuông + vạch trigger, tên thiết bị, thẻ thông tin, lời nhắc nhấp nháy |
-| Màn 1/5 | 0 | CẤU HÌNH ĐO | Tần số, số mẫu, kênh, pre-trigger, dòng BAT DAU THU |
+| Màn 1/5 | 0 | CẤU HÌNH ĐO | Rate, Samples, Chan, Pre-Trig (giữ OK để thu) |
 | Màn 2/5 | 1 | TRIGGER | Chế độ, kênh, điều kiện, baud/clock |
 | Màn 3/5 | 2 | SÓNG CH0-3 | 4 track CH0..CH3, vạch trigger đỏ, cursor đo giữa |
 | Màn 4/5 | 3 | SÓNG CH4-7 | 4 track CH4..CH7, cùng 4 màu, vạch trigger đỏ |
-| Màn 5/5 | 4 | DECODE | 3 card chọn, dải sóng một gói, bảng dữ liệu 5 dòng |
+| Màn 5/5 | 4 | DECODE | PROTO (AUTO + 4 giao thức), CHAN, RATE, dải sóng, bảng 5 dòng |
 
 > **Đánh số:** màn chờ là "màn 0" theo cách gọi của người dùng (không in số lên
 > màn hình). Năm màn đo vẫn giữ nguyên nhãn 1/5..5/5. ID firmware của 5 màn cũ
@@ -32,8 +32,8 @@ mô phỏng 4 giao thức, nên có thể thử toàn bộ mà không cần máy
         [0 STANDBY]  <-----------------------------------+
                |  bất kỳ nút nào (UP/DOWN/OK/BACK)       |
                v                                        |
-        [1/5 CẤU HÌNH ĐO]                               |
-               |  OK trên dòng "BAT DAU THU"            |
+        [1/5 CONFIG]                                    |
+               |  giữ OK (>=600 ms) trên dòng bất kỳ     |
                v                                        |
         [3/5 SÓNG CH0-3]                                |
                |  OK                                    | OK giữ (>=600ms)
@@ -47,6 +47,8 @@ mô phỏng 4 giao thức, nên có thể thử toàn bộ mà không cần máy
 - **Vào chương trình:** khi bật nguồn, màn chờ hiện ra. Nhấn **bất kỳ** nút
   nào cũng vào ngay màn cấu hình (màn hình được xóa sạch, không để lại ảnh
   logo - ghosting).
+- **Bắt đầu thu:** ở màn 1/5, **giữ OK** (~0.6 giây) trên dòng bất kỳ (không cần
+  dòng "BAT DAU THU" nữa). Nhấn OK ngắn vẫn vào edit như cũ.
 - **Kết thúc một phiên:** ở màn DECODE, **giữ OK** (~0.6 giây) quay về màn chờ,
   rồi có thể bắt đầu lại vòng lặp.
 - **Lối tắt khác:** ở màn cấu hình, đang duyệt (không sửa giá trị), **giữ BACK
@@ -71,23 +73,23 @@ Quy ước chung:
 |---|---|
 | Bất kỳ (UP / DOWN / OK / BACK), nhấn ngắn hoặc giữ | Vào ngay màn 1/5 CẤU HÌNH ĐO |
 
-- Lời nhắc `[ NHAN OK BAT DAU ]` đổi màu trắng/xám mờ mỗi 600 ms.
+- Lời nhắc `[ PRESS OK TO START ]` đổi màu trắng/xám mờ mỗi 600 ms.
 
 ### Màn 1/5 - CẤU HÌNH ĐO
 
-Các dòng: `Tan so`, `So mau`, `Kenh`, `Pre-Trig`, `BAT DAU THU`.
+Các dòng (chữ tiếng Anh trên màn): `Rate`, `Samples`, `Chan`, `Pre-Trig`.
 
 | Nút | Browse mode | Edit mode |
 |---|---|---|
-| UP / DOWN | Di chuyển giữa 5 dòng | Thay đổi giá trị dòng hiện tại |
-| OK | Vào edit (trừ dòng BAT DAU THU) | Lưu giá trị, thoát edit |
-| OK trên `BAT DAU THU` | Bắt đầu thu mẫu → màn 3/5 SÓNG CH0-3 | - |
+| UP / DOWN | Di chuyển giữa 4 dòng | Thay đổi giá trị dòng hiện tại |
+| OK | Vào edit | Lưu giá trị, thoát edit |
+| OK giữ >=600 ms | Bắt đầu thu mẫu → màn 3/5 WAVE CH0-3 | - |
 | BACK, nhấn ngắn | → màn 2/5 TRIGGER | Hủy edit, thoát edit |
 | BACK, giữ ≥800 ms | → màn 0 STANDBY | Hủy edit, thoát edit (chưa về chờ) |
 
 ### Màn 2/5 - TRIGGER
 
-Các dòng: `Che do`, `Kenh`, `Dieu kien`, `Baud/Clk`.
+Các dòng: `Mode`, `Chan`, `Condition`, `Baud/Clk`.
 
 | Nút | Browse mode | Edit mode |
 |---|---|---|
@@ -95,9 +97,9 @@ Các dòng: `Che do`, `Kenh`, `Dieu kien`, `Baud/Clk`.
 | OK | Vào edit | Lưu, thoát edit |
 | BACK | → màn 1/5 CẤU HÌNH ĐO | Hủy edit, thoát edit |
 
-- `Che do`: EDGE / PATTERN / UART. Với UART thì chỉnh được dòng `Baud/Clk`.
+- `Mode`: EDGE / PATTERN / UART. Với UART thì chỉnh được dòng `Baud/Clk`.
 
-### Màn 3/5 và 4/5 - SÓNG CH0-3 / CH4-7
+### Màn 3/5 và 4/5 - WAVE CH0-3 / CH4-7
 
 | Nút | Hành động |
 |---|---|
@@ -130,6 +132,15 @@ Các dòng: `Che do`, `Kenh`, `Dieu kien`, `Baud/Clk`.
 ### Màn 5/5 - DECODE
 
 Ba card chọn ở trên: **PROTO** (giao thức), **CHAN** (kênh), **RATE** (tốc độ).
+
+- **PROTO** có 5 lựa chọn: `AUTO` → `UART` → `I2C` → `SPI` → `CAN`. Chế độ
+  `AUTO` tự dò giao thức và kênh (UART/I2C/SPI/CAN) trên toàn bộ 8 kênh, rồi
+  hiện kết quả ngay trên card: `AUTO:UART`, `AUTO:I2C`, ... Card **CHAN** đổi
+  theo kênh thật mà bộ dò tìm ra (ví dụ `CH:0`, `2/3`, `0-5`).
+- Nếu không tìm thấy bus nào, dòng trạng thái là `AUTO: no bus found` và card
+  PROTO hiện `AUTO:?`; chọn tay UART/I2C/SPI/CAN vẫn dùng được như cũ.
+- `AUTO` dùng baud card để kiểm tra độ rộng bit UART; khi baud card là `AUTO`
+  thì bộ dò thử 115200. Đổi baud chỉ có tác dụng với AUTO và UART.
 
 | Nút | Browse mode | Edit mode |
 |---|---|---|

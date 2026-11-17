@@ -223,14 +223,14 @@ Firmware đặt `clk_sys=100 MHz`; mỗi mẫu gồm 4 chu kỳ PIO. Các rate c
 
 ## Giao diện trên TFT 128×160
 
-Firmware vẽ UI 4 màn hình lên module ST7735 1,8" (GP10–GP16), không cần PC:
+Firmware vẽ UI 5 màn hình lên module ST7735 1,8" (GP10–GP16), không cần PC:
 
 | Màn | Nội dung |
 |---|---|
-| 01 CAU HINH | `FS`, `N`, `CH`, `PRE`, `[ BAT DAU ]` |
-| 02 TRIGGER | mode EDGE/PATTERN/UART, kênh, cạnh, giá trị pattern, byte UART |
-| 03 WAVEFORM | 4 track/lật trang CH0-3 ↔ CH4-7, cuộn, zoom x1/x2/x4/x8 |
-| 04 DECODE | chọn UART/I2C/SPI/CAN, giải mã on-device trên buffer hiện tại |
+| 01 CONFIG | `Rate`, `Samples`, `Chan`, `Pre-Trig`; giữ OK để bắt đầu thu |
+| 02 TRIGGER | `Mode` EDGE/PATTERN/UART, kênh, điều kiện, baud/clock |
+| 03/04 WAVE | 4 track/lật trang CH0-3 ↔ CH4-7, cuộn, zoom, thước thời gian |
+| 05 DECODE | `PROTO` = AUTO/UART/I2C/SPI/CAN, card `AUTO:<proto>`, giải mã on-device |
 
 Bốn nút (chưa đấu dây): UP GP8, DOWN GP9, OK GP12, BACK GP22, active low.
 Lệnh USB một ký tự chạy song song với nút — `u`/`d`/`o`/`b` nhấn ngắn,
@@ -238,7 +238,7 @@ Lệnh USB một ký tự chạy song song với nút — `u`/`d`/`o`/`b` nhấn
 
 ```bash
 python3 tools/ui_keys.py --port /dev/ttyACM0        # gõ phím trực tiếp
-python3 tools/ui_keys.py --port /dev/ttyACM0 --send oo   # OK, OK = [ BAT DAU ]
+python3 tools/ui_keys.py --port /dev/ttyACM0 --send O    # giữ OK = bắt đầu thu
 ```
 
 Kiến trúc: `firmware/ui.c` chỉ dựng từng dải 128×8 điểm ảnh rồi đẩy một lần

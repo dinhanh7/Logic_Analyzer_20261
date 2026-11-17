@@ -48,6 +48,7 @@
 #define LAR2_ANALYZE_UI_TEXT     13u /* text currently on the decode screen */
 #define LAR2_ANALYZE_UI_TABLE    14u /* the decode grid as drawn, one row per
                                         line, columns separated by '|' */
+#define LAR2_ANALYZE_UI_STATE    15u /* proto_sel + dec_auto.proto + badge */
 #define LAR2_ANALYZE_UI_DEMO     12u /* load the built-in mock waveform and show
                                         the waveform screen, no capture needed */
 #define LAR2_ANALYZE_STREAM_START 16u /* continuous capture to the host. rate and

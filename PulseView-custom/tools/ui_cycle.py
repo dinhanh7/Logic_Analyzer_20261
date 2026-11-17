@@ -7,7 +7,7 @@
     python3 tools/ui_cycle.py --capture    # real capture instead of the mock
 
 Screen flow (spec):
-    1 CONFIG --OK on BAT DAU--> 3 WAVE CH0-3 --OK--> 4 WAVE CH4-7 --OK--> 5 DECODE
+    1 CONFIG --hold OK--> 3 WAVE CH0-3 --OK--> 4 WAVE CH4-7 --OK--> 5 DECODE
     5 DECODE --BACK--> 4 --BACK--> 3 --BACK--> 1 CONFIG --BACK--> 2 TRIGGER
 
 Every step is checked against the firmware's own state (LAR2_ANALYZE_RUNTIME
@@ -25,7 +25,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import host_la  # noqa: E402
 from host_la import open_port  # noqa: E402
 from lar2 import (ANALYZE, ANALYZE_RUNTIME, ANALYZE_UI_DEMO,  # noqa: E402
-                  ANALYZE_UI_TEXT, ANALYZE_UI_TABLE, analyze_payload)
+                  ANALYZE_UI_TEXT, ANALYZE_UI_TABLE, ANALYZE_UI_STATE,
+                  analyze_payload)
 
 # Indexed by the firmware's screen id (0..4, plus 5 = boot STANDBY); the label
 # is the 1..5 header. STANDBY is "màn 0" to the user, host id 5.
@@ -33,12 +34,12 @@ SCREEN_NAME = ['1/5 CONFIG', '2/5 TRIGGER', '3/5 WAVE CH0-3', '4/5 WAVE CH4-7',
                '5/5 DECODE', '0 STANDBY']
 
 SCREEN_HINT = [
-    'header 1/5, 4 dong gia tri + dong BAT DAU THU',
-    'header 2/5, Che do / Kenh / Dieu kien / Baud-Clk',
-    'header 3/5, 4 track CH0-3, vach do trigger, cursor giua',
-    'header 4/5, 4 track CH4-7, cung 4 mau, khong con trong',
-    'header 5/5, < UART >, dong decode ben duoi duong ke',
-    'man cho, logo xung vuong, nhan nut bat ky de vao config',
+    'header 1/5, 4 value rows (hold OK to arm a capture)',
+    'header 2/5, Mode / Chan / Condition / Baud-Clk',
+    'header 3/5, 4 tracks CH0-3, red trigger, centre cursor',
+    'header 4/5, 4 tracks CH4-7, same four hues',
+    'header 5/5, AUTO + four protocols, decode rows below',
+    'standby, square-wave logo, any button enters CONFIG',
 ]
 
 # (key, expected screen, note)
@@ -129,18 +130,17 @@ BAD_TEXT = ('no transaction', 'no sof', 'truncated', 'extended frame',
 
 
 def to_decode(dev, fd):
-    """Reach screen 5 from anywhere: BACK to CONFIG, then BAT DAU -> OK -> OK.
+    """Reach screen 5 from anywhere: reload the demo, then OK -> OK.
 
-    BACK only walks 3<->4<->1<->2, so the OK chain from CONFIG is the only way
-    onto the decode screen. The demo capture is already loaded, so the OK on
-    BAT DAU THU just re-enters the waveform screens.
+    BACK only walks 3<->4<->1<->2, so the OK chain from the waveform screens is
+    the only way onto decode. The demo is already loaded, so OK only navigates.
     """
     for _ in range(10):
         if screen_id(dev) == 4:
             return True
-        # Reloading the demo is the only way back onto the waveform screens
-        # without pressing OK on BAT DAU, which would arm a real capture and
-        # throw the demo data away.
+        # Reloading the demo is the only way back onto the waveform screens;
+        # pressing hold-OK on CONFIG would arm a real capture and throw the
+        # demo data away.
         dev.command(ANALYZE, analyze_payload(ANALYZE_UI_DEMO, 0, 0))
         time.sleep(0.6)
         os.write(fd, b'oo')            # 3/5 -> 4/5 -> 5/5
@@ -149,22 +149,47 @@ def to_decode(dev, fd):
 
 
 def select_protocol(dev, fd, name):
-    """Cycle the protocol card until the decode text starts with `name`."""
-    for _ in range(5):
+    """Cycle the protocol card until the decode text starts with `name`.
+
+    Advance at least once first: a leftover AUTO detect whose text also starts
+    with UART/CAN/... must not satisfy the match.
+    """
+    os.write(fd, b'odo')              # OK edit, DOWN next protocol, OK apply
+    time.sleep(0.6)
+    for _ in range(6):
         if decode_text(dev).strip().startswith(name):
             return True
-        os.write(fd, b'odo')          # OK edit, DOWN next protocol, OK apply
+        os.write(fd, b'odo')
         time.sleep(0.6)
     return decode_text(dev).strip().startswith(name)
 
 
 def check_protocols(dev, fd):
-    """Cycle the decode screen through UART/I2C/SPI/CAN and print each result."""
-    print('\n-- decode screen, all four protocols --', flush=True)
+    """Cycle decode through AUTO then UART/I2C/SPI/CAN and print each result."""
+    print('\n-- decode screen, AUTO + four protocols --', flush=True)
     if not to_decode(dev, fd):
         print('could not reach screen 5, aborting', flush=True)
         return False
     ok = True
+
+    # A demo reload resets proto_sel to AUTO; the first decode is the detector.
+    got = screen_id(dev)
+    text = decode_text(dev).strip()
+    table = decode_table(dev).strip()
+    state = ask(dev, ANALYZE_UI_STATE).decode('utf-8', 'replace').strip()
+    low = text.lower()
+    bad = [b for b in BAD_TEXT if b in low]
+    rows = [r for r in table.splitlines() if r.strip()]
+    auto_ok = got == 4 and bool(text) and not bad and bool(rows) and \
+        not text.startswith('AUTO: no bus') and state.startswith('0 ')
+    ok = ok and auto_ok
+    why = '' if auto_ok else ('  <-- %s' % (', '.join(bad) or 'no detect'))
+    print('%-4s [device %s]  %s  badge=%s%s'
+          % ('AUTO', 'OK' if got == 4 else 'man %d' % got,
+             text.replace('\n', ' | ') or '(empty)', state, why), flush=True)
+    for row in rows:
+        print('       %s' % row, flush=True)
+
     for name in ['UART', 'I2C', 'SPI', 'CAN']:
         # proto_sel survives a demo reload, so cycle to the wanted protocol
         # instead of assuming where the previous run left it.
@@ -216,7 +241,15 @@ def main():
                 if not to_config(dev, fd):
                     print('could not reach screen 01, aborting', flush=True)
                     return 1
-                os.write(fd, b'ddddo')     # 4 DOWN to BAT DAU, then OK
+                os.write(fd, b'O')         # hold OK arms a capture
+                # A real capture is also sent over USB as SAMPLES frames; the
+                # firmware blocks in send_frame until the host drains them, so
+                # keys are ignored while they queue. Throw them away, then
+                # restart the session: those frames advance the device's frame
+                # counter, so the old host sequence no longer matches.
+                drain(fd, 2.0)
+                dev.tx_seq = 0
+                dev.hello()
             else:
                 dev.command(ANALYZE, analyze_payload(ANALYZE_UI_DEMO, 0, 0))
             time.sleep(1.0)

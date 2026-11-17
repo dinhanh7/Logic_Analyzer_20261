@@ -38,7 +38,7 @@ void ui_tick(void);
  * UP/DOWN/OK/BACK, the uppercase letter is a long press. 'B' is special: it
  * injects BACK held 800 ms, the STANDBY shortcut. */
 void ui_handle_command(char c);
-/* Consume a pending "[ BAT DAU ]" request. */
+/* Consume a pending capture request (hold OK on the CONFIG screen). */
 bool ui_take_capture_request(void);
 /* Which screen is on the panel: 0 capture, 1 trigger, 2 waveform CH0-3,
  * 3 waveform CH4-7, 4 decode, 5 STANDBY (the boot screen, "màn 0"). Reported
@@ -54,6 +54,11 @@ const char *ui_decode_text(void);
 /* The decode grid as the panel draws it: one line per visible row, columns
  * separated by '|'. Lets the host check the table without eyes on the panel. */
 const char *ui_decode_table(void);
+/* Decode-screen protocol selector (0 = AUTO) and the last AUTO result, exposed
+ * so a host can verify the PROTO card badge without eyes on the panel. */
+uint8_t ui_proto_sel(void);
+uint8_t ui_dec_auto_proto(void);
+const char *ui_decode_proto_badge(void);
 
 /* Time formatting used by the waveform/decode caption bars, exposed so the host
  * harness can check the rounding and unit ladder without a panel. Both keep the

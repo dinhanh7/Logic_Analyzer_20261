@@ -116,7 +116,7 @@ def section_ch7(la, gen):
 
 
 UI_STEPS = [
-    ('oo', 'screen 01 -> [BAT DAU], capture starts'),
+    ('O', 'CONFIG: hold OK starts a capture'),
     ('b', 'screen 02 TRIGGER CONFIG'),
     ('b', 'screen 03 WAVEFORM, 4 tracks'),
     ('b', 'screen 04 DECODE, UART I2C / SPI CAN grid'),

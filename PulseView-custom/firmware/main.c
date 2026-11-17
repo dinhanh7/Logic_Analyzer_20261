@@ -442,6 +442,14 @@ static void command(void)
             send_frame(LAR2_RESULT, (const uint8_t *)t, strlen(t));
             break;
         }
+        case LAR2_ANALYZE_UI_STATE: {
+            /* proto_sel (0=AUTO) and dec_auto.proto, plus the badge string. */
+            char b[32];
+            snprintf(b, sizeof b, "%u %u %s", ui_proto_sel(), ui_dec_auto_proto(),
+                     ui_decode_proto_badge());
+            send_frame(LAR2_RESULT, (const uint8_t *)b, strlen(b));
+            break;
+        }
         case LAR2_ANALYZE_UI_DEMO:
             ui_load_demo();
             result[0] = LAR2_RESULT_OK;
