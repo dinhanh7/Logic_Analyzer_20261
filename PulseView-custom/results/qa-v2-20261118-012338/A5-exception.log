@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_common.py", line 38, in case
+    actual=fn();row.update(status='PASS',actual=actual)
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_offline.py", line 117, in a5
+    assert d['proto']==expected and [d['map'][i] for i in slots]==mapping,(name,moved,d,mapping)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('I2C', False, {'proto': 8, 'score': 5, 'map': [0, 1, 2, 3, 4, 5, 6, 1]}, [1, 2])

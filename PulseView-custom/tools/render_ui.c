@@ -37,24 +37,27 @@ void buttons_update(void) {}
 bool buttons_get_event(btn_event *ev)
 {
     if (evq_head == evq_tail) return false;
-    *ev = evq[evq_tail++];
+    *ev = evq[evq_tail];
+    evq_tail = (evq_tail + 1) % 64;
     return true;
 }
 void buttons_inject(btn_id id, bool long_press)
 {
-    if (evq_head >= 64) return;
+    int next = (evq_head + 1) % 64;
+    if (next == evq_tail) return;
     evq[evq_head].id = id;
     evq[evq_head].long_press = long_press;
     evq[evq_head].held_ms = long_press ? BTN_LONG_MS : 0u;
-    evq_head++;
+    evq_head = next;
 }
 void buttons_inject_held(btn_id id, uint32_t held_ms)
 {
-    if (evq_head >= 64) return;
+    int next = (evq_head + 1) % 64;
+    if (next == evq_tail) return;
     evq[evq_head].id = id;
     evq[evq_head].long_press = held_ms >= BTN_LONG_MS;
     evq[evq_head].held_ms = held_ms;
-    evq_head++;
+    evq_head = next;
 }
 
 /* ---------- PNG out ---------- */
@@ -258,6 +261,40 @@ static int selftest(void)
             fprintf(stderr, "decode cache survived replacement capture\n");
             bad++;
         }
+    }
+    {
+        static uint8_t square[4096];
+        for (unsigned i = 0; i < sizeof square; i++) square[i] = (uint8_t)(((i / 8) & 1) << 4);
+        ui_init();
+        ui_set_capture(square, sizeof square, 25000000, 200, true);
+        if (!ui_show_capture(3, 0)) return 1;
+        ui_view_state v;
+        ui_get_view(&v);
+        if (v.zoom != 0 || v.start != 0 || v.visible != 112) return 1;
+        /* At one sample/pixel the edge at sample 8 must connect both levels,
+         * rather than appearing as disconnected dots/horizontal segments. */
+        uint16_t cyan = __builtin_bswap16((uint16_t)(((0x38 & 0xf8) << 8) | ((0xbd & 0xfc) << 3) | (0xf8 >> 3)));
+        if (frame[37 * 128 + 24] != cyan || frame[37 * 128 + 23] == cyan || frame[37 * 128 + 25] == cyan) {
+            fprintf(stderr, "waveform boundary is missing or diagonal\n"); return 1;
+        }
+        for (int i = 0; i < 3; i++) { ui_handle_command('d'); ui_tick(); }
+        ui_get_view(&v); uint32_t centre = v.start + v.visible / 2;
+        ui_handle_command('D'); ui_tick();
+        ui_get_view(&v);
+        if (v.visible != 224 || v.start + v.visible / 2 != centre) return 1;
+        uint32_t saved_start = v.start;
+        ui_handle_command('b'); ui_tick(); /* low page */
+        ui_handle_command('o'); ui_tick(); /* high page restores its own zoom/pan */
+        ui_get_view(&v);
+        if (v.start != saved_start || v.zoom != 1) return 1;
+        for (int i = 0; i < 100; i++) { ui_handle_command('d'); ui_tick(); }
+        ui_get_view(&v);
+        if (v.start + v.visible > v.count) return 1;
+        uint32_t before = ui_frame_version();
+        ui_handle_command('u'); ui_handle_command('d'); ui_tick();
+        if (ui_frame_version() != before + 1) { fprintf(stderr, "batch redrawn more than once\n"); return 1; }
+        uint8_t bytes[8];
+        if (ui_copy_frame(40959, bytes, sizeof bytes) != 1 || ui_copy_frame(40960, bytes, sizeof bytes) != 0) return 1;
     }
     if (!bad) printf("render_ui selftest: caption format + AUTO window ok\n");
     return bad ? 1 : 0;

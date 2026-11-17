@@ -1,0 +1,3 @@
+streaming at 1000000 Hz, 8 channels, RLE on; Ctrl+C to stop
+stopping...
+wrote /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/results/qa-v2-20261118-013653/C4-sigint.sr: 1528936 samples @ 1000000 Hz, 0 dropped, 1.563 s; VERIFIED

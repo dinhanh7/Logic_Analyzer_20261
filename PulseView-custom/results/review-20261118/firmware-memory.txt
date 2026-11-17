@@ -1,0 +1,2 @@
+   text	   data	    bss	    dec	    hex	filename
+  88796	      0	 444684	 533480	  823e8	build/firmware-pico2/rp2350_la.elf

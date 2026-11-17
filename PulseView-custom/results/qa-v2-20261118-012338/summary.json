@@ -1,0 +1,230 @@
+[
+  {
+    "id": "A0",
+    "objective": "Compile the production C oracle bridge",
+    "conditions": "offline compiler",
+    "expected": "build succeeds with sanitizers",
+    "status": "PASS",
+    "actual": "ASan/UBSan bridge built from production decoder/autodetect sources",
+    "seconds": 0.816,
+    "evidence": [
+      "A0-build.log"
+    ]
+  },
+  {
+    "id": "A1",
+    "objective": "Independent .sr four-bus oracle",
+    "conditions": "synthetic 25MHz;UART115200,I2C100k,SPI100k,CAN250k",
+    "expected": "all bytes/address/ID/DLC match",
+    "status": "PASS",
+    "actual": {
+      "UART": [
+        76,
+        65,
+        49,
+        50,
+        51,
+        52,
+        10
+      ],
+      "I2C": [
+        1,
+        90
+      ],
+      "SPI": [
+        222,
+        173,
+        190,
+        239,
+        0,
+        1,
+        2,
+        3
+      ],
+      "CAN": [
+        222,
+        173,
+        190,
+        239
+      ]
+    },
+    "seconds": 0.252,
+    "evidence": [
+      "A1-CAN-dlc.log",
+      "A1-CAN-id.log",
+      "A1-CAN.log",
+      "A1-I2C-address.log",
+      "A1-I2C.log",
+      "A1-SPI.log",
+      "A1-UART.log",
+      "A1-four-protocols.raw",
+      "A1-four-protocols.sr",
+      "A1-oracle.json"
+    ]
+  },
+  {
+    "id": "A2",
+    "objective": "Byte-level C versus sigrok differential",
+    "conditions": "exact A1 byte stream;real firmware C",
+    "expected": "100% fields/bytes identical",
+    "status": "PASS",
+    "actual": {
+      "same_file": "A1-four-protocols.sr",
+      "firmware": {
+        "UART": [
+          76,
+          65,
+          49,
+          50,
+          51,
+          52,
+          10
+        ],
+        "I2C": [
+          1,
+          90
+        ],
+        "SPI": [
+          222,
+          173,
+          190,
+          239,
+          0,
+          1,
+          2,
+          3
+        ],
+        "CAN": [
+          222,
+          173,
+          190,
+          239
+        ]
+      },
+      "oracle": {
+        "UART": [
+          76,
+          65,
+          49,
+          50,
+          51,
+          52,
+          10
+        ],
+        "I2C": [
+          1,
+          90
+        ],
+        "SPI": [
+          222,
+          173,
+          190,
+          239,
+          0,
+          1,
+          2,
+          3
+        ],
+        "CAN": [
+          222,
+          173,
+          190,
+          239
+        ]
+      }
+    },
+    "seconds": 0.02,
+    "evidence": [
+      "A2-production-decoder.json"
+    ]
+  },
+  {
+    "id": "A3",
+    "objective": "Decoder adversarial safety/determinism",
+    "conditions": "34 bounded vectors;ASan/UBSan;6s/process",
+    "expected": "0crash,0hang;identical repeat outputs",
+    "status": "PASS",
+    "actual": {
+      "vectors": 32,
+      "runs": 64,
+      "sanitizer_errors": 0,
+      "parity_validation": "unsupported: firmware is 8N1; this case verifies safety only"
+    },
+    "seconds": 0.777,
+    "evidence": [
+      "A3-adversarial.json",
+      "A3-bad-even-parity.raw",
+      "A3-can-wrong-bitrate.raw",
+      "A3-empty.raw",
+      "A3-irregular-spi-clock.raw",
+      "A3-missing-stop.raw",
+      "A3-one-two-sample-glitches.raw",
+      "A3-ones.raw",
+      "A3-seeded-noise-00.raw",
+      "A3-seeded-noise-01.raw",
+      "A3-seeded-noise-02.raw",
+      "A3-seeded-noise-03.raw",
+      "A3-seeded-noise-04.raw",
+      "A3-seeded-noise-05.raw",
+      "A3-seeded-noise-06.raw",
+      "A3-seeded-noise-07.raw",
+      "A3-seeded-noise-08.raw",
+      "A3-seeded-noise-09.raw",
+      "A3-seeded-noise-10.raw",
+      "A3-seeded-noise-11.raw",
+      "A3-seeded-noise-12.raw",
+      "A3-seeded-noise-13.raw",
+      "A3-seeded-noise-14.raw",
+      "A3-seeded-noise-15.raw",
+      "A3-seeded-noise-16.raw",
+      "A3-seeded-noise-17.raw",
+      "A3-seeded-noise-18.raw",
+      "A3-seeded-noise-19.raw",
+      "A3-seeded-noise-20.raw",
+      "A3-seeded-noise-21.raw",
+      "A3-seeded-noise-22.raw",
+      "A3-seeded-noise-23.raw",
+      "A3-zero.raw"
+    ]
+  },
+  {
+    "id": "A4",
+    "objective": "Autobaud Q16 width accuracy",
+    "conditions": "3rates x4bauds;fractional widths;independent alternating UART",
+    "expected": "absolute error<2%",
+    "status": "FAIL",
+    "actual": "{'rate': 5000000, 'baud': 9600, 'expected_samples': 520.8333333333334, 'measured_samples': 100.0, 'error_percent': -80.80000000000001}",
+    "seconds": 0.084,
+    "evidence": [
+      "A4-1000000-115200.raw",
+      "A4-1000000-115200.sr",
+      "A4-1000000-230400.raw",
+      "A4-1000000-230400.sr",
+      "A4-1000000-57600.raw",
+      "A4-1000000-57600.sr",
+      "A4-1000000-9600.raw",
+      "A4-1000000-9600.sr",
+      "A4-5000000-9600.raw",
+      "A4-5000000-9600.sr",
+      "A4-exception.log"
+    ]
+  },
+  {
+    "id": "A5",
+    "objective": "AUTO moved-channel and noise rejection",
+    "conditions": "4protocols x fixed/moved plus8noise seeds",
+    "expected": "correct protocol and map;noise=>no bus",
+    "status": "FAIL",
+    "actual": "('I2C', False, {'proto': 8, 'score': 5, 'map': [0, 1, 2, 3, 4, 5, 6, 1]}, [1, 2])",
+    "seconds": 0.042,
+    "evidence": [
+      "A5-I2C-fixed.raw",
+      "A5-I2C-fixed.sr",
+      "A5-UART-fixed.raw",
+      "A5-UART-fixed.sr",
+      "A5-UART-moved.raw",
+      "A5-UART-moved.sr",
+      "A5-exception.log"
+    ]
+  }
+]

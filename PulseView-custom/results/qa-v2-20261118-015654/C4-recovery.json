@@ -1,0 +1,30 @@
+[
+  {
+    "signal": "sigint",
+    "exit": 0,
+    "recovered": {
+      "rate": 1000000,
+      "count": 1031,
+      "trigger_index": 4294967295,
+      "pretrigger": 0,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 0
+    }
+  },
+  {
+    "signal": "killed",
+    "exit": -9,
+    "recovered": {
+      "rate": 1000000,
+      "count": 1031,
+      "trigger_index": 4294967295,
+      "pretrigger": 0,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 0
+    }
+  }
+]

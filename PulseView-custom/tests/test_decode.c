@@ -497,6 +497,17 @@ static void test_packets(void)
     assert(l.pkt[3].value == 0xDE);
     assert(l.pkt[6].value == 0xEF);
 
+    uint32_t truncated = l.pkt[3].at + 4;
+    n = decoders_packets(wf, truncated, 25000000, LAR2_PROTO_CAN,
+                         115200, 250000, &la_map_test8, &l);
+    assert(n == 0 && l.n == 0); /* never fabricate a missing payload */
+    n = decoders_packets(wf, T8_LEN, 1000, LAR2_PROTO_UART,
+                         115200, 250000, &la_map_test8, &l);
+    assert(n == 0 && l.n == 0); /* baud above sample rate is not decodable */
+    n = decoders_packets(wf, T8_LEN, 25000000, LAR2_PROTO_UART,
+                         1, 250000, &la_map_test8, &l);
+    assert(n == 0 && l.n == 0); /* Q16 overflow must be rejected */
+
     /* No capture, no packets: the screen must not index an empty list. */
     n = decoders_packets(NULL, 0, 25000000, LAR2_PROTO_UART,
                          115200, 250000, &la_map_test8, &l);

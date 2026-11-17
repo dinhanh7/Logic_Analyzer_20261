@@ -1,0 +1,51 @@
+{
+  "id": "A1",
+  "objective": "Independent .sr four-bus oracle",
+  "conditions": "synthetic 25MHz;UART115200,I2C100k,SPI100k,CAN250k",
+  "expected": "all bytes/address/ID/DLC match",
+  "status": "PASS",
+  "actual": {
+    "UART": [
+      76,
+      65,
+      49,
+      50,
+      51,
+      52,
+      10
+    ],
+    "I2C": [
+      1,
+      90
+    ],
+    "SPI": [
+      222,
+      173,
+      190,
+      239,
+      0,
+      1,
+      2,
+      3
+    ],
+    "CAN": [
+      222,
+      173,
+      190,
+      239
+    ]
+  },
+  "seconds": 0.284,
+  "evidence": [
+    "A1-CAN-dlc.log",
+    "A1-CAN-id.log",
+    "A1-CAN.log",
+    "A1-I2C-address.log",
+    "A1-I2C.log",
+    "A1-SPI.log",
+    "A1-UART.log",
+    "A1-four-protocols.raw",
+    "A1-four-protocols.sr",
+    "A1-oracle.json"
+  ]
+}

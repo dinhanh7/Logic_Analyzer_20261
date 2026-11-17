@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_common.py", line 38, in case
+    actual=fn();row.update(status='PASS',actual=actual)
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_regression.py", line 52, in f3
+    p=ctx.run(command,timeout=240);ctx.save('F3-'+name+'.log',p.stdout+p.stderr);require_run(p)
+                                                                                 ~~~~~~~~~~~^^^
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_common.py", line 67, in require_run
+    assert p.returncode==0,p.stderr[-1500:]
+           ^^^^^^^^^^^^^^^
+AssertionError: Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_esp32_link.py", line 177, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_esp32_link.py", line 166, in main
+    d = device()
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_esp32_link.py", line 60, in device
+    fd = open_port(LA_PORT)
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tools/host_la.py", line 41, in open_port
+    fd = os.open(path, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+FileNotFoundError: [Errno 2] No such file or directory: '/dev/ttyACM0'
+

@@ -178,7 +178,7 @@ def run_case(link, proto, num, value, rate, count, pre, can_baud=None,
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--la', default='/dev/ttyACM0')
+    ap.add_argument('--la', default=host_la.default_port())
     ap.add_argument('--gen', default='/dev/ttyUSB0')
     ap.add_argument('--only', choices=('uart', 'i2c', 'spi', 'can', 'all'),
                     default='all')

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_common.py", line 38, in case
+    actual=fn();row.update(status='PASS',actual=actual)
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_device.py", line 82, in b3
+    assert abs(index-32768)<=1,row
+           ^^^^^^^^^^^^^^^^^^^
+AssertionError: {'channel': 0, 'edge': 'rising', 'index': 34159, 'seconds': 0.2699920539998857, 'before': 0, 'after': 1}

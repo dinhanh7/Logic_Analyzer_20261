@@ -1,0 +1,14 @@
+{
+  "id": "B8",
+  "objective": "Independent8-channel mapping/crosstalk/skew",
+  "conditions": "current bus wiring;reference all8not available",
+  "expected": "all8 driven by known independent waveforms;no undocumented rewiring",
+  "status": "BLOCKED",
+  "actual": "Current wiring edge counts [126, 168, 42, 6, 384, 72, 0, 98]; distinct8-channel reference/common-edge skew source is not connected",
+  "seconds": 1.318,
+  "evidence": [
+    "B8-channel-activity.json",
+    "B8-current-wiring.raw",
+    "B8-current-wiring.sr"
+  ]
+}

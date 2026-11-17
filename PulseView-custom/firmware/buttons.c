@@ -41,7 +41,9 @@ void buttons_init(void)
     btn_filter_init(&filter);
     /* Start from the real level so a button held during boot does not fire. */
     filter.stable = filter.cand = read_raw();
-    filter.cand_ms = to_ms_since_boot(get_absolute_time());
+    filter.ignore = filter.stable;
+    for (unsigned i = 0; i < BTN_COUNT; i++)
+        filter.cand_ms[i] = to_ms_since_boot(get_absolute_time());
     qhead = qtail = 0;
 }
 

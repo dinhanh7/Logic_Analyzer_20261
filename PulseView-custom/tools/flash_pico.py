@@ -20,7 +20,7 @@ from lar2 import ANALYZE_BOOTLOADER  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_UF2 = os.path.join(REPO, 'build', 'firmware-pico2', 'rp2350_la.uf2')
-PORT = os.environ.get('LA_PORT', '/dev/ttyACM0')
+PORT = host_la.default_port()
 
 
 def bootsel_dir():
@@ -62,7 +62,9 @@ def main():
     target = bootsel_dir()
     if target is None:
         if not os.path.exists(PORT):
-            raise SystemExit('board is neither running (%s) nor in BOOTSEL' % PORT)
+            #1200baud reset can remove CDC before the desktop mounts UF2.
+            target = wait_for(bootsel_dir, 12, 'BOOTSEL mount after USB reset')
+    if target is None:
         print('asking the firmware to reboot into the UF2 bootloader...')
         enter_bootloader()
         target = wait_for(bootsel_dir, 20, 'BOOTSEL mount')

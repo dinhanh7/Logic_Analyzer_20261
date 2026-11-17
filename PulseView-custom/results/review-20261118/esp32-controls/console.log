@@ -1,0 +1,212 @@
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0040,len:6272
+load:0x40078000,len:15848
+load:0x40080400,len:3920
+entry 0x40080644
+I (27) boot: ESP-IDF v6.0.1 2nd stage bootloader
+I (27) boot: compile time Nov 18 2026 00:53:05
+I (27) boot: Multicore bootloader
+I (29) boot: chip revision: v3.1
+I (32) boot.esp32: SPI Speed      : 40MHz
+I (35) boot.esp32: SPI Mode       : DIO
+I (39) boot.esp32: SPI Flash Size : 2MB
+I (42) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (49) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (62) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (75) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0d710h ( 55056) map
+I (106) esp_image: segment 1: paddr=0001d738 vaddr=3ffb0000 size=028e0h ( 10464) load
+I (110) esp_image: segment 2: paddr=00020020 vaddr=400d0020 size=17764h ( 96100) map
+I (145) esp_image: segment 3: paddr=0003778c vaddr=3ffb28e0 size=003a4h (   932) load
+I (145) esp_image: segment 4: paddr=00037b38 vaddr=40080000 size=0df48h ( 57160) load
+I (172) esp_image: segment 5: paddr=00045a88 vaddr=50000000 size=00028h (    40) load
+I (179) boot: Loaded app from partition at offset 0x10000
+I (179) boot: Disabling RNG early entropy source...
+I (190) cpu_start: Multicore app
+I (198) cpu_start: GPIO 3 and 1 are used as console UART I/O pins
+I (198) cpu_start: Pro cpu start user code
+I (198) cpu_start: cpu freq: 160000000 Hz
+I (200) app_init: Application information:
+I (204) app_init: Project name:     la-signal-gen
+I (209) app_init: App version:      460d90e-dirty
+I (213) app_init: Compile time:     Nov 18 2026 00:53:00
+I (218) app_init: ELF file SHA256:  8cfa6fc29...
+I (222) app_init: ESP-IDF:          v6.0.1
+I (226) efuse_init: Min chip rev:     v0.0
+I (230) efuse_init: Max chip rev:     v3.99 
+I (234) efuse_init: Chip rev:         v3.1
+I (238) heap_init: Initializing. RAM available for dynamic allocation:
+I (244) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM
+I (249) heap_init: At 3FFB37A0 len 0002C860 (178 KiB): DRAM
+I (254) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM
+I (260) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM
+I (265) heap_init: At 4008DF48 len 000120B8 (72 KiB): IRAM
+W (272) spi_flash: Detected boya flash chip but using generic driver. For optimal functionality, enable `SPI_FLASH_SUPPORT_BOYA_CHIP` in menuconfig
+I (284) spi_flash: detected chip: generic
+I (287) spi_flash: flash io: dio
+W (290) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (304) main_task: Startedsquare: requested 1000 Hz, hardware 1000 Hz (resolution 14 bit)
+
+=== la-signal-gen opt1 for the RP2350 logic analyzer ===
+all levels are 3.3 V, connect the grounds of both boards
+tie GPIO 23 to GPIO 25 with a jumper so MISO shows the same bytes as MOSI
+status:
+  SQ      GPIO 4  1000 Hz hardware (asked 1000 Hz), 50 % duty
+  GPIO25  reserved for SPI MISO (SQ2 disabled)
+  PAT0-3  GPIO 13,14,16,17  12.5/25/37.5/50 % duty, same period
+  I2C     GPIO 18 SCL, 19 SDA  100 kHz, write 68 reg 01 data 5A
+  SPI     GPIO 21 CS, 22 SCK, 23 MOSI, 25 MISO  1000000 Hz, frame DE AD BE EF 00 01 02 03
+  UART    GPIO 26 TX at 115200 baud, sending "LA1234\n" at scheduler tick intervals when independent
+  CAN     GPIO 32 TX @250 kbps, ID 0x123, data DE AD BE EF (incrementing)
+  stress  0 Hz, CAN queued=1 errors=0, SPI errors=0
+  mode    burst: all four protocols together every 100 ms
+
+type 'help' for the command list
+
+> stress off
+stress: 0 Hz on GPIO26 (50 %); UART restored
+
+> set uart 115200
+uart: 115200 baud
+
+> set i2c 100
+i2c: 100 kHz (half period 5 us, real 100.0 kHz)
+
+> set spi 1000
+spi: 1000000 Hz
+
+> set can 250
+can: 250 kbps
+
+> burst on
+
+> status
+status:
+  SQ      GPIO 4  1000 Hz hardware (asked 1000 Hz), 50 % duty
+  GPIO25  reserved for SPI MISO (SQ2 disabled)
+  PAT0-3  GPIO 13,14,16,17  12.5/25/37.5/50 % duty, same period
+  I2C     GPIO 18 SCL, 19 SDA  100 kHz, write 68 reg 01 data 5A
+  SPI     GPIO 21 CS, 22 SCK, 23 MOSI, 25 MISO  1000000 Hz, frame DE AD BE EF 00 01 02 03
+  UART    GPIO 26 TX at 115200 baud, sending "LA1234\n" at scheduler tick intervals when independent
+  CAN     GPIO 32 TX @250 kbps, ID 0x123, data DE AD BE EF (incrementing)
+  stress  0 Hz, CAN queued=32 errors=0, SPI errors=0
+  mode    burst: all four protocols together every 100 ms
+
+> freq 0
+freq: 100..1000000 Hz; previous frequency preserved
+W (3884) ledc: GPIO 4 is not usable, maybe conflict with others
+
+> set can 10
+CAN: 10 kbps is not reachable from the 80 MHz APB clock
+CAN: rejected unsupported rate; previous configuration preserved
+
+> set can 999junk
+invalid numeric value
+
+> set spi 0
+spi: 100..26666 kHz (80 MHz / 3 max)
+
+> set uart 42949672960
+invalid numeric value
+
+> status
+status:
+  SQ      GPIO 4  1000 Hz hardware (asked 1000 Hz), 50 % duty
+  GPIO25  reserved for SPI MISO (SQ2 disabled)
+  PAT0-3  GPIO 13,14,16,17  12.5/25/37.5/50 % duty, same period
+  I2C     GPIO 18 SCL, 19 SDA  100 kHz, write 68 reg 01 data 5A
+  SPI     GPIO 21 CS, 22 SCK, 23 MOSI, 25 MISO  1000000 Hz, frame DE AD BE EF 00 01 02 03
+  UART    GPIO 26 TX at 115200 baud, sending "LA1234\n" at scheduler tick intervals when independent
+  CAN     GPIO 32 TX @250 kbps, ID 0x123, data DE AD BE EF (incrementing)
+  stress  0 Hz, CAN queued=57 errors=0, SPI errors=0
+  mode    burst: all four protocols together every 100 ms
+
+> uart off
+
+> stress 1000
+W (7614) ledc: GPIO 26 is not usable, maybe conflict with others
+stress: 1000 Hz on GPIO26 (50 %); UART suspended
+
+> stress off
+stress: 0 Hz on GPIO26 (50 %); UART restored
+
+> uart on
+
+> set spi 100
+spi: 100000 Hz
+
+> set spi 1000
+spi: 1000000 Hz
+
+> set spi 100
+spi: 100000 Hz
+
+> set spi 1000
+spi: 1000000 Hz
+
+> set spi 100
+spi: 100000 Hz
+
+> set spi 1000
+spi: 1000000 Hz
+
+> set spi 100
+spi: 100000 Hz
+
+> set spi 1000
+spi: 1000000 Hz
+
+> set spi 100
+spi: 100000 Hz
+
+> set spi 1000
+spi: 1000000 Hz
+
+> set uart 115200
+uart: 115200 baud
+
+command too long
+> status
+status:
+  SQ      GPIO 4  1000 Hz hardware (asked 1000 Hz), 50 % duty
+  GPIO25  reserved for SPI MISO (SQ2 disabled)
+  PAT0-3  GPIO 13,14,16,17  12.5/25/37.5/50 % duty, same period
+  I2C     GPIO 18 SCL, 19 SDA  100 kHz, write 68 reg 01 data 5A
+  SPI     GPIO 21 CS, 22 SCK, 23 MOSI, 25 MISO  1000000 Hz, frame DE AD BE EF 00 01 02 03
+  UART    GPIO 26 TX at 115200 baud, sending "LA1234\n" at scheduler tick intervals when independent
+  CAN     GPIO 32 TX @250 kbps, ID 0x123, data DE AD BE EF (incrementing)
+  stress  0 Hz, CAN queued=175 errors=0, SPI errors=0
+  mode    burst: all four protocols together every 100 ms
+
+> status
+status:
+  SQ      GPIO 4  1000 Hz hardware (asked 1000 Hz), 50 % duty
+  GPIO25  reserved for SPI MISO (SQ2 disabled)
+  PAT0-3  GPIO 13,14,16,17  12.5/25/37.5/50 % duty, same period
+  I2C     GPIO 18 SCL, 19 SDA  100 kHz, write 68 reg 01 data 5A
+  SPI     GPIO 21 CS, 22 SCK, 23 MOSI, 25 MISO  1000000 Hz, frame DE AD BE EF 00 01 02 03
+  UART    GPIO 26 TX at 115200 baud, sending "LA1234\n" at scheduler tick intervals when independent
+  CAN     GPIO 32 TX @250 kbps, ID 0x123, data DE AD BE EF (incrementing)
+  stress  0 Hz, CAN queued=181 errors=0, SPI errors=0
+  mode    burst: all four protocols together every 100 ms
+
+> stress off
+stress: 0 Hz on GPIO26 (50 %); UART restored
+
+> uart on
+
+> set spi 1000
+spi: 1000000 Hz
+
+> set can 250
+can: 250 kbps
+
+> burst on

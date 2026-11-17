@@ -1,0 +1,296 @@
+[
+  {
+    "id": "B1",
+    "objective": "Frequency, duty and quantization jitter",
+    "conditions": "known1kHz PWM on GPIO26;1/5/25MHz",
+    "expected": "frequency error<0.5%;record period/duty/jitter",
+    "status": "PASS",
+    "actual": {
+      "reference": "ESP32 LEDC timer2 on existing CH0 wire;not external calibration",
+      "measurements": [
+        {
+          "periods": 261,
+          "period_samples_mean": 999.9961685823755,
+          "frequency_hz": 1000.0038314323043,
+          "duty": 0.5000019157161522,
+          "jitter_pp_samples": 1,
+          "jitter_rms_samples": 0.06177975286052528,
+          "min_period_samples": 999,
+          "max_period_samples": 1000,
+          "rate": 1000000,
+          "error_percent": 0.0003831432304313154
+        },
+        {
+          "periods": 52,
+          "period_samples_mean": 4999.961538461538,
+          "frequency_hz": 1000.0076923668644,
+          "duty": 0.5000038461834322,
+          "jitter_pp_samples": 1,
+          "jitter_rms_samples": 0.19230769230769232,
+          "min_period_samples": 4999,
+          "max_period_samples": 5000,
+          "rate": 5000000,
+          "error_percent": 0.0007692366864375799
+        },
+        {
+          "periods": 10,
+          "period_samples_mean": 24999.8,
+          "frequency_hz": 1000.0080000640005,
+          "duty": 0.5000040000320003,
+          "jitter_pp_samples": 1,
+          "jitter_rms_samples": 0.4,
+          "min_period_samples": 24999,
+          "max_period_samples": 25000,
+          "rate": 25000000,
+          "error_percent": 0.0008000064000590612
+        }
+      ]
+    },
+    "seconds": 3.847,
+    "evidence": [
+      "B1-1000000.raw",
+      "B1-1000000.sr",
+      "B1-25000000.raw",
+      "B1-25000000.sr",
+      "B1-5000000.raw",
+      "B1-5000000.sr",
+      "B1-measurements.json"
+    ]
+  },
+  {
+    "id": "B2",
+    "objective": "Actual UART bit-width metrology",
+    "conditions": "UART115200;1/5/25MHz;unit-width run clusters",
+    "expected": "mean<2%;25MHz mean<1sample error",
+    "status": "PASS",
+    "actual": [
+      {
+        "rate": 1000000,
+        "expected_samples": 8.680555555555555,
+        "mean_samples": 8.666666666666666,
+        "count": 21,
+        "error_percent": -0.16000000000000458,
+        "jitter_pp_samples": 1,
+        "jitter_rms_samples": 0.4714045207910317
+      },
+      {
+        "rate": 5000000,
+        "expected_samples": 43.40277777777778,
+        "mean_samples": 43.476190476190474,
+        "count": 21,
+        "error_percent": 0.1691428571428455,
+        "jitter_pp_samples": 1,
+        "jitter_rms_samples": 0.4994327848429293
+      },
+      {
+        "rate": 25000000,
+        "expected_samples": 217.01388888888889,
+        "mean_samples": 217,
+        "count": 21,
+        "error_percent": -0.006399999999995298,
+        "jitter_pp_samples": 2,
+        "jitter_rms_samples": 0.4364357804719848
+      }
+    ],
+    "seconds": 0.889,
+    "evidence": [
+      "B2-1000000.raw",
+      "B2-1000000.sr",
+      "B2-25000000.raw",
+      "B2-25000000.sr",
+      "B2-5000000.raw",
+      "B2-5000000.sr",
+      "B2-bit-width.json"
+    ]
+  },
+  {
+    "id": "B3",
+    "objective": "All-channel edge trigger geometry",
+    "conditions": "8channels x2polarities;25MHz;65536/pre32768",
+    "expected": "exact32768±1 and correct previous/current bit",
+    "status": "BLOCKED",
+    "actual": "Tested 14 polarities; no external transitions on CH[6]; see B3-edge-results.json",
+    "seconds": 12.092,
+    "evidence": [
+      "B3-edge-results.json"
+    ]
+  },
+  {
+    "id": "B4",
+    "objective": "Pattern/manual and never-match recovery",
+    "conditions": "CH0high pattern;CH6pulled-low opposite pattern;400ms host timeout",
+    "expected": "match correct;manual no trigger;subsequent capture valid",
+    "status": "FAIL",
+    "actual": "CH6 low-pull impossible pattern unexpectedly matched",
+    "seconds": 0.564,
+    "evidence": [
+      "B4-exception.log"
+    ]
+  },
+  {
+    "id": "B5",
+    "objective": "Buffer and pretrigger boundary clamp",
+    "conditions": "pre0/half/>half;count262144triggered",
+    "expected": "count<=131072;pre<=half;exact index;no deadlock",
+    "status": "PASS",
+    "actual": [
+      {
+        "request_count": 65536,
+        "request_pre": 0,
+        "info": {
+          "rate": 25000000,
+          "count": 65536,
+          "trigger_index": 0,
+          "pretrigger": 0,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 1
+        },
+        "seconds": 0.22765528600211837
+      },
+      {
+        "request_count": 65536,
+        "request_pre": 32768,
+        "info": {
+          "rate": 25000000,
+          "count": 65536,
+          "trigger_index": 32768,
+          "pretrigger": 32768,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 1
+        },
+        "seconds": 0.20205894100217847
+      },
+      {
+        "request_count": 65536,
+        "request_pre": 60000,
+        "info": {
+          "rate": 25000000,
+          "count": 65536,
+          "trigger_index": 32768,
+          "pretrigger": 32768,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 1
+        },
+        "seconds": 0.39874040400172817
+      },
+      {
+        "request_count": 262144,
+        "request_pre": 131072,
+        "info": {
+          "rate": 25000000,
+          "count": 131072,
+          "trigger_index": 65536,
+          "pretrigger": 65536,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 1
+        },
+        "seconds": 0.45161498000015854
+      }
+    ],
+    "seconds": 1.286,
+    "evidence": [
+      "B5-clamps.json"
+    ]
+  },
+  {
+    "id": "B6",
+    "objective": "Repeated sparse trigger",
+    "conditions": "UARTburst100ms;100 consecutive captures",
+    "expected": "100/100;index32768;eachARM-to-completion<1s",
+    "status": "PASS",
+    "actual": {
+      "captures": 100,
+      "max_seconds": 0.3990947359998245,
+      "host_peak_rss_kib": 28320
+    },
+    "seconds": 34.646,
+    "evidence": [
+      "B6-100-captures.json"
+    ]
+  },
+  {
+    "id": "B7",
+    "objective": "Real four-bus decode rate matrix",
+    "conditions": "4protocols x3rates;SPI100k at1MHz;CAN250k",
+    "expected": "expected complete bytes;device and sigrok agree",
+    "status": "PASS",
+    "actual": {
+      "cases": 12,
+      "all_expected_bytes": true
+    },
+    "seconds": 5.466,
+    "evidence": [
+      "B7-CAN-1000000-device.log",
+      "B7-CAN-1000000-oracle.log",
+      "B7-CAN-1000000.raw",
+      "B7-CAN-1000000.sr",
+      "B7-CAN-25000000-device.log",
+      "B7-CAN-25000000-oracle.log",
+      "B7-CAN-25000000.raw",
+      "B7-CAN-25000000.sr",
+      "B7-CAN-5000000-device.log",
+      "B7-CAN-5000000-oracle.log",
+      "B7-CAN-5000000.raw",
+      "B7-CAN-5000000.sr",
+      "B7-I2C-1000000-device.log",
+      "B7-I2C-1000000-oracle.log",
+      "B7-I2C-1000000.raw",
+      "B7-I2C-1000000.sr",
+      "B7-I2C-25000000-device.log",
+      "B7-I2C-25000000-oracle.log",
+      "B7-I2C-25000000.raw",
+      "B7-I2C-25000000.sr",
+      "B7-I2C-5000000-device.log",
+      "B7-I2C-5000000-oracle.log",
+      "B7-I2C-5000000.raw",
+      "B7-I2C-5000000.sr",
+      "B7-SPI-1000000-device.log",
+      "B7-SPI-1000000-oracle.log",
+      "B7-SPI-1000000.raw",
+      "B7-SPI-1000000.sr",
+      "B7-SPI-25000000-device.log",
+      "B7-SPI-25000000-oracle.log",
+      "B7-SPI-25000000.raw",
+      "B7-SPI-25000000.sr",
+      "B7-SPI-5000000-device.log",
+      "B7-SPI-5000000-oracle.log",
+      "B7-SPI-5000000.raw",
+      "B7-SPI-5000000.sr",
+      "B7-UART-1000000-device.log",
+      "B7-UART-1000000-oracle.log",
+      "B7-UART-1000000.raw",
+      "B7-UART-1000000.sr",
+      "B7-UART-25000000-device.log",
+      "B7-UART-25000000-oracle.log",
+      "B7-UART-25000000.raw",
+      "B7-UART-25000000.sr",
+      "B7-UART-5000000-device.log",
+      "B7-UART-5000000-oracle.log",
+      "B7-UART-5000000.raw",
+      "B7-UART-5000000.sr",
+      "B7-matrix.json"
+    ]
+  },
+  {
+    "id": "B8",
+    "objective": "Independent8-channel mapping/crosstalk/skew",
+    "conditions": "current bus wiring;reference all8not available",
+    "expected": "all8 driven by known independent waveforms;no undocumented rewiring",
+    "status": "BLOCKED",
+    "actual": "Current wiring edge counts [126, 168, 42, 6, 2, 72, 0, 102]; distinct8-channel reference/common-edge skew source is not connected",
+    "seconds": 1.019,
+    "evidence": [
+      "B8-channel-activity.json",
+      "B8-current-wiring.raw",
+      "B8-current-wiring.sr"
+    ]
+  }
+]

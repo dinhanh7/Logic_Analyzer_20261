@@ -1,0 +1,14 @@
+
+== snapshot (triggered, decode_all on the device) ==
+snapshot UART          PASS  trig=32768 UART 115200 8N1: "LA1234." | I2C: 0x68 W ACK 0x01 ACK 0x5A ACK | SPI: DE AD BE EF 00 01 02 03 | | CAN ID=0x12
+snapshot I2C           PASS  trig=32768 UART 115200 8N1: "LA1234." | I2C: 0x68 W ACK 0x01 ACK 0x5A ACK | SPI: DE AD BE EF 00 01 02 03 | | CAN ID=0x12
+snapshot SPI           PASS  trig=32768 UART 115200 8N1: "LA1234." | I2C: 0x68 W ACK 0x01 ACK 0x5A ACK | SPI: DE AD BE EF 00 01 02 03 | | CAN ID=0x12
+snapshot CAN           PASS  trig=32768 UART 115200 8N1: "LA1234." | I2C: 0x68 W ACK 0x01 ACK 0x5A ACK | SPI: DE AD BE EF 00 01 02 03 | | CAN ID=0x12
+
+== streaming (1 MHz RLE, decode on the PC) ==
+stream UART            PASS  looking for '4C 41 31 32 33 34'
+stream I2C             PASS  looking for 'Address write: 68'
+stream CAN             PASS  looking for 'Identifier: 291'
+stream SPI             PASS  generator SPI clock 100 kHz
+
+PASS: ESP32 -> RP2350 link OK in both modes

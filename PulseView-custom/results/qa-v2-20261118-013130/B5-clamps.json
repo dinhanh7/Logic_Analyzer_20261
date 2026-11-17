@@ -1,0 +1,62 @@
+[
+  {
+    "request_count": 65536,
+    "request_pre": 0,
+    "info": {
+      "rate": 25000000,
+      "count": 65536,
+      "trigger_index": 0,
+      "pretrigger": 0,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.22765528600211837
+  },
+  {
+    "request_count": 65536,
+    "request_pre": 32768,
+    "info": {
+      "rate": 25000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.20205894100217847
+  },
+  {
+    "request_count": 65536,
+    "request_pre": 60000,
+    "info": {
+      "rate": 25000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.39874040400172817
+  },
+  {
+    "request_count": 262144,
+    "request_pre": 131072,
+    "info": {
+      "rate": 25000000,
+      "count": 131072,
+      "trigger_index": 65536,
+      "pretrigger": 65536,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.45161498000015854
+  }
+]

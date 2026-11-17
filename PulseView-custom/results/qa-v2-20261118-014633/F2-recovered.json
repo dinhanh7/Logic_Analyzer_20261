@@ -1,0 +1,13 @@
+{
+  "board": "RP2350-LA/1.2+trg+an+str+ui18+sync+opt2",
+  "info": {
+    "rate": 1000000,
+    "count": 1031,
+    "trigger_index": 4294967295,
+    "pretrigger": 0,
+    "channels": 8,
+    "unit": 1,
+    "mask": 255,
+    "flags": 0
+  }
+}

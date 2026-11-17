@@ -1,0 +1,27 @@
+streaming at 500000 Hz, 8 channels, RLE off; Ctrl+C to stop
+wrote build/review-20261118/final-streaming/host-stall.sr: 30000416 samples @ 500000 Hz, 194563 dropped, 60.063 s; INVALID
+
+Command exited with non-zero status 1
+	Command being timed: "/home/namkhanh/miniconda3/bin/python3 /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tools/stream_capture.py --port /dev/serial/by-id/usb-Raspberry_Pi_Pico_907CBC57E4828DD6-if00 -r 500000 -t 60.0 -o build/review-20261118/final-streaming/host-stall.sr --no-rle --pause-seconds 0.8"
+	User time (seconds): 3.71
+	System time (seconds): 2.52
+	Percent of CPU this job got: 10%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:00.24
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 16692
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 3202
+	Voluntary context switches: 241321
+	Involuntary context switches: 299
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 58912
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 1

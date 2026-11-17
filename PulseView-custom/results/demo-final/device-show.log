@@ -1,0 +1,22 @@
+Driver functions:
+    Logic analyzer
+Scan options:
+    conn
+rp2350-la - RP2350 Pico 2 / 2 W Logic Analyzer LAR2 v1 with 8 channels: CH0 CH1 CH2 CH3 CH4 CH5 CH6 CH7
+Supported configuration options:
+    samplerate - supported samplerates:
+      1 kHz
+      10 kHz
+      100 kHz
+      250 kHz
+      500 kHz
+      1 MHz (current)
+      5 MHz
+      25 MHz
+    Maximum number of samples: 262144
+    logic_channels
+    triggersource:  (current)
+    triggerslope: rising (current)
+    triggerpattern:  (current)
+    horiz_triggerpos: 0.000000 (current)
+

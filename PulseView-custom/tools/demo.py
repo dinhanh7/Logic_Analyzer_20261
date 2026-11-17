@@ -60,9 +60,10 @@ def setup_generator(port, output):
         console.rts = False
         console.port = port
         console.open()
-        time.sleep(0.4)
+        time.sleep(1.0)
+        console.read(32768)
         transcript = []
-        for command in ('uart on', 'set uart 115200', 'set i2c 100',
+        for command in ('stress off', 'uart on', 'set uart 115200', 'set i2c 100',
                         'set spi 1000', 'set can 250', 'burst on', 'status'):
             console.write((command + '\n').encode())
             console.flush()
@@ -70,8 +71,43 @@ def setup_generator(port, output):
             reply = bytearray()
             while time.monotonic() < deadline:
                 reply += console.read(4096)
-            transcript.append(command + '\n' + reply.decode('utf-8', 'replace'))
+            decoded = reply.decode('utf-8', 'replace')
+            if '> ' + command not in decoded:
+                raise RuntimeError('ESP32 did not acknowledge: ' + command)
+            transcript.append(command + '\n' + decoded)
         (output / 'esp32-console.log').write_text('\n'.join(transcript))
+
+
+def streaming_demo(port, esp32_port, output):
+    from stream_benchmark import Generator
+    generator = Generator(esp32_port)
+    transcript = []
+    try:
+        for command in ('stress off', 'uart on', 'set uart 115200', 'set i2c 100',
+                        'set can 250', 'burst on', 'set spi 100'):
+            transcript.append(generator.command(command))
+        path = output / 'stream.sr'
+        run([sys.executable, 'tools/stream_capture.py', '--port', port,
+             '-t', '6', '-r', '1000000', '-o', path], output / 'stream.log', 30)
+        stats = json.loads(path.with_suffix('.json').read_text())
+        if (not stats['valid'] or stats['dropped'] or stats.get('hardware_faults') != 0 or
+                stats['received_samples'] != stats['device_sent']):
+            raise RuntimeError('stream integrity check failed: ' + str(stats))
+        for name, (decoder, annotation, want) in PROTOCOLS.items():
+            stdout, _ = run([CLI, '-i', path, '-P', decoder, '-A', annotation],
+                            output / f'stream-{name.lower()}.log', 60)
+            text = ' '.join(re.sub(r'^\S+-1:\s*', '', line).strip()
+                            for line in stdout.splitlines())
+            require(text, want, 'stream ' + name)
+        print('PASS STREAM: 1 MHz RLE, four protocols, zero drops, Pico/PC counts match', flush=True)
+        return stats
+    finally:
+        try:
+            transcript.append(generator.command('set spi 1000'))
+            transcript.append(generator.command('status'))
+        finally:
+            generator.close()
+            (output / 'esp32-stream-console.log').write_text('\n'.join(transcript))
 
 
 def qt_bytes(value):
@@ -163,6 +199,7 @@ def check_tft_table(name, table):
 
 
 def tft(dev, output, dwell):
+    from capture_ui import save_frame
     result = {}
     # Same physical RAM window just acquired by the driver; HELLO does not replace it.
     for screen in (2, 3):
@@ -170,6 +207,7 @@ def tft(dev, output, dwell):
         state = dev.analyze(lar2.ANALYZE_RUNTIME, strip_status=False)
         if len(state) != 32 or state[30] != screen:
             raise RuntimeError(f'TFT did not enter waveform screen {screen}')
+        save_frame(dev, output / f'tft-wave-{screen + 1}.png')
         time.sleep(dwell)
     for proto, name in enumerate(FIRMWARE_WANT, 1):
         dev.analyze(lar2.ANALYZE_UI_SHOW_CAPTURE, 4, proto)
@@ -181,7 +219,8 @@ def tft(dev, output, dwell):
         check_tft_table(name, table)
         if not table.strip() or not badge.startswith(f'{proto} ') or state[30] != 4:
             raise RuntimeError(f'TFT {name}: wrong screen, selector or empty byte table')
-        result[name] = dict(text=text, table=table, badge=badge)
+        frame = save_frame(dev, output / f'tft-{name.lower()}.png')
+        result[name] = dict(text=text, table=table, badge=badge, framebuffer=frame)
         (output / 'tft.json').write_text(json.dumps(result, ensure_ascii=False, indent=2))
         print(f'PASS TFT {name}: {text.strip()}', flush=True)
         time.sleep(dwell)
@@ -258,9 +297,41 @@ def pulseview(output, port, path, ch, live):
     raise RuntimeError(f'GUI verification timed out: {last_error}. PulseView stays open for inspection.')
 
 
+def stop_previous_demo():
+    """Release only a GUI created by this demo, identified by its private report.
+
+    Other PulseView sessions or serial applications are never terminated.
+    """
+    stopped = []
+    for entry in Path('/proc').iterdir():
+        if not entry.name.isdigit():
+            continue
+        try:
+            executable = os.readlink(entry / 'exe').removesuffix(' (deleted)')
+            if executable != str(GUI):
+                continue
+            values = (entry / 'environ').read_bytes().split(b'\0')
+            value = next((v.split(b'=', 1)[1] for v in values
+                          if v.startswith(b'RP2350_DEMO_REPORT=')), None)
+            if value is None:
+                continue
+            report = Path(os.fsdecode(value)).resolve()
+            if not (report.is_relative_to(ROOT / 'build') or report.is_relative_to(ROOT / 'results')):
+                continue
+            pid = int(entry.name)
+            os.kill(pid, signal.SIGTERM)
+            stopped.append(pid)
+        except (OSError, ValueError):
+            continue
+    if stopped:
+        time.sleep(.5)
+        print('Closed previous demo PulseView:', stopped, flush=True)
+    return stopped
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--port', default=os.environ.get('LA_PORT', '/dev/ttyACM0'))
+    parser.add_argument('--port', default=host_la.default_port())
     parser.add_argument('--esp32-port', default=os.environ.get('ESP32_PORT', '/dev/ttyUSB0'))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--no-gui', action='store_true', help='hardware checks only; GUI is not marked PASS')
@@ -273,6 +344,7 @@ def main():
     summary = {'status': 'RUNNING', 'output': str(output), 'gui': 'NOT_RUN',
                'physical_tft_visual': 'requires observation; digital state is checked'}
     try:
+        summary['closed_previous_demo_pids'] = stop_previous_demo()
         for port in (args.port, args.esp32_port):
             if not Path(port).exists():
                 raise RuntimeError(f'{port} is not visible. Run scripts/demo.sh on the PC connected to the boards.')
@@ -291,7 +363,7 @@ def main():
             raise RuntimeError('Board does not advertise eight channels and 25 MHz')
         summary.update(board=ident, capabilities=caps)
         print('PASS HELLO/GET_CAPS:', ident, caps, flush=True)
-        if '+ui18+sync' not in ident:
+        if '+ui18+sync+opt3' not in ident:
             if args.no_flash:
                 raise RuntimeError('Firmware needs UI_SHOW_CAPTURE. Run again without --no-flash.')
             run(['cmake', '--build', 'build/firmware-pico2', '-j4'], output / 'firmware-build.log', 180)
@@ -299,9 +371,10 @@ def main():
                 env=dict(os.environ, LA_PORT=args.port))
             dev, ident = open_device(args.port)
             dev.close()
-            require(ident, '+ui18+sync', 'flashed firmware')
+            require(ident, '+ui18+sync+opt3', 'flashed firmware')
             summary['board'] = ident
         setup_generator(args.esp32_port, output)
+        summary['streaming'] = streaming_demo(args.port, args.esp32_port, output)
         stdout, stderr = run([CLI, '-d', f'rp2350-la:conn={args.port}', '--show'],
                              output / 'device-show.log')
         show = stdout + stderr

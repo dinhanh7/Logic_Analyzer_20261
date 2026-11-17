@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_common.py", line 38, in case
+    actual=fn();row.update(status='PASS',actual=actual)
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_regression.py", line 54, in f3
+    assert not failed,failed
+           ^^^^^^^^^^
+AssertionError: ['C1']

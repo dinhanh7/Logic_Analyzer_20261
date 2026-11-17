@@ -13,13 +13,14 @@ cc -std=c11 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Ifirmware -Ip
 build/tests/test_autodetect
 cc -std=c11 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Ifirmware -Iprotocol firmware/font6x8.c tests/test_ui.c -o build/tests/test_ui
 build/tests/test_ui
+cc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined -Ifirmware tests/test_capture_buffer.c -o build/tests/test_capture_buffer
+build/tests/test_capture_buffer
 python3 tests/test_host_la.py
 python3 tests/test_stream.py
 python3 tests/test_demo.py
 python3 tests/test_esp32_link_unit.py
-# The panel itself has no unit test; the render harness compiles ui.c against
-# stubs and checks the caption formatters, which are the only branchy part of
-# the time ruler.
+# Compile the real UI against panel/button stubs: verify time rulers, square
+# edges, pan/zoom bounds, independent pages, AUTO and redraw batching.
 mkdir -p build/tests
 cc -std=c11 -Wall -Wextra -Wno-unused-function -Ifirmware -Iprotocol \
    tools/render_ui.c firmware/ui.c firmware/font6x8.c firmware/decoders.c \

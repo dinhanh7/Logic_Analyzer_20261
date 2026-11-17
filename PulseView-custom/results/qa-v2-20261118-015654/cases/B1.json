@@ -1,0 +1,58 @@
+{
+  "id": "B1",
+  "objective": "Frequency, duty and quantization jitter",
+  "conditions": "known1kHz PWM on GPIO26;1/5/25MHz",
+  "expected": "frequency error<0.5%;record period/duty/jitter",
+  "status": "PASS",
+  "actual": {
+    "reference": "ESP32 LEDC timer2 on existing CH0 wire;not external calibration",
+    "measurements": [
+      {
+        "periods": 261,
+        "period_samples_mean": 999.992337164751,
+        "frequency_hz": 1000.0076628939685,
+        "duty": 0.4999961685530157,
+        "jitter_pp_samples": 1,
+        "jitter_rms_samples": 0.08720158372981641,
+        "min_period_samples": 999,
+        "max_period_samples": 1000,
+        "rate": 1000000,
+        "error_percent": 0.0007662893968474194
+      },
+      {
+        "periods": 52,
+        "period_samples_mean": 4999.961538461538,
+        "frequency_hz": 1000.0076923668644,
+        "duty": 0.5,
+        "jitter_pp_samples": 1,
+        "jitter_rms_samples": 0.19230769230769232,
+        "min_period_samples": 4999,
+        "max_period_samples": 5000,
+        "rate": 5000000,
+        "error_percent": 0.0007692366864375799
+      },
+      {
+        "periods": 10,
+        "period_samples_mean": 24999.9,
+        "frequency_hz": 1000.004000016,
+        "duty": 0.500002000008,
+        "jitter_pp_samples": 1,
+        "jitter_rms_samples": 0.3,
+        "min_period_samples": 24999,
+        "max_period_samples": 25000,
+        "rate": 25000000,
+        "error_percent": 0.000400001599998312
+      }
+    ]
+  },
+  "seconds": 3.61,
+  "evidence": [
+    "B1-1000000.raw",
+    "B1-1000000.sr",
+    "B1-25000000.raw",
+    "B1-25000000.sr",
+    "B1-5000000.raw",
+    "B1-5000000.sr",
+    "B1-measurements.json"
+  ]
+}

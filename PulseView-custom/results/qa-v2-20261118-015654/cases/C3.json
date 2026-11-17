@@ -1,0 +1,51 @@
+{
+  "id": "C3",
+  "objective": "Continuous five-minute lossless soak",
+  "conditions": "1MHzRLE;real bus traffic;>=300s",
+  "expected": "0drop/seq/CRC/fault;readable .sr;fresh capture",
+  "status": "PASS",
+  "actual": {
+    "rate": 1000000,
+    "samples": 299999984,
+    "received_samples": 299999984,
+    "mask": 255,
+    "channels": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "dropped": 0,
+    "seconds": 300.0779504009988,
+    "rle": true,
+    "blocks": 613403,
+    "raw_blocks": 0,
+    "rle_blocks": 613403,
+    "wire_bytes": 16861062,
+    "host_mib_s": 0.05358594910171006,
+    "start_reply_seconds": 0.00029251500382088125,
+    "stop_counters_hex": "00f0a2e11100000000f0a2e11100000000f3a2e11100000000",
+    "valid": true,
+    "error": null,
+    "device_sent": 299999984,
+    "device_dropped": 0,
+    "device_captured": 299999984,
+    "hardware_faults": 0,
+    "capture_seconds": 299.999987,
+    "effective_sample_rate": 999999.9899999996,
+    "exit_code": 0,
+    "scope": "PC RSS logged;firmware has static capture buffers;no MCU heap telemetry is exposed"
+  },
+  "seconds": 301.381,
+  "evidence": [
+    "C3-checked.json",
+    "C3-post-soak-recovery.json",
+    "C3.json",
+    "C3.log",
+    "C3.sr"
+  ]
+}

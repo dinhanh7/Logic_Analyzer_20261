@@ -1,0 +1,29 @@
+[
+  {
+    "rate": 1000000,
+    "expected_samples": 8.680555555555555,
+    "mean_samples": 8.666666666666666,
+    "count": 21,
+    "error_percent": -0.16000000000000458,
+    "jitter_pp_samples": 1,
+    "jitter_rms_samples": 0.4714045207910317
+  },
+  {
+    "rate": 5000000,
+    "expected_samples": 43.40277777777778,
+    "mean_samples": 43.285714285714285,
+    "count": 21,
+    "error_percent": -0.26971428571429534,
+    "jitter_pp_samples": 1,
+    "jitter_rms_samples": 0.45175395145262565
+  },
+  {
+    "rate": 25000000,
+    "expected_samples": 217.01388888888889,
+    "mean_samples": 217,
+    "count": 21,
+    "error_percent": -0.006399999999995298,
+    "jitter_pp_samples": 0,
+    "jitter_rms_samples": 0.0
+  }
+]

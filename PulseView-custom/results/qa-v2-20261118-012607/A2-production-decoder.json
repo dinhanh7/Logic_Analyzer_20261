@@ -1,0 +1,195 @@
+{
+  "text": "UART 115200 8N1: \"LA1234.\"\nI2C: 0x68 W ACK 0x01 ACK 0x5A ACK\nSPI: DE AD BE EF 00 01 02 03 |\nCAN ID=0x123 DLC=4 DATA=DE AD BE EF \n",
+  "packets": [
+    [
+      {
+        "value": 76,
+        "flags": 0,
+        "at": 200,
+        "end": 2261
+      },
+      {
+        "value": 65,
+        "flags": 0,
+        "at": 2370,
+        "end": 4431
+      },
+      {
+        "value": 49,
+        "flags": 0,
+        "at": 4540,
+        "end": 6601
+      },
+      {
+        "value": 50,
+        "flags": 0,
+        "at": 6710,
+        "end": 8771
+      },
+      {
+        "value": 51,
+        "flags": 0,
+        "at": 8881,
+        "end": 10942
+      },
+      {
+        "value": 52,
+        "flags": 0,
+        "at": 11051,
+        "end": 13112
+      },
+      {
+        "value": 10,
+        "flags": 0,
+        "at": 13221,
+        "end": 15282
+      }
+    ],
+    [
+      {
+        "value": 208,
+        "flags": 1,
+        "at": 300,
+        "end": 2301
+      },
+      {
+        "value": 0,
+        "flags": 2,
+        "at": 2301,
+        "end": 2551
+      },
+      {
+        "value": 1,
+        "flags": 0,
+        "at": 2551,
+        "end": 4551
+      },
+      {
+        "value": 0,
+        "flags": 2,
+        "at": 4551,
+        "end": 4801
+      },
+      {
+        "value": 90,
+        "flags": 0,
+        "at": 4801,
+        "end": 6801
+      },
+      {
+        "value": 0,
+        "flags": 2,
+        "at": 6801,
+        "end": 7051
+      }
+    ],
+    [
+      {
+        "value": 222,
+        "flags": 0,
+        "at": 575,
+        "end": 2325
+      },
+      {
+        "value": 173,
+        "flags": 0,
+        "at": 2575,
+        "end": 4325
+      },
+      {
+        "value": 190,
+        "flags": 0,
+        "at": 4575,
+        "end": 6325
+      },
+      {
+        "value": 239,
+        "flags": 0,
+        "at": 6575,
+        "end": 8325
+      },
+      {
+        "value": 0,
+        "flags": 0,
+        "at": 8575,
+        "end": 10325
+      },
+      {
+        "value": 1,
+        "flags": 0,
+        "at": 10575,
+        "end": 12325
+      },
+      {
+        "value": 2,
+        "flags": 0,
+        "at": 12575,
+        "end": 14325
+      },
+      {
+        "value": 3,
+        "flags": 0,
+        "at": 14575,
+        "end": 16325
+      }
+    ],
+    [
+      {
+        "value": 1,
+        "flags": 96,
+        "at": 750,
+        "end": 1300
+      },
+      {
+        "value": 35,
+        "flags": 32,
+        "at": 1300,
+        "end": 1850
+      },
+      {
+        "value": 4,
+        "flags": 160,
+        "at": 2150,
+        "end": 2550
+      },
+      {
+        "value": 222,
+        "flags": 0,
+        "at": 2550,
+        "end": 3350
+      },
+      {
+        "value": 173,
+        "flags": 0,
+        "at": 3350,
+        "end": 4150
+      },
+      {
+        "value": 190,
+        "flags": 0,
+        "at": 4150,
+        "end": 5050
+      },
+      {
+        "value": 239,
+        "flags": 0,
+        "at": 5050,
+        "end": 5850
+      }
+    ]
+  ],
+  "detect": {
+    "proto": 4,
+    "score": 8,
+    "map": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      0,
+      6,
+      7
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "F2",
+  "objective": "Mid-session hardware USB reset/recovery",
+  "conditions": "SDK1200baud reset into ROMbootloader;reload currentUF2",
+  "expected": "old acquisition invalid;driver/host reconnect and capture valid",
+  "status": "PASS",
+  "actual": "actual USB reenumeration during active driver capture;error not marked valid;reflash/reconnect capture passed",
+  "seconds": 6.653,
+  "evidence": [
+    "F2-disconnect.log",
+    "F2-recovered.json",
+    "F2-reset-reflash.log"
+  ]
+}

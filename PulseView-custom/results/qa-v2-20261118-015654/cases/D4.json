@@ -1,0 +1,17 @@
+{
+  "id": "D4",
+  "objective": "Sigrok session metadata and binary layout",
+  "conditions": "actual D2.sr;8channels",
+  "expected": "exact probe names/rate/65536one-byte samples",
+  "status": "PASS",
+  "actual": {
+    "probes": 8,
+    "unitsize_derived": 1,
+    "binary_bytes": 65536,
+    "rate": 25000000
+  },
+  "seconds": 0.0,
+  "evidence": [
+    "D4-metadata.txt"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "B6",
+  "objective": "Repeated sparse trigger",
+  "conditions": "UARTburst100ms;100 consecutive captures",
+  "expected": "100/100;index32768;eachARM-to-completion<1s",
+  "status": "PASS",
+  "actual": {
+    "captures": 100,
+    "max_seconds": 0.49939930000255117,
+    "host_peak_rss_kib": 28776
+  },
+  "seconds": 29.86,
+  "evidence": [
+    "B6-100-captures.json"
+  ]
+}

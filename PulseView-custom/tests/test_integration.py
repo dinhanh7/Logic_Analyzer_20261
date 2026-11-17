@@ -11,7 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
 from emulator import Emulator
 from lar2 import pattern,RATES
-CLI=str(ROOT/'.local/bin/sigrok-cli')
+CLI=str(ROOT/'scripts/run-sigrok-cli.sh')
 
 class DriverTests(unittest.TestCase):
     def capture(self,device,path,count=100003,rate=25000000,channels=None):
@@ -59,6 +59,36 @@ class DriverTests(unittest.TestCase):
                 p=self.capture(d,Path(tmp)/f'{count}-{rate}.sr',count,rate)
                 self.assertNotIn('Capture verified:',p.stderr)
                 self.assertNotEqual(p.returncode,0,p.stderr)
+    def test_trigger_sample_limit_matches_firmware(self):
+        with tempfile.TemporaryDirectory() as tmp, Emulator() as d:
+            path=Path(tmp)/'clamped.sr'
+            p=subprocess.run([CLI,'-l','4','-d','rp2350-la:conn='+d.path,
+                              '--config','triggersource=CH0','--samples','262144',
+                              '-o',str(path)],capture_output=True,text=True,timeout=15)
+            self.assertNotEqual(p.returncode,0,p.stderr)
+            self.assertIn('131072 samples',p.stderr)
+            p=subprocess.run([CLI,'-l','4','-d','rp2350-la:conn='+d.path,
+                              '--config','triggersource=CH0','--samples','131072',
+                              '-o',str(path)],capture_output=True,text=True,timeout=15)
+            self.assertEqual(p.returncode,0,p.stderr)
+            self.assertIn('Capture verified:',p.stderr)
+            self.assertEqual(len(self.read_samples(path)[0]),131072)
+
+    def test_invalid_trigger_config(self):
+        with tempfile.TemporaryDirectory() as tmp, Emulator() as d:
+            for config in ('triggersource=CHjunk', 'triggersource=CH0extra',
+                           'triggerpattern=100', 'triggerpattern=12/100',
+                           'triggerpattern=12/ffjunk', 'triggerpattern=12/',
+                           'triggerpattern=ffffffffffffffffffffffff',
+                           'horiz_triggerpos=0.75'):
+                with self.subTest(config=config):
+                    p=subprocess.run([CLI, '-d', 'rp2350-la:conn='+d.path,
+                                      '--config', config, '--samples', '1024',
+                                      '-o', str(Path(tmp)/'bad.sr')],
+                                     capture_output=True,text=True,timeout=15)
+                    self.assertNotEqual(p.returncode,0,p.stderr)
+                    self.assertNotIn('Capture verified:',p.stderr)
+
     def test_capture_wrapper_rejects_invalid_file(self):
         with tempfile.TemporaryDirectory() as tmp, Emulator(fault='crc') as d:
             path=Path(tmp)/'invalid.sr'

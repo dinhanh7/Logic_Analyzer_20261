@@ -1,0 +1,65 @@
+{
+  "id": "C5",
+  "objective": "Host backpressure and UI recovery",
+  "conditions": "raw500k;square125k;PC read stall800ms",
+  "expected": "explicitINVALID/dropcounts;afterdrain nextscreen responds",
+  "status": "PASS",
+  "actual": {
+    "stream": {
+      "rate": 500000,
+      "samples": 2500020,
+      "received_samples": 2305525,
+      "mask": 255,
+      "channels": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "dropped": 194495,
+      "seconds": 5.061809046004782,
+      "rle": false,
+      "blocks": 4714,
+      "raw_blocks": 4714,
+      "rle_blocks": 0,
+      "wire_bytes": 2404560,
+      "host_mib_s": 0.45303311393537815,
+      "start_reply_seconds": 0.00027408300229581073,
+      "stop_counters_hex": "00f52d2300bff70200b425260000000000684b4c0000000000",
+      "valid": false,
+      "error": null,
+      "device_sent": 2305525,
+      "device_dropped": 194495,
+      "device_captured": 2500020,
+      "hardware_faults": 0,
+      "capture_seconds": 5.00004,
+      "effective_sample_rate": 500000.0,
+      "exit_code": 1
+    },
+    "ui": {
+      "start": 0,
+      "visible": 1031,
+      "count": 1031,
+      "trigger": 0,
+      "rate": 1000000,
+      "screen": 3,
+      "zoom": 255,
+      "protocol": 1,
+      "events": 1
+    },
+    "policy": "TFT redraw intentionally deferred while streaming;responsive after drain"
+  },
+  "seconds": 6.249,
+  "evidence": [
+    "C5-checked.json",
+    "C5-ui-recovered.json",
+    "C5-ui-recovered.png",
+    "C5.json",
+    "C5.log",
+    "C5.sr"
+  ]
+}

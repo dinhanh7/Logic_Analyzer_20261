@@ -1,0 +1,25 @@
+{
+  "id": "D2",
+  "objective": "Driver snapshot and PC decoder E2E",
+  "conditions": "25MHz65536;edgefall;pre50%;realESP32",
+  "expected": "CRCverified and4bus expected data",
+  "status": "PASS",
+  "actual": {
+    "file": "D2/capture.sr",
+    "trigger": "CH0",
+    "rate": 25000000,
+    "count": 65536,
+    "decoder_oracle": "UART/I2C/SPI/CAN payload checked by demo.capture_driver"
+  },
+  "seconds": 5.811,
+  "evidence": [
+    "D2/capture-1-can.log",
+    "D2/capture-1-i2c-data.log",
+    "D2/capture-1-i2c.log",
+    "D2/capture-1-spi.log",
+    "D2/capture-1-uart.log",
+    "D2/capture-1.log",
+    "D2/capture.sr",
+    "D2/esp32-console.log"
+  ]
+}

@@ -1,0 +1,99 @@
+diff --git a/instance.c b/instance.c
+index 067e98d..7ae422e 100644
+--- a/instance.c
++++ b/instance.c
+@@ -440,7 +440,9 @@ SRD_API struct srd_decoder_inst *srd_inst_new(struct srd_session *sess,
+ 	g_mutex_init(&di->data_mutex);
+ 
+ 	/* Instance takes input from a frontend by default. */
++	gstate = PyGILState_Ensure();
+ 	sess->di_list = g_slist_append(sess->di_list, di);
++	PyGILState_Release(gstate);
+ 	srd_dbg("Creating new %s instance %s.", decoder_id, di->inst_id);
+ 
+ 	return di;
+@@ -530,6 +532,7 @@ SRD_API int srd_inst_stack(struct srd_session *sess,
+ 		return SRD_ERR_ARG;
+ 	}
+ 
++	PyGILState_STATE gstate = PyGILState_Ensure();
+ 	if (g_slist_find(sess->di_list, di_top)) {
+ 		/* Remove from the unstacked list. */
+ 		sess->di_list = g_slist_remove(sess->di_list, di_top);
+@@ -561,6 +564,7 @@ SRD_API int srd_inst_stack(struct srd_session *sess,
+ 
+ 	srd_dbg("Stacking %s onto %s.", di_top->inst_id, di_bottom->inst_id);
+ 
++	PyGILState_Release(gstate);
+ 	return SRD_OK;
+ }
+ 
+@@ -1452,7 +1456,15 @@ SRD_PRIV void srd_inst_free_all(struct srd_session *sess)
+ 	if (!sess)
+ 		return;
+ 
+-	g_slist_free_full(sess->di_list, (GDestroyNotify)srd_inst_free);
++    /* Join outside the GIL: decoder threads need it to terminate. Then detach
++     * the list atomically so another stack cannot traverse freed instances. */
++    for (GSList *l = sess->di_list; l; l = l->next)
++        srd_inst_terminate_reset(l->data);
++    PyGILState_STATE gstate = PyGILState_Ensure();
++    GSList *instances = sess->di_list;
++    sess->di_list = NULL;
++    PyGILState_Release(gstate);
++    g_slist_free_full(instances, (GDestroyNotify)srd_inst_free);
+ }
+ 
+ /** @} */
+diff --git a/session.c b/session.c
+index ad08407..94c0fc7 100644
+--- a/session.c
++++ b/session.c
+@@ -63,12 +63,16 @@ SRD_API int srd_session_new(struct srd_session **sess)
+ 	if (!sess)
+ 		return SRD_ERR_ARG;
+ 
++	/* Session lists are also read by Python decoder callbacks under the GIL.
++	 * PulseView creates several stacks from independent worker threads. */
++	PyGILState_STATE gstate = PyGILState_Ensure();
+ 	*sess = g_malloc(sizeof(struct srd_session));
+ 	(*sess)->session_id = ++max_session_id;
+ 	(*sess)->di_list = (*sess)->callbacks = NULL;
+ 
+ 	/* Keep a list of all sessions, so we can clean up as needed. */
+ 	sessions = g_slist_append(sessions, *sess);
++	PyGILState_Release(gstate);
+ 
+ 	srd_dbg("Creating session %d.", (*sess)->session_id);
+ 
+@@ -366,8 +370,10 @@ SRD_API int srd_session_destroy(struct srd_session *sess)
+ 		srd_inst_free_all(sess);
+ 	if (sess->callbacks)
+ 		g_slist_free_full(sess->callbacks, g_free);
++	PyGILState_STATE gstate = PyGILState_Ensure();
+ 	sessions = g_slist_remove(sessions, sess);
+ 	g_free(sess);
++	PyGILState_Release(gstate);
+ 
+ 	srd_dbg("Destroyed session %d.", session_id);
+ 
+diff --git a/type_decoder.c b/type_decoder.c
+index 6932cde..a4afd6a 100644
+--- a/type_decoder.c
++++ b/type_decoder.c
+@@ -335,10 +335,11 @@ static inline struct srd_decoder_inst *srd_inst_find_by_obj(
+ 	GSList *l;
+ 
+ 	/* Performance shortcut: Handle the most common case first. */
+-	sess = sessions->data;
+-	di = sess->di_list->data;
+-	if (di->py_inst == obj)
+-		return di;
++	if (sessions && (sess = sessions->data) && sess->di_list) {
++		di = sess->di_list->data;
++		if (di->py_inst == obj)
++			return di;
++	}
+ 
+ 	di = NULL;
+ 	for (l = sessions; di == NULL && l != NULL; l = l->next) {

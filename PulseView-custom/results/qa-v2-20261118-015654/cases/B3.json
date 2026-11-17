@@ -1,0 +1,12 @@
+{
+  "id": "B3",
+  "objective": "All-channel edge trigger geometry",
+  "conditions": "8channels x2polarities;25MHz;65536/pre32768",
+  "expected": "exact32768±1 and correct previous/current bit",
+  "status": "BLOCKED",
+  "actual": "Tested 14 polarities; no external transitions on CH[6]; see B3-edge-results.json",
+  "seconds": 11.262,
+  "evidence": [
+    "B3-edge-results.json"
+  ]
+}

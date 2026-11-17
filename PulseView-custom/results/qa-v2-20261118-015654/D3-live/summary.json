@@ -1,0 +1,153 @@
+{
+  "status": "PASS",
+  "output": "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/results/qa-v2-20261118-015654/D3-live",
+  "gui": "PASS_LIVE",
+  "physical_tft_visual": "requires observation; digital state is checked",
+  "closed_previous_demo_pids": [],
+  "board": "RP2350-LA/1.2+trg+an+str+ui18+sync+opt3",
+  "capabilities": {
+    "channels": 8,
+    "unit": 1,
+    "flags": 0,
+    "max_samples": 262144,
+    "rates": [
+      1000,
+      10000,
+      100000,
+      250000,
+      500000,
+      1000000,
+      5000000,
+      25000000
+    ]
+  },
+  "streaming": {
+    "rate": 1000000,
+    "samples": 5966244,
+    "received_samples": 5966244,
+    "mask": 255,
+    "channels": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "dropped": 0,
+    "seconds": 6.109977465996053,
+    "rle": true,
+    "blocks": 12200,
+    "raw_blocks": 0,
+    "rle_blocks": 12200,
+    "wire_bytes": 334949,
+    "host_mib_s": 0.05228043153738259,
+    "start_reply_seconds": 0.034318073994654696,
+    "stop_counters_hex": "00a4095b0000000000a4095b0000000000aa095b0000000000",
+    "valid": true,
+    "error": null,
+    "device_sent": 5966244,
+    "device_dropped": 0,
+    "device_captured": 5966244,
+    "hardware_faults": 0,
+    "capture_seconds": 5.96625,
+    "effective_sample_rate": 999998.9943431804
+  },
+  "tft": {
+    "UART": {
+      "text": "UART 115200 8N1: \"LA1234.\"\n",
+      "table": "01|0x4C|'L'|0\n02|0x41|'A'|4.3u\n03|0x31|'1'|4.3u\n04|0x32|'2'|4.4u\n05|0x33|'3'|4.3u",
+      "badge": "1 0 UART",
+      "framebuffer": {
+        "source": "RP2350 TFT framebuffer",
+        "width": 128,
+        "height": 160,
+        "frame_version": 654,
+        "rgb565_sha256": "db266999c783c03f4d826360794a71203b89d458cf6ac29335a7d5c7906e24a8",
+        "view": {
+          "start": 43184,
+          "visible": 224,
+          "count": 65536,
+          "trigger": 32768,
+          "rate": 25000000,
+          "screen": 4,
+          "zoom": 1,
+          "protocol": 1,
+          "events": 1
+        }
+      }
+    },
+    "I2C": {
+      "text": "I2C: 0x68 W ACK 0x01 ACK 0x5A ACK\n",
+      "table": "01|0xD0|ADR|0\n02|--|ACK|0\n03|0x01|.|0\n04|--|ACK|0\n05|0x5A|'Z'|0",
+      "badge": "2 0 I2C",
+      "framebuffer": {
+        "source": "RP2350 TFT framebuffer",
+        "width": 128,
+        "height": 160,
+        "frame_version": 656,
+        "rgb565_sha256": "26106f8ed67c956bf7be1cca7a434dd07849b9c6e95eab6dc03359a85ae4399d",
+        "view": {
+          "start": 31872,
+          "visible": 3584,
+          "count": 65536,
+          "trigger": 32768,
+          "rate": 25000000,
+          "screen": 4,
+          "zoom": 5,
+          "protocol": 2,
+          "events": 1
+        }
+      }
+    },
+    "SPI": {
+      "text": "SPI: DE AD BE EF 00 01 02 03 |\n",
+      "table": "01|0xDE|.|0\n02|0xAD|.|1.0u\n03|0xBE|.|1.0u\n04|0xEF|.|1.0u\n05|0x00|.|1.0u",
+      "badge": "3 0 SPI",
+      "framebuffer": {
+        "source": "RP2350 TFT framebuffer",
+        "width": 128,
+        "height": 160,
+        "frame_version": 658,
+        "rgb565_sha256": "5b3bc373d384be2f39b6792658085f87b5c59dc4cf893aa6dfc22f8a6ca4e0fe",
+        "view": {
+          "start": 31872,
+          "visible": 3584,
+          "count": 65536,
+          "trigger": 32768,
+          "rate": 25000000,
+          "screen": 4,
+          "zoom": 5,
+          "protocol": 3,
+          "events": 1
+        }
+      }
+    },
+    "CAN": {
+      "text": "CAN ID=0x123 DLC=4 DATA=3F 0E 1F 50 \n",
+      "table": "01|0x01|ID-hi|0\n02|0x23|ID-lo|0\n03|0x04|DLC|12u\n04|0x3F|'?'|0\n05|0x0E|.|0",
+      "badge": "4 0 CAN",
+      "framebuffer": {
+        "source": "RP2350 TFT framebuffer",
+        "width": 128,
+        "height": 160,
+        "frame_version": 660,
+        "rgb565_sha256": "ddf5118673d378033bc523713db18fc78e200558b2b9fd195ff1d867e31af41c",
+        "view": {
+          "start": 31872,
+          "visible": 3584,
+          "count": 65536,
+          "trigger": 32768,
+          "rate": 25000000,
+          "screen": 4,
+          "zoom": 5,
+          "protocol": 4,
+          "events": 1
+        }
+      }
+    }
+  },
+  "pulseview_pid": 230986
+}

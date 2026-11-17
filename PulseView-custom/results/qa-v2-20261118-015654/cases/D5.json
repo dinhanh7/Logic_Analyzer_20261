@@ -1,0 +1,12 @@
+{
+  "id": "D5",
+  "objective": "Parallel decoder session lifecycle regression",
+  "conditions": "4threads x10create/start/send/destroy cycles",
+  "expected": "0sessionlookupfailures;annotations generated",
+  "status": "PASS",
+  "actual": "sessions=40 failures=0 annotations=2640",
+  "seconds": 0.179,
+  "evidence": [
+    "D5-session-race.log"
+  ]
+}

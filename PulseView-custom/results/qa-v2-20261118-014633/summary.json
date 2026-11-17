@@ -1,0 +1,316 @@
+[
+  {
+    "id": "C1",
+    "objective": "10s four-protocol streaming",
+    "conditions": "1MHzRLE;SPI100k;CAN250k",
+    "expected": "0drop;counts/duration<0.1%;4bus oracle",
+    "status": "FAIL",
+    "actual": "{'rate': 1000000, 'samples': 10065540, 'received_samples': 10065540, 'mask': 255, 'channels': [0, 1, 2, 3, 4, 5, 6, 7], 'dropped': 0, 'seconds': 10.10649849100082, 'rle': True, 'blocks': 20581, 'raw_blocks': 0, 'rle_blocks': 20581, 'wire_bytes': 565784, 'host_mib_s': 0.05338878444537928, 'start_reply_seconds': 0.0004459410010895226, 'valid': True, 'error': None, 'device_sent': 10065540, 'device_dropped': 0, 'device_captured': 10065540, 'hardware_faults': 0, 'capture_seconds': 10.000015, 'effective_sample_rate': 1006552.4901712649, 'exit_code': 0}",
+    "seconds": 10.201,
+    "evidence": [
+      "C1-checked.json",
+      "C1-exception.log",
+      "C1.json",
+      "C1.log",
+      "C1.sr"
+    ]
+  },
+  {
+    "id": "C2",
+    "objective": "Raw USB streaming",
+    "conditions": "500kHz5s;8bit/sample",
+    "expected": "0drop;counts<0.1%;UART correct",
+    "status": "PASS",
+    "actual": {
+      "rate": 500000,
+      "samples": 2500012,
+      "received_samples": 2500012,
+      "mask": 255,
+      "channels": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "dropped": 0,
+      "seconds": 5.050018000001728,
+      "rle": false,
+      "blocks": 5112,
+      "raw_blocks": 5112,
+      "rle_blocks": 0,
+      "wire_bytes": 2607405,
+      "host_mib_s": 0.4923972906568625,
+      "start_reply_seconds": 0.00038762400072300807,
+      "valid": true,
+      "error": null,
+      "device_sent": 2500012,
+      "device_dropped": 0,
+      "device_captured": 2500012,
+      "hardware_faults": 0,
+      "capture_seconds": 5.000026,
+      "effective_sample_rate": 499999.80000104,
+      "exit_code": 0
+    },
+    "seconds": 5.429,
+    "evidence": [
+      "C2-UART.log",
+      "C2-checked.json",
+      "C2.json",
+      "C2.log",
+      "C2.sr"
+    ]
+  },
+  {
+    "id": "C3",
+    "objective": "Continuous five-minute lossless soak",
+    "conditions": "1MHzRLE;real bus traffic;>=300s",
+    "expected": "0drop/seq/CRC/fault;readable .sr;fresh capture",
+    "status": "NOT-VERIFIED",
+    "actual": "Full soak needs >=300s;this run requested 0s",
+    "seconds": 0.0,
+    "evidence": [
+      "C3.json"
+    ]
+  },
+  {
+    "id": "C4",
+    "objective": "Graceful stop and killed-host recovery",
+    "conditions": "SIGINT and SIGKILL injected into real active host",
+    "expected": "SIGINT tail verified;after each fault capture valid",
+    "status": "PASS",
+    "actual": [
+      {
+        "signal": "sigint",
+        "exit": 0,
+        "recovered": {
+          "rate": 1000000,
+          "count": 1031,
+          "trigger_index": 4294967295,
+          "pretrigger": 0,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 0
+        }
+      },
+      {
+        "signal": "killed",
+        "exit": -9,
+        "recovered": {
+          "rate": 1000000,
+          "count": 1031,
+          "trigger_index": 4294967295,
+          "pretrigger": 0,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 0
+        }
+      }
+    ],
+    "seconds": 3.138,
+    "evidence": [
+      "C4-killed.log",
+      "C4-recovery.json",
+      "C4-sigint.json",
+      "C4-sigint.log",
+      "C4-sigint.sr"
+    ]
+  },
+  {
+    "id": "C5",
+    "objective": "Host backpressure and UI recovery",
+    "conditions": "raw500k;square125k;PC read stall800ms",
+    "expected": "explicitINVALID/dropcounts;afterdrain nextscreen responds",
+    "status": "PASS",
+    "actual": {
+      "stream": {
+        "rate": 500000,
+        "samples": 2565564,
+        "received_samples": 2371229,
+        "mask": 255,
+        "channels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "dropped": 194335,
+        "seconds": 5.024989950001327,
+        "rle": false,
+        "blocks": 4849,
+        "raw_blocks": 4849,
+        "rle_blocks": 0,
+        "wire_bytes": 2473099,
+        "host_mib_s": 0.46936034135339066,
+        "start_reply_seconds": 0.0004162030018051155,
+        "valid": false,
+        "error": null,
+        "device_sent": 2371229,
+        "device_dropped": 194335,
+        "device_captured": 2565564,
+        "hardware_faults": 0,
+        "capture_seconds": 5.000056,
+        "effective_sample_rate": 513107.05320100416,
+        "exit_code": 1
+      },
+      "ui": {
+        "start": 0,
+        "visible": 1031,
+        "count": 1031,
+        "trigger": 0,
+        "rate": 1000000,
+        "screen": 3,
+        "zoom": 255,
+        "protocol": 1,
+        "events": 1
+      },
+      "policy": "TFT redraw intentionally deferred while streaming;responsive after drain"
+    },
+    "seconds": 6.222,
+    "evidence": [
+      "C5-checked.json",
+      "C5-ui-recovered.json",
+      "C5-ui-recovered.png",
+      "C5.json",
+      "C5.log",
+      "C5.sr"
+    ]
+  },
+  {
+    "id": "C5b",
+    "objective": "USB send deadline under prolonged host stall",
+    "conditions": "raw500k;4s unread interval exceeds3s deadline",
+    "expected": "explicitINVALID;no permanent hang;freshcapture<15s",
+    "status": "PASS",
+    "actual": {
+      "stream": {
+        "rate": 500000,
+        "samples": 557185,
+        "received_samples": 557185,
+        "mask": 255,
+        "channels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "dropped": 0,
+        "seconds": 5.015390587999718,
+        "rle": false,
+        "blocks": 1139,
+        "raw_blocks": 1139,
+        "rle_blocks": 0,
+        "wire_bytes": 581104,
+        "host_mib_s": 0.11049667024676577,
+        "start_reply_seconds": 0.0347105519977049,
+        "valid": false,
+        "error": "CRC mismatch",
+        "exit_code": 1
+      },
+      "recovered": {
+        "rate": 1000000,
+        "count": 1031,
+        "trigger_index": 4294967295,
+        "pretrigger": 0,
+        "channels": 8,
+        "unit": 1,
+        "mask": 255,
+        "flags": 0
+      },
+      "seconds": 5.48498894399745,
+      "policy": "4s stall exceeds send_frame3s deadline;integrity error is explicit;HELLO recovers"
+    },
+    "seconds": 5.932,
+    "evidence": [
+      "C5b-checked.json",
+      "C5b-recovered.json",
+      "C5b.json",
+      "C5b.log",
+      "C5b.sr"
+    ]
+  },
+  {
+    "id": "C6",
+    "objective": "Unsupported rates cannot silently succeed",
+    "conditions": "2MHz/5MHz stream requests",
+    "expected": "explicit error;no invalid VALID file",
+    "status": "PASS",
+    "actual": [
+      {
+        "rate": 2000000,
+        "exit": 2
+      },
+      {
+        "rate": 5000000,
+        "exit": 2
+      },
+      {
+        "device_rate": 5000000,
+        "rejection": "ANALYZE error from device"
+      }
+    ],
+    "seconds": 0.093,
+    "evidence": [
+      "C6-2000000.log",
+      "C6-5000000.log"
+    ]
+  },
+  {
+    "id": "F1",
+    "objective": "50 consecutive independent snapshots",
+    "conditions": "manual1MHz65536;sameDevice session",
+    "expected": "50/50CRC/sequence/metadata correct",
+    "status": "PASS",
+    "actual": {
+      "captures": 50,
+      "max_seconds": 0.3393179140002758,
+      "host_peak_rss_kib": 28928,
+      "limitation": "No MCU heap watermark API;successful repetition does not prove absence of all leaks"
+    },
+    "seconds": 13.787,
+    "evidence": [
+      "F1-repeated-captures.json"
+    ]
+  },
+  {
+    "id": "F2",
+    "objective": "Mid-session hardware USB reset/recovery",
+    "conditions": "SDK1200baud reset into ROMbootloader;reload currentUF2",
+    "expected": "old acquisition invalid;driver/host reconnect and capture valid",
+    "status": "PASS",
+    "actual": "actual USB reenumeration during active driver capture;error not marked valid;reflash/reconnect capture passed",
+    "seconds": 6.653,
+    "evidence": [
+      "F2-disconnect.log",
+      "F2-recovered.json",
+      "F2-reset-reflash.log"
+    ]
+  },
+  {
+    "id": "F3",
+    "objective": "Full regression gate",
+    "conditions": "oldsoftware tests+realESP32test+currentQAresults",
+    "expected": "no executedFAIL;never relabel BLOCKED as PASS",
+    "status": "FAIL",
+    "actual": "['C1']",
+    "seconds": 40.346,
+    "evidence": [
+      "F3-esp32.log",
+      "F3-exception.log",
+      "F3-legacy.log"
+    ]
+  }
+]

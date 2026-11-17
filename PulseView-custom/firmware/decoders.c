@@ -42,13 +42,16 @@ static inline unsigned sample_bit(const uint8_t *buf, uint32_t i, unsigned ch)
 static uint32_t uart_bit_width_q16(const uint8_t *buf, uint32_t len, uint32_t rate,
                                    uint32_t baud, unsigned ch)
 {
-    if (baud) return (uint32_t)(((uint64_t)rate << 16) / baud);
+    if (baud) {
+        uint64_t width = ((uint64_t)rate << 16) / baud;
+        return width >= 65536u && width <= UINT32_MAX ? (uint32_t)width : 0;
+    }
 
     uint32_t min_run = UINT32_MAX, start = 0, i;
     for (i = 1; i < len; i++) {
         if (sample_bit(buf, i, ch) != sample_bit(buf, i - 1, ch)) {
             uint32_t w = i - start;
-            if (w >= 2 && w < min_run) min_run = w;
+            if (start && w >= 2 && w < min_run) min_run = w;
             start = i;
         }
     }
@@ -62,7 +65,7 @@ static uint32_t uart_bit_width_q16(const uint8_t *buf, uint32_t len, uint32_t ra
     for (i = 1; i < len; i++) {
         if (sample_bit(buf, i, ch) != sample_bit(buf, i - 1, ch)) {
             uint32_t w = i - start;
-            if (w >= min_run && w * 2 <= min_run * 3) { sum += w; n++; }
+            if (start && w >= min_run && w * 2 <= min_run * 3) { sum += w; n++; }
             start = i;
         }
     }
@@ -280,7 +283,7 @@ void decode_can_ch(const uint8_t *buf, uint32_t len, uint32_t rate, uint32_t bau
     if (len < 50) { la_text_addf(t, "CAN: no data\n"); return; }
 
     uint32_t bw = (uint32_t)(((uint64_t)rate << 16) / baud);
-    if (!bw) { la_text_addf(t, "CAN: sample rate too low for this baud\n"); return; }
+    if (bw < 65536u) { la_text_addf(t, "CAN: sample rate too low for this baud\n"); return; }
 
     uint32_t start = 0;
     int found = 0;
@@ -491,6 +494,8 @@ static unsigned packets_can(const uint8_t *buf, uint32_t len, uint32_t rate,
     uint32_t bw = (uint32_t)(((uint64_t)rate << 16) / baud);
     if (!bw) return 0;
 
+    if (bw < 65536u) return 0;
+
     uint32_t start = 0;
     int found = 0;
     for (uint32_t i = 1; i < len; i++) {
@@ -541,6 +546,7 @@ static unsigned packets_can(const uint8_t *buf, uint32_t len, uint32_t rate,
         pkt_push(l, byte, LA_PKT_DATA, at, end);
     }
     #undef CAN_AT
+    if (r.overflow) { l->n = 0; return 0; }
 
     /* SOF through the last data bit: what the preview should show. */
     l->win_at = start;

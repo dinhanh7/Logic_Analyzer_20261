@@ -1,0 +1,620 @@
+[
+  {
+    "id": "B1",
+    "objective": "Frequency, duty and quantization jitter",
+    "conditions": "known1kHz PWM on GPIO26;1/5/25MHz",
+    "expected": "frequency error<0.5%;record period/duty/jitter",
+    "status": "PASS",
+    "actual": {
+      "reference": "ESP32 LEDC timer2 on existing CH0 wire;not external calibration",
+      "measurements": [
+        {
+          "periods": 261,
+          "period_samples_mean": 999.9961685823755,
+          "frequency_hz": 1000.0038314323043,
+          "duty": 0.5000019157161522,
+          "jitter_pp_samples": 1,
+          "jitter_rms_samples": 0.06177975286052528,
+          "min_period_samples": 999,
+          "max_period_samples": 1000,
+          "rate": 1000000,
+          "error_percent": 0.0003831432304313154
+        },
+        {
+          "periods": 51,
+          "period_samples_mean": 4999.9607843137255,
+          "frequency_hz": 1000.0078431987702,
+          "duty": 0.5,
+          "jitter_pp_samples": 1,
+          "jitter_rms_samples": 0.1941077438551307,
+          "min_period_samples": 4999,
+          "max_period_samples": 5000,
+          "rate": 5000000,
+          "error_percent": 0.0007843198770229876
+        },
+        {
+          "periods": 10,
+          "period_samples_mean": 24999.9,
+          "frequency_hz": 1000.004000016,
+          "duty": 0.49999799999199995,
+          "jitter_pp_samples": 1,
+          "jitter_rms_samples": 0.3,
+          "min_period_samples": 24999,
+          "max_period_samples": 25000,
+          "rate": 25000000,
+          "error_percent": 0.000400001599998312
+        }
+      ]
+    },
+    "seconds": 3.429,
+    "evidence": [
+      "B1-1000000.raw",
+      "B1-1000000.sr",
+      "B1-25000000.raw",
+      "B1-25000000.sr",
+      "B1-5000000.raw",
+      "B1-5000000.sr",
+      "B1-measurements.json"
+    ]
+  },
+  {
+    "id": "B2",
+    "objective": "Actual UART bit-width metrology",
+    "conditions": "UART115200;1/5/25MHz;unit-width run clusters",
+    "expected": "mean<2%;25MHz mean<1sample error",
+    "status": "PASS",
+    "actual": [
+      {
+        "rate": 1000000,
+        "expected_samples": 8.680555555555555,
+        "mean_samples": 8.666666666666666,
+        "count": 21,
+        "error_percent": -0.16000000000000458,
+        "jitter_pp_samples": 1,
+        "jitter_rms_samples": 0.4714045207910317
+      },
+      {
+        "rate": 5000000,
+        "expected_samples": 43.40277777777778,
+        "mean_samples": 43.285714285714285,
+        "count": 21,
+        "error_percent": -0.26971428571429534,
+        "jitter_pp_samples": 1,
+        "jitter_rms_samples": 0.45175395145262565
+      },
+      {
+        "rate": 25000000,
+        "expected_samples": 217.01388888888889,
+        "mean_samples": 217,
+        "count": 21,
+        "error_percent": -0.006399999999995298,
+        "jitter_pp_samples": 2,
+        "jitter_rms_samples": 0.3086066999241838
+      }
+    ],
+    "seconds": 0.658,
+    "evidence": [
+      "B2-1000000.raw",
+      "B2-1000000.sr",
+      "B2-25000000.raw",
+      "B2-25000000.sr",
+      "B2-5000000.raw",
+      "B2-5000000.sr",
+      "B2-bit-width.json"
+    ]
+  },
+  {
+    "id": "B3",
+    "objective": "All-channel edge trigger geometry",
+    "conditions": "8channels x2polarities;25MHz;65536/pre32768",
+    "expected": "exact32768±1 and correct previous/current bit",
+    "status": "BLOCKED",
+    "actual": "Tested 12 polarities; no external transitions on CH[4, 6]; see B3-edge-results.json",
+    "seconds": 10.491,
+    "evidence": [
+      "B3-edge-results.json"
+    ]
+  },
+  {
+    "id": "B4",
+    "objective": "Pattern/manual and never-match recovery",
+    "conditions": "CH0high pattern;CH6measured-static opposite pattern;400ms host timeout",
+    "expected": "match correct;manual no trigger;subsequent capture valid",
+    "status": "FAIL",
+    "actual": "measured-static CH6 opposite-level pattern unexpectedly matched",
+    "seconds": 1.437,
+    "evidence": [
+      "B4-exception.log"
+    ]
+  },
+  {
+    "id": "B5",
+    "objective": "Buffer and pretrigger boundary clamp",
+    "conditions": "pre0/half/>half;count262144triggered",
+    "expected": "count<=131072;pre<=half;exact index;no deadlock",
+    "status": "PASS",
+    "actual": [
+      {
+        "request_count": 65536,
+        "request_pre": 0,
+        "info": {
+          "rate": 25000000,
+          "count": 65536,
+          "trigger_index": 0,
+          "pretrigger": 0,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 1
+        },
+        "seconds": 0.15509275699878344
+      },
+      {
+        "request_count": 65536,
+        "request_pre": 32768,
+        "info": {
+          "rate": 25000000,
+          "count": 65536,
+          "trigger_index": 32768,
+          "pretrigger": 32768,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 1
+        },
+        "seconds": 0.20387223299985635
+      },
+      {
+        "request_count": 65536,
+        "request_pre": 60000,
+        "info": {
+          "rate": 25000000,
+          "count": 65536,
+          "trigger_index": 32768,
+          "pretrigger": 32768,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 1
+        },
+        "seconds": 0.23034500100038713
+      },
+      {
+        "request_count": 262144,
+        "request_pre": 131072,
+        "info": {
+          "rate": 25000000,
+          "count": 131072,
+          "trigger_index": 65536,
+          "pretrigger": 65536,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 1
+        },
+        "seconds": 0.4026887149993854
+      }
+    ],
+    "seconds": 0.997,
+    "evidence": [
+      "B5-clamps.json"
+    ]
+  },
+  {
+    "id": "B6",
+    "objective": "Repeated sparse trigger",
+    "conditions": "UARTburst100ms;100 consecutive captures",
+    "expected": "100/100;index32768;eachARM-to-completion<1s",
+    "status": "PASS",
+    "actual": {
+      "captures": 100,
+      "max_seconds": 0.36510549599915976,
+      "host_peak_rss_kib": 28856
+    },
+    "seconds": 25.293,
+    "evidence": [
+      "B6-100-captures.json"
+    ]
+  },
+  {
+    "id": "B7",
+    "objective": "Real four-bus decode rate matrix",
+    "conditions": "4protocols x3rates;SPI100k at1MHz;CAN250k",
+    "expected": "expected complete bytes;device and sigrok agree",
+    "status": "PASS",
+    "actual": {
+      "cases": 12,
+      "all_expected_bytes": true
+    },
+    "seconds": 5.576,
+    "evidence": [
+      "B7-CAN-1000000-device.log",
+      "B7-CAN-1000000-oracle.log",
+      "B7-CAN-1000000.raw",
+      "B7-CAN-1000000.sr",
+      "B7-CAN-25000000-device.log",
+      "B7-CAN-25000000-oracle.log",
+      "B7-CAN-25000000.raw",
+      "B7-CAN-25000000.sr",
+      "B7-CAN-5000000-device.log",
+      "B7-CAN-5000000-oracle.log",
+      "B7-CAN-5000000.raw",
+      "B7-CAN-5000000.sr",
+      "B7-I2C-1000000-device.log",
+      "B7-I2C-1000000-oracle.log",
+      "B7-I2C-1000000.raw",
+      "B7-I2C-1000000.sr",
+      "B7-I2C-25000000-device.log",
+      "B7-I2C-25000000-oracle.log",
+      "B7-I2C-25000000.raw",
+      "B7-I2C-25000000.sr",
+      "B7-I2C-5000000-device.log",
+      "B7-I2C-5000000-oracle.log",
+      "B7-I2C-5000000.raw",
+      "B7-I2C-5000000.sr",
+      "B7-SPI-1000000-device.log",
+      "B7-SPI-1000000-oracle.log",
+      "B7-SPI-1000000.raw",
+      "B7-SPI-1000000.sr",
+      "B7-SPI-25000000-device.log",
+      "B7-SPI-25000000-oracle.log",
+      "B7-SPI-25000000.raw",
+      "B7-SPI-25000000.sr",
+      "B7-SPI-5000000-device.log",
+      "B7-SPI-5000000-oracle.log",
+      "B7-SPI-5000000.raw",
+      "B7-SPI-5000000.sr",
+      "B7-UART-1000000-device.log",
+      "B7-UART-1000000-oracle.log",
+      "B7-UART-1000000.raw",
+      "B7-UART-1000000.sr",
+      "B7-UART-25000000-device.log",
+      "B7-UART-25000000-oracle.log",
+      "B7-UART-25000000.raw",
+      "B7-UART-25000000.sr",
+      "B7-UART-5000000-device.log",
+      "B7-UART-5000000-oracle.log",
+      "B7-UART-5000000.raw",
+      "B7-UART-5000000.sr",
+      "B7-matrix.json"
+    ]
+  },
+  {
+    "id": "B8",
+    "objective": "Independent8-channel mapping/crosstalk/skew",
+    "conditions": "current bus wiring;reference all8not available",
+    "expected": "all8 driven by known independent waveforms;no undocumented rewiring",
+    "status": "BLOCKED",
+    "actual": "Current wiring edge counts [126, 168, 42, 6, 2, 72, 0, 108]; distinct8-channel reference/common-edge skew source is not connected",
+    "seconds": 0.96,
+    "evidence": [
+      "B8-channel-activity.json",
+      "B8-current-wiring.raw",
+      "B8-current-wiring.sr"
+    ]
+  },
+  {
+    "id": "C1",
+    "objective": "10s four-protocol streaming",
+    "conditions": "1MHzRLE;SPI100k;CAN250k",
+    "expected": "0drop;counts/duration<0.1%;4bus oracle",
+    "status": "FAIL",
+    "actual": "{'rate': 1000000, 'samples': 10066392, 'received_samples': 10066392, 'mask': 255, 'channels': [0, 1, 2, 3, 4, 5, 6, 7], 'dropped': 0, 'seconds': 10.10717432200181, 'rle': True, 'blocks': 20583, 'raw_blocks': 0, 'rle_blocks': 20583, 'wire_bytes': 565690, 'host_mib_s': 0.053376345045664776, 'valid': True, 'error': None, 'device_sent': 10066392, 'device_dropped': 0, 'device_captured': 10066392, 'hardware_faults': 0, 'capture_seconds': 10.000865, 'effective_sample_rate': 1006552.1332404747, 'exit_code': 0}",
+    "seconds": 10.2,
+    "evidence": [
+      "C1-checked.json",
+      "C1-exception.log",
+      "C1.json",
+      "C1.log",
+      "C1.sr"
+    ]
+  },
+  {
+    "id": "C2",
+    "objective": "Raw USB streaming",
+    "conditions": "500kHz5s;8bit/sample",
+    "expected": "0drop;counts<0.1%;UART correct",
+    "status": "PASS",
+    "actual": {
+      "rate": 500000,
+      "samples": 2500168,
+      "received_samples": 2500168,
+      "mask": 255,
+      "channels": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "dropped": 0,
+      "seconds": 5.050236169998243,
+      "rle": false,
+      "blocks": 5112,
+      "raw_blocks": 5112,
+      "rle_blocks": 0,
+      "wire_bytes": 2607561,
+      "host_mib_s": 0.49240547777460925,
+      "valid": true,
+      "error": null,
+      "device_sent": 2500168,
+      "device_dropped": 0,
+      "device_captured": 2500168,
+      "hardware_faults": 0,
+      "capture_seconds": 5.000344,
+      "effective_sample_rate": 499999.2000550362,
+      "exit_code": 0
+    },
+    "seconds": 5.407,
+    "evidence": [
+      "C2-UART.log",
+      "C2-checked.json",
+      "C2.json",
+      "C2.log",
+      "C2.sr"
+    ]
+  },
+  {
+    "id": "C3",
+    "objective": "Continuous five-minute lossless soak",
+    "conditions": "1MHzRLE;real bus traffic;>=300s",
+    "expected": "0drop/seq/CRC/fault;readable .sr;fresh capture",
+    "status": "PASS",
+    "actual": {
+      "rate": 1000000,
+      "samples": 299999064,
+      "received_samples": 299999064,
+      "mask": 255,
+      "channels": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "dropped": 0,
+      "seconds": 300.0734122549984,
+      "rle": true,
+      "blocks": 613402,
+      "raw_blocks": 0,
+      "rle_blocks": 613402,
+      "wire_bytes": 16865719,
+      "host_mib_s": 0.05360156008875785,
+      "valid": true,
+      "error": null,
+      "device_sent": 299999064,
+      "device_dropped": 0,
+      "device_captured": 299999064,
+      "hardware_faults": 0,
+      "capture_seconds": 299.999065,
+      "effective_sample_rate": 999999.9966666563,
+      "exit_code": 0,
+      "scope": "PC RSS logged;firmware has static capture buffers;no MCU heap telemetry is exposed"
+    },
+    "seconds": 301.365,
+    "evidence": [
+      "C3-checked.json",
+      "C3-post-soak-recovery.json",
+      "C3.json",
+      "C3.log",
+      "C3.sr"
+    ]
+  },
+  {
+    "id": "C4",
+    "objective": "Graceful stop and killed-host recovery",
+    "conditions": "SIGINT and SIGKILL injected into real active host",
+    "expected": "SIGINT tail verified;after each fault capture valid",
+    "status": "PASS",
+    "actual": [
+      {
+        "signal": "sigint",
+        "exit": 0,
+        "recovered": {
+          "rate": 1000000,
+          "count": 1031,
+          "trigger_index": 4294967295,
+          "pretrigger": 0,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 0
+        }
+      },
+      {
+        "signal": "killed",
+        "exit": -9,
+        "recovered": {
+          "rate": 1000000,
+          "count": 1031,
+          "trigger_index": 4294967295,
+          "pretrigger": 0,
+          "channels": 8,
+          "unit": 1,
+          "mask": 255,
+          "flags": 0
+        }
+      }
+    ],
+    "seconds": 3.217,
+    "evidence": [
+      "C4-killed.log",
+      "C4-recovery.json",
+      "C4-sigint.json",
+      "C4-sigint.log",
+      "C4-sigint.sr"
+    ]
+  },
+  {
+    "id": "C5",
+    "objective": "Host backpressure and UI recovery",
+    "conditions": "raw500k;square125k;PC read stall800ms",
+    "expected": "explicitINVALID/dropcounts;afterdrain nextscreen responds",
+    "status": "PASS",
+    "actual": {
+      "stream": {
+        "rate": 500000,
+        "samples": 2565712,
+        "received_samples": 2371257,
+        "mask": 255,
+        "channels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "dropped": 194455,
+        "seconds": 5.056734374000371,
+        "rle": false,
+        "blocks": 4848,
+        "raw_blocks": 4848,
+        "rle_blocks": 0,
+        "wire_bytes": 2473106,
+        "host_mib_s": 0.4664151801361798,
+        "valid": false,
+        "error": null,
+        "device_sent": 2371257,
+        "device_dropped": 194455,
+        "device_captured": 2565712,
+        "hardware_faults": 0,
+        "capture_seconds": 5.000353,
+        "effective_sample_rate": 513106.17470406595,
+        "exit_code": 1
+      },
+      "ui": {
+        "start": 0,
+        "visible": 1031,
+        "count": 1031,
+        "trigger": 0,
+        "rate": 1000000,
+        "screen": 3,
+        "zoom": 255,
+        "protocol": 1,
+        "events": 1
+      },
+      "policy": "TFT redraw intentionally deferred while streaming;responsive after drain"
+    },
+    "seconds": 6.274,
+    "evidence": [
+      "C5-checked.json",
+      "C5-ui-recovered.json",
+      "C5-ui-recovered.png",
+      "C5.json",
+      "C5.log",
+      "C5.sr"
+    ]
+  },
+  {
+    "id": "C6",
+    "objective": "Unsupported rates cannot silently succeed",
+    "conditions": "2MHz/5MHz stream requests",
+    "expected": "explicit error;no invalid VALID file",
+    "status": "PASS",
+    "actual": [
+      {
+        "rate": 2000000,
+        "exit": 2
+      },
+      {
+        "rate": 5000000,
+        "exit": 2
+      }
+    ],
+    "seconds": 0.08,
+    "evidence": [
+      "C6-2000000.log",
+      "C6-5000000.log"
+    ]
+  },
+  {
+    "id": "E1",
+    "objective": "12VDC/200Vpulse protection",
+    "conditions": "source inventory and evidence review;no safe pulse fixture",
+    "expected": "rated schematic plus measured clamp behavior required",
+    "status": "NOT-VERIFIED",
+    "actual": "CHƯA KIỂM CHỨNG BẰNG ĐO:missing schematic/component ratings and safe measured12V/200V front-end evidence",
+    "seconds": 0.0,
+    "evidence": [
+      "E1-protection-assessment.md"
+    ]
+  },
+  {
+    "id": "E2",
+    "objective": "Budget conformity",
+    "conditions": "priced BOM inventory",
+    "expected": "quantity*price total<=450000VND with traceable prices",
+    "status": "NOT-VERIFIED",
+    "actual": "Historical4-channel/OLED estimate sums338000-453000VND;current8-channel/TFT as-built BOM/receipts missing;<=450000not verified",
+    "seconds": 0.0,
+    "evidence": [
+      "E2-BOM-assessment.md"
+    ]
+  },
+  {
+    "id": "E3",
+    "objective": "Practical operating envelope",
+    "conditions": "code+measured digital paths;analog fixture absent",
+    "expected": "state40ns/buffer/USB limits;measure loading/voltage before compatibility claim",
+    "status": "NOT-VERIFIED",
+    "actual": "Digital limits are derived/tested;analog loading,5V compatibility and absolute calibration lack measurements;see E3-practical-limits.json",
+    "seconds": 0.0,
+    "evidence": [
+      "E3-practical-limits.json"
+    ]
+  },
+  {
+    "id": "F1",
+    "objective": "50 consecutive independent snapshots",
+    "conditions": "manual1MHz65536;sameDevice session",
+    "expected": "50/50CRC/sequence/metadata correct",
+    "status": "PASS",
+    "actual": {
+      "captures": 50,
+      "max_seconds": 0.33928305100198486,
+      "host_peak_rss_kib": 29348,
+      "limitation": "No MCU heap watermark API;successful repetition does not prove absence of all leaks"
+    },
+    "seconds": 13.6,
+    "evidence": [
+      "F1-repeated-captures.json"
+    ]
+  },
+  {
+    "id": "F2",
+    "objective": "Mid-session hardware USB reset/recovery",
+    "conditions": "SDK1200baud reset into ROMbootloader;reload currentUF2",
+    "expected": "old acquisition invalid;driver/host reconnect and capture valid",
+    "status": "FAIL",
+    "actual": "board is neither running (/dev/ttyACM0) nor in BOOTSEL\n",
+    "seconds": 0.86,
+    "evidence": [
+      "F2-disconnect.log",
+      "F2-exception.log",
+      "F2-reset-reflash.log"
+    ]
+  },
+  {
+    "id": "F3",
+    "objective": "Full regression gate",
+    "conditions": "oldsoftware tests+realESP32test+currentQAresults",
+    "expected": "no executedFAIL;never relabel BLOCKED as PASS",
+    "status": "FAIL",
+    "actual": "Traceback (most recent call last):\n  File \"/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_esp32_link.py\", line 177, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_esp32_link.py\", line 166, in main\n    d = device()\n  File \"/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_esp32_link.py\", line 60, in device\n    fd = open_port(LA_PORT)\n  File \"/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tools/host_la.py\", line 41, in open_port\n    fd = os.open(path, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)\nFileNotFoundError: [Errno 2] No such file or directory: '/dev/ttyACM0'\n",
+    "seconds": 21.837,
+    "evidence": [
+      "F3-esp32.log",
+      "F3-exception.log",
+      "F3-legacy.log"
+    ]
+  }
+]

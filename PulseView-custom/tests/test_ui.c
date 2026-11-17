@@ -83,7 +83,7 @@ static void test_font_table(void)
     for (int i = 0; i < FONT6X8_COUNT; i++) {
         unsigned lit = 0;
         for (int r = 0; r < FONT6X8_H; r++) {
-            assert((font6x8[i][r] & 0xC0) == 0);
+            assert((font6x8[i][r] & 0xE0) == 0); /* one blank spacing column */
             for (int c = 0; c < 8; c++) lit += (font6x8[i][r] >> c) & 1u;
         }
         int code = FONT6X8_FIRST + i;
@@ -93,6 +93,26 @@ static void test_font_table(void)
     assert(21 * FONT6X8_W <= 128);
 }
 
+static void test_independent_debounce_and_boot_hold(void)
+{
+    btn_filter f;
+    uint8_t short_mask, long_mask, seen = 0;
+    btn_filter_init(&f);
+    /* DOWN remains pressed while UP bounces every 5 ms. */
+    for (uint32_t t = 0; t <= 100; t += 5)
+        btn_filter_feed(&f, (uint8_t)(2 | ((t / 5) & 1)), t, &short_mask, &long_mask);
+    for (uint32_t t = 105; t <= 150; t += 5) {
+        btn_filter_feed(&f, (uint8_t)((t / 5) & 1), t, &short_mask, &long_mask);
+        seen |= short_mask;
+    }
+    assert(seen & 2);
+    btn_filter_init(&f);
+    f.stable = f.cand = f.ignore = 1;
+    btn_filter_feed(&f, 0, 1000, &short_mask, &long_mask);
+    btn_filter_feed(&f, 0, 1025, &short_mask, &long_mask);
+    assert(short_mask == 0 && long_mask == 0 && f.ignore == 0);
+}
+
 int main(void)
 {
     test_debounce_short();
@@ -100,6 +120,7 @@ int main(void)
     test_bounce_is_ignored();
     test_two_buttons_at_once();
     test_font_table();
+    test_independent_debounce_and_boot_hold();
     printf("test_ui: all assertions passed\n");
     return 0;
 }

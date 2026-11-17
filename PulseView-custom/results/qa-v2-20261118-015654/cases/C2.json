@@ -1,0 +1,51 @@
+{
+  "id": "C2",
+  "objective": "Raw USB streaming",
+  "conditions": "500kHz5s;8bit/sample",
+  "expected": "0drop;counts<0.1%;UART correct",
+  "status": "PASS",
+  "actual": {
+    "rate": 500000,
+    "samples": 2500028,
+    "received_samples": 2500028,
+    "mask": 255,
+    "channels": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "dropped": 0,
+    "seconds": 5.055765256998711,
+    "rle": false,
+    "blocks": 5112,
+    "raw_blocks": 5112,
+    "rle_blocks": 0,
+    "wire_bytes": 2607421,
+    "host_mib_s": 0.49184056485139427,
+    "start_reply_seconds": 0.0003706370043801144,
+    "stop_counters_hex": "00bc25260000000000bc25260000000000794b4c0000000000",
+    "valid": true,
+    "error": null,
+    "device_sent": 2500028,
+    "device_dropped": 0,
+    "device_captured": 2500028,
+    "hardware_faults": 0,
+    "capture_seconds": 5.000057,
+    "effective_sample_rate": 499999.90000113996,
+    "exit_code": 0
+  },
+  "seconds": 5.403,
+  "evidence": [
+    "C2-UART.log",
+    "C2-checked.json",
+    "C2-snapshot-before-stream.json",
+    "C2.json",
+    "C2.log",
+    "C2.sr"
+  ]
+}

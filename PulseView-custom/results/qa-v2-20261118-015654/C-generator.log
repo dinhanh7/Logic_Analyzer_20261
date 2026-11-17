@@ -1,0 +1,45 @@
+> stress off
+stress: 0 Hz on GPIO26 (50 %); UART restored
+
+> uart on
+
+> set uart 115200
+uart: 115200 baud
+
+> set i2c 100
+i2c: 100 kHz (half period 5 us, real 100.0 kHz)
+
+> set spi 100
+spi: 100000 Hz
+
+> set can 250
+can: 250 kbps
+
+> burst on
+
+> stress 125000
+W (325724) ledc: GPIO 26 is not usable, maybe conflict with others
+stress: 125000 Hz on GPIO26 (50 %); UART suspended
+
+> stress off
+stress: 0 Hz on GPIO26 (50 %); UART restored
+
+> stress 125000
+W (331974) ledc: GPIO 26 is not usable, maybe conflict with others
+stress: 125000 Hz on GPIO26 (50 %); UART suspended
+
+> stress off
+stress: 0 Hz on GPIO26 (50 %); UART restored
+
+> stress off
+stress: 0 Hz on GPIO26 (50 %); UART restored
+
+> set spi 1000
+spi: 1000000 Hz
+
+> set can 250
+can: 250 kbps
+
+> uart on
+
+> burst on

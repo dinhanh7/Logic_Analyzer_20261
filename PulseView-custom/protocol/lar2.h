@@ -59,6 +59,8 @@
                                         samples sent and samples dropped */
 #define LAR2_ANALYZE_UI_SHOW_CAPTURE 18u /* show last real snapshot: arg=screen
                                         2/3/4, arg32=0 AUTO,1 UART,2 I2C,3 SPI,4 CAN */
+#define LAR2_ANALYZE_UI_FRAME 19u  /* arg=byte offset, arg32=up to 1000 bytes */
+#define LAR2_ANALYZE_UI_VIEW 20u   /* pan/zoom/capture state, fixed 29-byte RESULT */
 #define LAR2_ANALYZE_RUNTIME     11u /* trigger state, see the REPLY in main.c */
 #define LAR2_ANALYZE_BOOTLOADER  10u /* reboot into the UF2 bootloader so the
                                         host can flash without pressing BOOTSEL */
@@ -77,7 +79,7 @@
 
 /* Board identity. The host checks the "RP2350-LA" prefix and a minimum
  * length, so the suffix may advertise firmware features. */
-#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an+str+ui18+sync"
+#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an+str+ui18+sync+opt3"
 static const uint64_t lar2_rates[LAR2_RATE_COUNT] = {
     1000, 10000, 100000, 250000, 500000, 1000000, 5000000, 25000000
 };
@@ -96,9 +98,14 @@ static inline void lar2_put16(uint8_t *p, uint16_t v) { p[0]=v; p[1]=v>>8; }
 static inline void lar2_put32(uint8_t *p, uint32_t v) { lar2_put16(p,v); lar2_put16(p+2,v>>16); }
 static inline void lar2_put64(uint8_t *p, uint64_t v) { lar2_put32(p,v); lar2_put32(p+4,v>>32); }
 static inline uint32_t lar2_crc_update(uint32_t crc, const uint8_t *p, size_t n) {
+    static const uint32_t nibble[16] = {
+        0x00000000u, 0x1db71064u, 0x3b6e20c8u, 0x26d930acu, 0x76dc4190u, 0x6b6b51f4u, 0x4db26158u, 0x5005713cu,
+        0xedb88320u, 0xf00f9344u, 0xd6d6a3e8u, 0xcb61b38cu, 0x9b64c2b0u, 0x86d3d2d4u, 0xa00ae278u, 0xbdbdf21cu
+    };
     while (n--) {
         crc ^= *p++;
-        for (unsigned i=0; i<8; i++) crc=(crc>>1)^((0u-(crc&1u))&0xedb88320u);
+        crc = (crc >> 4) ^ nibble[crc & 15u];
+        crc = (crc >> 4) ^ nibble[crc & 15u];
     }
     return crc;
 }

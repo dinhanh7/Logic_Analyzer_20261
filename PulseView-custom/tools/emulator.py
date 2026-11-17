@@ -102,8 +102,14 @@ class Emulator:
                 if rate>1000000: self.queue(RESULT, bytes([RESULT_ERROR])); return
                 self.queue(RESULT, bytes([RESULT_OK]))
                 self.stream_samples=pattern(65536,rate,self.mode)
+                self.stream_tail=[]
+                self.stream_lost=0
                 for off in range(0,len(self.stream_samples),500):
                     data=self.stream_samples[off:off+500]
+                    if self.fault=='stream-drop' and off==5000:
+                        self.stream_lost+=len(data); continue
+                    if self.fault=='stream-tail' and off>=64000:
+                        self.stream_tail.append(bytes([0])+struct.pack('<I',off)+data); continue
                     if rle:
                         body=bytearray()
                         k=0
@@ -115,7 +121,9 @@ class Emulator:
                             self.queue(STREAM_BLOCK, bytes([1])+struct.pack('<I',off)+bytes(body)); continue
                     self.queue(STREAM_BLOCK, bytes([0])+struct.pack('<I',off)+data)
             elif op==ANALYZE_STREAM_STOP:
-                self.queue(RESULT, bytes([RESULT_OK])+struct.pack('<II',65536,0))
+                for data in self.stream_tail: self.queue(STREAM_BLOCK,data)
+                sent=len(self.stream_samples)-self.stream_lost+(self.fault=='stream-count')
+                self.queue(RESULT, bytes([RESULT_OK])+struct.pack('<II',sent,self.stream_lost))
             else:
                 self.queue(RESULT, bytes([RESULT_OK]))
         else: self.queue(ERROR,b'command')

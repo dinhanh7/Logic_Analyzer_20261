@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_common.py", line 38, in case
+    actual=fn();row.update(status='PASS',actual=actual)
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_streaming.py", line 47, in c1
+    path,m=run_stream('C1',1000000,10);lossless(m,10)
+                                       ~~~~~~~~^^^^^^
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_streaming.py", line 36, in lossless
+    assert abs(meta['effective_sample_rate']/meta['rate']-1)<.001,meta
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'rate': 1000000, 'samples': 10066392, 'received_samples': 10066392, 'mask': 255, 'channels': [0, 1, 2, 3, 4, 5, 6, 7], 'dropped': 0, 'seconds': 10.10717432200181, 'rle': True, 'blocks': 20583, 'raw_blocks': 0, 'rle_blocks': 20583, 'wire_bytes': 565690, 'host_mib_s': 0.053376345045664776, 'valid': True, 'error': None, 'device_sent': 10066392, 'device_dropped': 0, 'device_captured': 10066392, 'hardware_faults': 0, 'capture_seconds': 10.000865, 'effective_sample_rate': 1006552.1332404747, 'exit_code': 0}

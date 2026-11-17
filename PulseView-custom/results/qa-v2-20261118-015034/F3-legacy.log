@@ -1,0 +1,85 @@
+LAR2 C codec: CRC vector, all lengths, corruption and bounds passed
+matcher throughput: 1047.1 MB/s (need > 25 MB/s for 25 MS/s capture)
+LAR2 trigger matcher: pattern, edge, mask, boundary and throughput checks passed
+text truncation: "0123456789abcde" (15 bytes)
+uart(known baud): UART 115200 8N1: "LA1234"
+uart(auto baud): UART 114865 8N1: "LA1234"
+uart(25MHz): UART 1000000 8N1: "OK"
+i2c: I2C: 0x68 W ACK 0x01 ACK 0x5A ACK
+i2c read: I2C: 0x68 R ACK 0x5A NAK
+spi: SPI: DE AD BE EF |
+can: CAN ID=0x123 DLC=4 DATA=DE AD BE EF 
+map8:
+UART 115200 8N1: "LA"
+I2C: 0x68 W ACK 0x01 ACK 0x5A ACK
+SPI: DE AD |
+CAN ID=0x123 DLC=4 DATA=DE AD BE EF 
+packets uart: n=2
+packets i2c: n=6
+packets spi: n=2
+packets can: n=7
+test_decode: all assertions passed
+UART alone on CH5                  -> UART score=5
+I2C alone on CH6/CH7               -> I2C  score=2
+SPI alone on CH1/2/3               -> SPI  score=4
+CAN alone on CH4                   -> CAN  score=7
+all four at once                   -> CAN  score=7
+all channels idle                  -> none score=0
+plain square wave, no bus          -> none score=0
+random noise on all 8              -> none score=0
+one stray edge on CH3              -> none score=0
+capture too short                  -> none score=0
+no cross-protocol confusion        -> ok
+test_autodetect: all assertions passed
+test_ui: all assertions passed
+capture buffer: all lengths/rotations/bounds passed
+PASS native Qt/GVariant setup
+PASS native Qt/GVariant setup
+render_ui selftest: caption format + AUTO window ok
+bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8)
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.132s
+
+OK
+........
+----------------------------------------------------------------------
+Ran 8 tests in 5.443s
+
+OK
+test_annotation_sample_order_is_used (__main__.DemoChecks.test_annotation_sample_order_is_used) ... ok
+test_generic_bits_do_not_prove_decode (__main__.DemoChecks.test_generic_bits_do_not_prove_decode) ... ok
+test_hidden_annotations_do_not_count (__main__.DemoChecks.test_hidden_annotations_do_not_count) ... ok
+test_missing_hardware_exits_nonzero_and_records_failure (__main__.DemoChecks.test_missing_hardware_exits_nonzero_and_records_failure) ... ok
+test_qsettings_reads_both_recorded_and_live_presets (__main__.DemoChecks.test_qsettings_reads_both_recorded_and_live_presets) ... ok
+test_tft_requires_real_bytes_and_ack (__main__.DemoChecks.test_tft_requires_real_bytes_and_ack) ... ok
+test_visible_correct_gui_annotations (__main__.DemoChecks.test_visible_correct_gui_annotations) ... ok
+test_wrong_byte_or_missing_channel_fails (__main__.DemoChecks.test_wrong_byte_or_missing_channel_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.017s
+
+OK
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) ... ok
+test_capture_wrapper_rejects_invalid_file (__main__.DriverTests.test_capture_wrapper_rejects_invalid_file) ... ok
+test_disabled_channels_preserve_bit_positions (__main__.DriverTests.test_disabled_channels_preserve_bit_positions) ... ok
+test_fragmented_maximum_capture (__main__.DriverTests.test_fragmented_maximum_capture) ... ok
+test_invalid_config (__main__.DriverTests.test_invalid_config) ... ok
+test_invalid_trigger_config (__main__.DriverTests.test_invalid_trigger_config) ... ok
+test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) ... ok
+test_trigger_sample_limit_matches_firmware (__main__.DriverTests.test_trigger_sample_limit_matches_firmware) ... ok
+test_triggered_capture_pattern (__main__.DriverTests.test_triggered_capture_pattern)
+The pattern trigger path must also work end to end. ... ok
+test_triggered_capture_reports_the_trigger (__main__.DriverTests.test_triggered_capture_reports_the_trigger)
+A triggered capture must deliver the samples and mark the trigger ... ok
+test_uart_decoder (__main__.DriverTests.test_uart_decoder) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 13.021s
+
+OK

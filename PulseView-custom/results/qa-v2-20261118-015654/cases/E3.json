@@ -1,0 +1,12 @@
+{
+  "id": "E3",
+  "objective": "Practical operating envelope",
+  "conditions": "code+measured digital paths;analog fixture absent",
+  "expected": "state40ns/buffer/USB limits;measure loading/voltage before compatibility claim",
+  "status": "NOT-VERIFIED",
+  "actual": "Digital limits are derived/tested;analog loading,5V compatibility and absolute calibration lack measurements;see E3-practical-limits.json",
+  "seconds": 0.0,
+  "evidence": [
+    "E3-practical-limits.json"
+  ]
+}

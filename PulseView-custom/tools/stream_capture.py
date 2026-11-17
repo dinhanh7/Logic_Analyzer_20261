@@ -22,6 +22,8 @@ import argparse
 import json
 import os
 import select
+import shutil
+import tempfile
 import sys
 import time
 import zipfile
@@ -30,7 +32,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import host_la  # noqa: E402
 from host_la import Device, open_port  # noqa: E402
 from lar2 import (ANALYZE, ANALYZE_STREAM_START, ANALYZE_STREAM_STOP,
-                  MAX_SAMPLES, RESULT, STREAM_BLOCK, analyze_payload, frame)  # noqa: E402
+                  MAX_SAMPLES, RESULT, STREAM_BLOCK, ERROR, analyze_payload, frame)  # noqa: E402
 
 MAX_STREAM_RATE = 1000000
 
@@ -59,12 +61,98 @@ def write_sr(path, samples, rate, channels=8):
     with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
         z.writestr('version', '2')
         z.writestr('metadata', meta)
-        z.writestr('logic-1-1', samples)
+        if hasattr(samples, 'read'):
+            samples.seek(0)
+            with z.open('logic-1-1', 'w', force_zip64=True) as target:
+                shutil.copyfileobj(samples, target, 1024 * 1024)
+        else:
+            z.writestr('logic-1-1', samples)
+
+
+class StreamReceiver:
+    """Validate every block, including the STOP tail, into a bounded-memory sink."""
+    def __init__(self, sink, sequence, rate=None):
+        self.sink, self.sequence, self.rate = sink, sequence, rate
+        self.samples = self.received = self.dropped = self.blocks = 0
+        self.wire_bytes = self.raw_blocks = self.rle_blocks = 0
+
+    def accept(self, kind, seq, payload):
+        if seq != self.sequence:
+            raise ValueError('stream sequence gap: %d != %d' % (seq, self.sequence))
+        self.sequence = (seq + 1) & 0xffff
+        self.wire_bytes += len(payload) + 16
+        if kind == ERROR:
+            raise RuntimeError(payload.decode('utf-8', 'replace'))
+        if kind == RESULT:
+            if len(payload) < 9 or payload[0] != 0:
+                raise ValueError('invalid STREAM_STOP result')
+            return payload
+        if kind != STREAM_BLOCK or len(payload) < 6:
+            raise ValueError('invalid stream block/header')
+        enc, wire_offset, body = payload[0], int.from_bytes(payload[1:5], 'little'), payload[5:]
+        if enc == 0:
+            data = body
+            self.raw_blocks += 1
+        elif enc == 1:
+            if len(body) % 2 or any(body[i] == 0 for i in range(0, len(body), 2)):
+                raise ValueError('invalid RLE runs')
+            # Firmware blocks represent at most 500 samples, preventing an
+            # untrusted run count from allocating an arbitrary amount of RAM.
+            if sum(body[::2]) > 500:
+                raise ValueError('RLE block exceeds 500 samples')
+            data = b''.join(bytes([body[i + 1]]) * body[i] for i in range(0, len(body), 2))
+            self.rle_blocks += 1
+        else:
+            raise ValueError('unknown stream encoding %d' % enc)
+        if not 0 < len(data) <= 500:
+            raise ValueError('invalid expanded stream block size')
+        # Offset is u32 on the wire; unwrap it around the next expected
+        # sample, including long streams crossing 2**32 samples.
+        delta = (wire_offset - (self.samples & 0xffffffff)) & 0xffffffff
+        if delta >= 0x80000000:
+            raise ValueError('duplicate or overlapping stream block')
+        if delta:
+            self.dropped += delta
+            left = delta
+            while left:
+                n = min(left, 65536)
+                self.sink.write(bytes(n))
+                left -= n
+        self.sink.write(data)
+        self.samples += delta + len(data)
+        self.received += len(data)
+        self.blocks += 1
+        return None
+
+    def counters(self, result):
+        sent = int.from_bytes(result[1:5], 'little')
+        lost = int.from_bytes(result[5:9], 'little')
+        if sent != self.received & 0xffffffff or lost != self.dropped & 0xffffffff:
+            raise ValueError('host/device sample counters disagree: host %d/%d, device %d/%d'
+                             % (self.received, self.dropped, sent, lost))
+        meta = dict(device_sent=sent, device_dropped=lost)
+        if len(result) >= 25:
+            captured = int.from_bytes(result[9:13], 'little')
+            faults = int.from_bytes(result[13:17], 'little')
+            elapsed_us = int.from_bytes(result[17:25], 'little')
+            if captured != self.samples & 0xffffffff:
+                raise ValueError('device capture count differs from received sample span')
+            if faults:
+                raise ValueError('PIO/DMA hardware fault: 0x%x' % faults)
+            if self.rate and elapsed_us:
+                expected = self.rate * elapsed_us / 1e6
+                # Allow DMA word/FIFO quantization on very short/slow runs.
+                if abs(self.samples - expected) > max(32, expected * .001):
+                    raise ValueError('sample rate/duration mismatch: %d samples in %.6fs at %dHz'
+                                     % (self.samples, elapsed_us / 1e6, self.rate))
+            meta.update(device_captured=captured, hardware_faults=faults,
+                        capture_seconds=elapsed_us / 1e6)
+        return meta
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--port', default='/dev/ttyACM0')
+    ap.add_argument('--port', default=host_la.default_port())
     ap.add_argument('-r', '--rate', type=int, default=1000000,
                     help='sample rate, max 1000000 (default)')
     ap.add_argument('-t', '--seconds', type=float, default=0,
@@ -73,114 +161,120 @@ def main():
                     help='output file: .sr (PulseView) or .raw')
     ap.add_argument('--no-rle', action='store_true',
                     help='send raw sample bytes instead of RLE blocks')
+    ap.add_argument('--allow-drops', action='store_true', help='save an explicitly invalid lossy capture (benchmark only)')
+    ap.add_argument('--pause-seconds', type=float, default=0, help=argparse.SUPPRESS)
     ap.add_argument('--channels', default='0-7',
                     help='channel mask, default all eight')
     args = ap.parse_args()
 
-    if args.rate > MAX_STREAM_RATE:
-        ap.error('rate above %d is not reachable over USB CDC' % MAX_STREAM_RATE)
+    if args.seconds < 0:
+        ap.error("seconds must be nonnegative")
+    if args.rate not in (1000, 10000, 100000, 250000, 500000, 1000000):
+        ap.error('USB CDC supported rates: 1000, 10000, 100000, 250000, 500000, 1000000 Hz')
     mask = 0
     for part in args.channels.split(','):
         if '-' in part:
             a, b = part.split('-')
+            if not 0 <= int(a) <= int(b) <= 7:
+                ap.error('channels must be within 0..7')
             for c in range(int(a), int(b) + 1):
                 mask |= 1 << c
         else:
+            if not 0 <= int(part) <= 7:
+                ap.error('channels must be within 0..7')
             mask |= 1 << int(part)
 
     dev = Device(args.port)
     dev.hello()
     dev.configure(args.rate, MAX_SAMPLES, mask, 0, None)
 
-    out = bytearray()
-    expect = 0          # next absolute sample offset
-    dropped = 0
-    blocks = 0
-
-    kind, _, reply = dev.command(
+    sink = tempfile.TemporaryFile()
+    t0 = time.monotonic()  # Include START-reply latency in the requested wall-time budget.
+    kind, seq, reply = dev.command(
         ANALYZE, analyze_payload(ANALYZE_STREAM_START, 0 if args.no_rle else 1, 0))
     if kind != RESULT or not reply or reply[0] != 0:
+        dev.close()
+        sink.close()
         sys.exit('device rejected STREAM_START (is the rate supported?)')
+    receiver = StreamReceiver(sink, (seq + 1) & 0xffff, args.rate)
     print('streaming at %d Hz, %d channels, RLE %s; Ctrl+C to stop'
           % (args.rate, bin(mask).count('1'), 'off' if args.no_rle else 'on'),
           flush=True)
 
-    t0 = time.time()
-    try:
-        while True:
-            if args.seconds and time.time() - t0 >= args.seconds:
-                break
-            for kind, seq, payload in next_frames(dev):
-                if kind != STREAM_BLOCK or len(payload) < 5:
-                    continue
-                enc = payload[0]
-                offset = int.from_bytes(payload[1:5], 'little')
-                body = payload[5:]
-                if enc == 0:
-                    data = body
-                else:
-                    data = bytearray()
-                    for i in range(0, len(body) - 1, 2):
-                        data.extend(bytes([body[i + 1]]) * body[i])
-                blocks += 1
-                if offset < expect:
-                    continue                      # already have it
-                if offset > expect:               # device dropped slots
-                    dropped += offset - expect
-                    out.extend(bytes(offset - expect))
-                out.extend(data)
-                expect = offset + len(data)
-                if blocks % 200 == 0:
-                    print('  %.1f s  %d samples  %d dropped'
-                          % (time.time() - t0, len(out), dropped), flush=True)
-    except KeyboardInterrupt:
-        print('\nstopped by hand', flush=True)
-
-    # Stop and read the final counters. The device may still be flushing
-    # blocks, so drain frames until the RESULT arrives.
-    os.write(dev.fd, frame(ANALYZE, dev.tx_seq,
-                           analyze_payload(ANALYZE_STREAM_STOP, 0, 0)))
-    dev.tx_seq = (dev.tx_seq + 1) & 0xffff
-    deadline = time.time() + 5.0
+    start_reply_seconds = time.monotonic() - t0
+    failure = None
+    pause_done = False
     stop_result = None
-    while time.time() < deadline:
-        ready, _, _ = select.select([dev.fd], [], [], 0.2)
-        if not ready:
-            continue
-        for kind, seq, payload in next_frames(dev):
-            if kind == STREAM_BLOCK and len(payload) >= 5:
-                continue
-            if kind == RESULT and len(payload) >= 9:
-                stop_result = payload
-                break
-        if stop_result:
-            break
-    dev.close()
-
-    if not out:
-        print('no samples received', file=sys.stderr)
-        return 1
-
-    if args.out.endswith('.raw'):
-        with open(args.out, 'wb') as f:
-            f.write(out)
-    else:
-        write_sr(args.out, bytes(out), args.rate, bin(mask).count('1'))
-    meta = dict(rate=args.rate, samples=len(out), mask=mask,
-                dropped=dropped, seconds=round(time.time() - t0, 3),
-                rle=not args.no_rle)
-    with open(os.path.splitext(args.out)[0] + '.json', 'w') as f:
-        json.dump(meta, f, indent=2)
-    print('\nwrote %s: %d samples @ %d Hz, %d dropped, %.2f s'
-          % (args.out, len(out), args.rate, dropped, time.time() - t0))
-    if dropped:
-        print('dropped samples: USB CDC tops out near 1 MB/s. Keep RLE on '
-              'or lower the rate (raw is comfortable up to 500 kHz).')
-    if stop_result:
-        sent = int.from_bytes(stop_result[1:5], 'little')
-        lost = int.from_bytes(stop_result[5:9], 'little')
-        print('device reports %d samples sent, %d dropped' % (sent, lost))
-    return 0
+    try:
+        try:
+            while not args.seconds or time.monotonic() - t0 < args.seconds:
+                if args.pause_seconds and not pause_done and time.monotonic() - t0 > 1:
+                    time.sleep(args.pause_seconds)  # Deliberate host stall for the fault benchmark.
+                    pause_done = True
+                remaining = args.seconds - (time.monotonic() - t0) if args.seconds else .2
+                for kind, seq, payload in next_frames(dev, min(.2, max(0, remaining))):
+                    if receiver.accept(kind, seq, payload) is not None:
+                        raise ValueError('unexpected result before STREAM_STOP')
+        except KeyboardInterrupt:
+            print('stopping...', flush=True)
+        # Read already parsed frames too; never discard blocks while STOP
+        # flushes the final partial DMA slot.
+        os.write(dev.fd, frame(ANALYZE, dev.tx_seq,
+                              analyze_payload(ANALYZE_STREAM_STOP, 0, 0)))
+        dev.tx_seq = (dev.tx_seq + 1) & 0xffff
+        deadline = time.monotonic() + 10
+        while stop_result is None and time.monotonic() < deadline:
+            for kind, seq, payload in next_frames(dev):
+                stop_result = receiver.accept(kind, seq, payload)
+                if stop_result is not None:
+                    break
+        if stop_result is None:
+            raise TimeoutError('no STREAM_STOP counters')
+        counters = receiver.counters(stop_result)
+        if not receiver.received:
+            raise ValueError('no samples received')
+    except Exception as exc:
+        failure = str(exc)
+        counters = {}
+        # HELLO aborts a broken stream as well as a snapshot. Do not leave
+        # the board busy after a parser/USB error.
+        try:
+            dev.tx_seq = 0
+            dev.hello()
+        except Exception:
+            pass
+    finally:
+        dev.close()
+    seconds = time.monotonic() - t0
+    meta = dict(rate=args.rate, samples=receiver.samples, received_samples=receiver.received,
+                mask=mask, channels=[i for i in range(8) if mask & (1 << i)],
+                dropped=receiver.dropped, seconds=seconds, rle=not args.no_rle,
+                blocks=receiver.blocks, raw_blocks=receiver.raw_blocks, rle_blocks=receiver.rle_blocks,
+                wire_bytes=receiver.wire_bytes, host_mib_s=receiver.wire_bytes / seconds / 1048576,
+                start_reply_seconds=start_reply_seconds,
+                stop_counters_hex=stop_result.hex() if stop_result else None,
+                valid=failure is None and receiver.dropped == 0, error=failure, **counters)
+    if counters.get('capture_seconds'):
+        meta['effective_sample_rate'] = receiver.samples / counters['capture_seconds']
+    # Save bad runs for diagnosis but distinguish them in metadata and exit
+    # status; a zero-filled gap is never advertised as a valid logic level.
+    if receiver.received:
+        sink.seek(0)
+        if args.out.endswith('.raw'):
+            with open(args.out, 'wb') as out:
+                shutil.copyfileobj(sink, out, 1024 * 1024)
+        else:
+            # Each sample always contains the original eight bit positions.
+            write_sr(args.out, sink, args.rate, 8)
+    sink.close()
+    with open(os.path.splitext(args.out)[0] + '.json', 'w') as out:
+        json.dump(meta, out, indent=2)
+    print('wrote %s: %d samples @ %d Hz, %d dropped, %.3f s; %s'
+          % (args.out, receiver.samples, args.rate, receiver.dropped, seconds,
+             'VERIFIED' if meta['valid'] else 'INVALID'), flush=True)
+    if failure:
+        print(failure, file=sys.stderr)
+    return 0 if not failure and (not receiver.dropped or args.allow_drops) else 1
 
 
 if __name__ == '__main__':

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_common.py", line 38, in case
+    actual=fn();row.update(status='PASS',actual=actual)
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_offline.py", line 101, in a4
+    assert abs(error)<2,rows[-1]
+           ^^^^^^^^^^^^
+AssertionError: {'rate': 5000000, 'baud': 9600, 'expected_samples': 520.8333333333334, 'measured_samples': 100.0, 'error_percent': -80.80000000000001}

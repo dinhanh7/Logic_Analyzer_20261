@@ -7,7 +7,7 @@
  * trigger condition and finally the window is streamed to the host over USB CDC.
  *
  * The capture region is filled linearly, so a trigger window is always
- * contiguous in memory and no sample is ever lost.
+ * contiguous in memory; capture faults and stream overruns are reported.
  */
 #include "pico/stdlib.h"
 #include "pico/stdio_usb.h"
@@ -28,6 +28,7 @@
 #include "tft_st7735.h"
 #include "buttons.h"
 #include "ui.h"
+#include "capture_buffer.h"
 
 #define CAPTURE_WORDS (LAR2_MAX_SAMPLES / 4u)
 #define CAPTURE_BYTES (LAR2_MAX_SAMPLES)
@@ -41,7 +42,7 @@
 #define STREAM_SLOTS 4u
 #define STREAM_SLOT_BYTES (CAPTURE_BYTES / STREAM_SLOTS)
 #define STREAM_SLOT_WORDS (STREAM_SLOT_BYTES / 4u)
-#define STREAM_CHUNK 500u        /* RLE worst case 2*500+5 = 1005 < 1024 */
+#define STREAM_CHUNK 491u        /* raw frame = 491 + 5 + 16 = 512 bytes: full USB packets */
 
 /* Flash storage: use the last 1 MB of flash for session data.
  * Two slots of 512 KB: a slot is one header sector plus the samples, which
@@ -70,8 +71,9 @@ static uint32_t stream_ship;            /* samples already sent as a prefix */
 static uint32_t stream_sent_samples;
 static uint32_t stream_dropped;
 static bool stream_rle;
+static uint64_t stream_started_us, stream_duration_us;
 static PIO pio = pio0;
-static int sm, offset;
+static int sm, offset, stream_offset;
 static int dma_ch;
 
 /* Trigger state. */
@@ -136,7 +138,7 @@ typedef struct {
 /* ---------- send_frame (USB CDC) ---------- */
 static void send_frame(uint8_t type, const uint8_t *p, size_t n)
 {
-    uint8_t frame[LAR2_MAX_FRAME];
+    static uint8_t frame[LAR2_MAX_FRAME]; /* main-loop only, never IRQ */
     size_t len = lar2_encode(frame, type, tx_seq++, p, n), pos = 0;
     absolute_time_t deadline = make_timeout_time_ms(3000);
     /* Do not gate on tud_cdc_connected(): it can read false while the host
@@ -157,8 +159,13 @@ static void error(const char *text) { send_frame(LAR2_ERROR, (const uint8_t *)te
 /* ---------- abort / start capture ---------- */
 static void abort_capture(void)
 {
+    if (streaming) stop_stream();
     pio_sm_set_enabled(pio, sm, false);
     dma_channel_abort(dma_ch);
+    /* Snapshot completion also latches INTR even with its IRQ masked. Clear
+     * it before enabling the stream IRQ or a stale event invents a64KB slot. */
+    dma_channel_set_irq0_enabled(dma_ch, false);
+    dma_hw->ints0 = 1u << dma_ch;
     pio_sm_clear_fifos(pio, sm);
     capturing = sending = false;
     trigger_found = false;
@@ -309,6 +316,11 @@ static void command(void)
     }
     if (lar2_u16(f + 6) != rx_seq++) { abort_capture(); configured = false; error("sequence"); return; }
     if (type == LAR2_ABORT && !n) { abort_capture(); configured = false; ack(type); return; }
+    if (streaming) {
+        bool allowed = type == LAR2_ANALYZE && n == LAR2_ANALYZE_SIZE &&
+            (p[0] == LAR2_ANALYZE_STREAM_STOP || p[0] == LAR2_ANALYZE_RUNTIME);
+        if (!allowed) { error("stream busy"); return; }
+    }
     if (capturing || sending) {
         /* RUNTIME is the diagnostic probe: it must answer while busy, that is
          * exactly when its state is interesting. */
@@ -326,7 +338,7 @@ static void command(void)
     }
     case LAR2_CONFIG: {
         snapshot_valid = false;
-        configured = false;
+        configured = false; /* a rejected CONFIG must never leave ARM enabled */
         if (n != LAR2_CONFIG_V1_SIZE && n != LAR2_CONFIG_V2_SIZE) { error("invalid config"); break; }
         if (!lar2_u32(p + 8) || lar2_u32(p + 8) > LAR2_MAX_SAMPLES || !p[16]) { error("invalid config"); break; }
         bool supported = false;
@@ -366,7 +378,34 @@ static void command(void)
         uint16_t arg = lar2_u16(p + 1);
         uint32_t arg32 = lar2_u32(p + 3);
         uint8_t result[16] = { LAR2_RESULT_OK, 0, 0, 0, 0, 0, 0, 0 };
+        bool needs_capture = op == LAR2_ANALYZE_DECODE || op == LAR2_ANALYZE_DECODE_ALL ||
+            op == LAR2_ANALYZE_SAVE || op == LAR2_ANALYZE_SIG_SAVE ||
+            op == LAR2_ANALYZE_SIG_COMPARE || op == LAR2_ANALYZE_DIFF || op == LAR2_ANALYZE_REPLAY;
+        if (needs_capture && !snapshot_valid) { error("no valid capture"); break; }
         switch (op) {
+        case LAR2_ANALYZE_UI_FRAME: {
+            static uint8_t pixels[1011];
+            if (arg32 > 1000 || arg >= 128u * 160u * 2u) { error("frame range"); break; }
+            size_t copied = ui_copy_frame(arg, pixels + 11, arg32 ? arg32 : 1000);
+            pixels[0] = LAR2_RESULT_OK; pixels[1] = 128; pixels[2] = 160;
+            lar2_put32(pixels + 3, ui_frame_version());
+            lar2_put16(pixels + 7, arg); lar2_put16(pixels + 9, 128u * 160u * 2u);
+            send_frame(LAR2_RESULT, pixels, copied + 11);
+            break;
+        }
+        case LAR2_ANALYZE_UI_VIEW: {
+            ui_view_state st;
+            static uint8_t view[29];
+            ui_get_view(&st);
+            view[0] = LAR2_RESULT_OK;
+            lar2_put32(view + 1, st.start); lar2_put32(view + 5, st.visible);
+            lar2_put32(view + 9, st.count); lar2_put32(view + 13, st.trigger);
+            lar2_put64(view + 17, st.rate);
+            view[25] = st.screen; view[26] = st.zoom;
+            view[27] = st.protocol; view[28] = st.events;
+            send_frame(LAR2_RESULT, view, sizeof view);
+            break;
+        }
         case LAR2_ANALYZE_UI_SHOW_CAPTURE:
             if (!snapshot_valid || arg < 2 || arg > 4 || arg32 > 4) {
                 error("no real snapshot or invalid UI selection");
@@ -403,7 +442,7 @@ static void command(void)
         }
         case LAR2_ANALYZE_SAVE:
             if (arg >= MAX_SESSIONS) { result[0] = LAR2_RESULT_ERROR; send_frame(LAR2_RESULT, result, 1); break; }
-            flash_save_session(arg, win_len, rate, mask, pretrigger, pretrigger, trig_mode);
+            flash_save_session(arg, win_len, rate, mask, win_trigger, pretrigger, trig_mode);
             result[0] = LAR2_RESULT_OK; send_frame(LAR2_RESULT, result, 1);
             break;
         case LAR2_ANALYZE_LOAD:
@@ -439,7 +478,8 @@ static void command(void)
             break;
         }
         case LAR2_ANALYZE_REPLAY:
-            start_sending(win_len, LAR2_NO_TRIGGER, 0, 0);
+            start_sending(win_len, win_trigger, win_trigger == LAR2_NO_TRIGGER ? 0 : win_trigger,
+                          win_trigger == LAR2_NO_TRIGGER ? 0 : LAR2_INFO_TRIGGER_FOUND);
             break;
         case LAR2_ANALYZE_STREAM_START:
             if (!configured) { result[0] = LAR2_RESULT_ERROR; send_frame(LAR2_RESULT, result, 1); break; }
@@ -451,12 +491,27 @@ static void command(void)
             send_frame(LAR2_RESULT, result, 1);
             break;
         case LAR2_ANALYZE_STREAM_STOP: {
-            stream_ship_pending(true);   /* flush the tail before stopping */
-            stop_stream();
-            result[0] = LAR2_RESULT_OK;
-            lar2_put32(result + 1, stream_sent_samples);
-            lar2_put32(result + 5, stream_dropped);
-            send_frame(LAR2_RESULT, result, 9);
+            if (!streaming) { error("stream is not active"); break; }
+            stop_stream();             /* freeze DMA before reading its final tail */
+            stream_ship_pending(true);
+            /* The stopped ring is now immutable. Expose its latest chronological
+             * window on the TFT as well, rather than leaving stale sample pointers. */
+            win_base = (const uint8_t *)samples;
+            win_len = stream_prod >= STREAM_SLOTS ? CAPTURE_BYTES : stream_ship;
+            if (stream_prod >= STREAM_SLOTS)
+                la_rotate_left((uint8_t *)samples, CAPTURE_BYTES, stream_ship % CAPTURE_BYTES);
+            win_trigger = LAR2_NO_TRIGGER;
+            snapshot_valid = win_len && !capture_faulted();
+            ui_set_capture(snapshot_valid ? win_base : NULL, snapshot_valid ? win_len : 0,
+                           rate, 0, snapshot_valid);
+            static uint8_t stats[25];
+            stats[0] = LAR2_RESULT_OK;
+            lar2_put32(stats + 1, stream_sent_samples);
+            lar2_put32(stats + 5, stream_dropped);
+            lar2_put32(stats + 9, stream_ship);
+            lar2_put32(stats + 13, capture_faulted() ? 1u : 0u);
+            lar2_put64(stats + 17, stream_duration_us);
+            send_frame(LAR2_RESULT, stats, sizeof stats);
             break;
         }
         case LAR2_ANALYZE_UI_TEXT: {
@@ -516,7 +571,7 @@ static void command(void)
             /* Board bring-up aid: apply an internal pull to CH0..CH7 and read
              * the pads back. A floating input follows the pull, a driven input
              * does not, which tells "wire missing" from "signal idle". */
-            for (uint i = 0; i < 23; i++) {
+            for (uint i = 0; i < 8; i++) {
                 if (arg == 0) gpio_pull_down(i);
                 else if (arg == 1) gpio_pull_up(i);
                 else gpio_disable_pulls(i);
@@ -573,7 +628,7 @@ static void __not_in_flash_func(stream_dma_isr)(void)
  * win, so a fast toggling line costs exactly one byte per sample. */
 static void send_stream_slot(const uint8_t *p, uint32_t len, uint32_t offset)
 {
-    uint8_t block[LAR2_MAX_PAYLOAD];
+    static uint8_t block[LAR2_MAX_PAYLOAD]; /* avoids nested 2 KB stack frames */
     for (uint32_t i = 0; i < len; i += STREAM_CHUNK) {
         uint32_t n = len - i;
         if (n > STREAM_CHUNK) n = STREAM_CHUNK;
@@ -589,6 +644,7 @@ static void send_stream_slot(const uint8_t *p, uint32_t len, uint32_t offset)
                 dst[o++] = (uint8_t)run;
                 dst[o++] = v;
                 k += run;
+                if (o >= n) break; /* raw already wins; do not scan the rest twice */
             }
             if (o < n) { enc = 1; out = o; }
         }
@@ -605,21 +661,19 @@ static bool start_stream(uint64_t r, uint8_t m, bool rle)
     snapshot_valid = false;
     abort_capture();
     rate = r; mask = m;
+    ui_set_capture(NULL, 0, r, 0, false); /* ring RAM no longer contains the old snapshot */
     count = CAPTURE_BYTES;
     trig_mode = LAR2_TRIGGER_MANUAL;
     pretrigger = 0;
 
-    pio_sm_config c = logic_capture_program_get_default_config(offset);
+    pio_sm_config c = logic_stream_program_get_default_config(stream_offset);
     sm_config_set_in_pins(&c, 0);
     sm_config_set_in_shift(&c, true, true, 32);
     sm_config_set_out_shift(&c, true, false, 32);
     sm_config_set_clkdiv_int_frac(&c, (uint32_t)(25000000 / rate), 0);
-    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_init(pio, sm, stream_offset, &c);
     pio_sm_set_consecutive_pindirs(pio, sm, 0, 8, false);
     pio_sm_clkdiv_restart(pio, sm);
-    pio_sm_put_blocking(pio, sm, 0xFFFFFFFFu);   /* X-- runs ~4G samples */
-    pio_sm_exec(pio, sm, pio_encode_pull(false, true));
-    pio_sm_exec(pio, sm, pio_encode_out(pio_x, 32));
 
     dma_channel_config dc = dma_channel_get_default_config(dma_ch);
     channel_config_set_transfer_data_size(&dc, DMA_SIZE_32);
@@ -633,6 +687,7 @@ static bool start_stream(uint64_t r, uint8_t m, bool rle)
     pio->fdebug = 1u << (PIO_FDEBUG_RXSTALL_LSB + sm);
     dma_channel_configure(dma_ch, &dc, samples, &pio->rxf[sm], STREAM_SLOT_WORDS, true);
     dma_channel_set_irq0_enabled(dma_ch, true);
+    stream_started_us = time_us_64();
     pio_sm_set_enabled(pio, sm, true);
     return true;
 }
@@ -646,6 +701,7 @@ static void stop_stream(void)
     dma_channel_abort(dma_ch);
     pio_sm_clear_fifos(pio, sm);
     dma_hw->ints0 = 1u << dma_ch;
+    stream_duration_us = time_us_64() - stream_started_us;
 }
 
 /* Ship everything the DMA has already written: the completed slots plus the
@@ -653,39 +709,32 @@ static void stop_stream(void)
  * 1 kHz capture stays silent for 65 s until a whole 64 KB slot fills up. */
 static void stream_ship_pending(bool final)
 {
-    uint32_t save = save_and_disable_interrupts();
-    uint32_t prod = stream_prod;
-    uint32_t written = dma_hw->ch[dma_ch].write_addr - (uint32_t)(uintptr_t)samples;
-    restore_interrupts(save);
-    /* write_addr is relative to the ring; the slot being filled starts at
-     * (prod % STREAM_SLOTS). A completed transfer can push it to the next slot
-     * base in between, hence the clamp. */
-    uint32_t filled = written - (prod % STREAM_SLOTS) * STREAM_SLOT_BYTES;
-    if (filled > STREAM_SLOT_BYTES) filled = STREAM_SLOT_BYTES;
-    uint32_t pending = prod * STREAM_SLOT_BYTES + filled - stream_ship;
-
-    if (!final) {
+    for (;;) {
+        uint32_t save = save_and_disable_interrupts();
+        uint32_t prod = stream_prod;
+        uint32_t written = dma_hw->ch[dma_ch].write_addr - (uint32_t)(uintptr_t)samples;
+        restore_interrupts(save);
+        uint32_t filled = written - (prod % STREAM_SLOTS) * STREAM_SLOT_BYTES;
+        if (filled > STREAM_SLOT_BYTES) filled = STREAM_SLOT_BYTES;
+        uint32_t pending = prod * STREAM_SLOT_BYTES + filled - stream_ship;
         uint32_t room = (STREAM_SLOTS - 1u) * STREAM_SLOT_BYTES;
         if (pending > room) {
-            /* The writer lapped the sender: skip the overwritten samples and
-             * report the loss instead of shipping stale data as contiguous. */
             uint32_t skip = pending - room;
             stream_ship += skip;
             stream_dropped += skip;
             pending = room;
         }
-        /* At 1 kHz a per-iteration block would be 21 header bytes per sample;
-         * 500 samples caps the delivery latency at half a second. */
-        if (pending < STREAM_CHUNK) return;
-    }
-    while (pending) {
+        if (!pending || (!final && pending < STREAM_CHUNK)) return;
         uint32_t mem = stream_ship % CAPTURE_BYTES;
         uint32_t n = STREAM_SLOT_BYTES - (mem % STREAM_SLOT_BYTES);
         if (n > pending) n = pending;
+        if (n > STREAM_CHUNK) n = STREAM_CHUNK;
         send_stream_slot((const uint8_t *)samples + mem, n, stream_ship);
         stream_ship += n;
         stream_sent_samples += n;
-        pending -= n;
+        /* Refresh the producer after every USB block. In normal operation
+         * ship just one block per main-loop pass so STOP/HELLO stay responsive. */
+        if (!final) return;
     }
 }
 
@@ -708,17 +757,11 @@ static void capture_task(void)
         } else {
             trigger_scan();
             if (trigger_found) {
-                /* Keep the trigger inside the window and keep the sample count
-                 * exact. When the trigger lands too late for the requested
-                 * pretrigger, slide the window right instead of starting over:
-                 * re-arming a full buffer has a free-running period, and a
-                 * periodic signal (a CAN burst every 100 ms, say) can lock that
-                 * period to its own so the late trigger repeats forever and the
-                 * capture never completes. */
-                uint32_t max_prod = CAPTURE_BYTES - DMA_LAG_BYTES;
-                uint32_t base = trigger_abs >= pretrigger ? trigger_abs - pretrigger : 0;
-                if (base + count > max_prod && count <= max_prod) base = max_prod - count;
-                if (base + count <= max_prod) {
+                /* Preserve exact pretrigger geometry; never truncate the frame
+                 * by sliding a late event toward the right-hand boundary. */
+                uint32_t base;
+                if (la_trigger_window(trigger_abs, pretrigger, count,
+                                      CAPTURE_BYTES, DMA_LAG_BYTES, &base)) {
                     if (produced_samples() >= base + count) {
                         pio_sm_set_enabled(pio, sm, false);
                         dma_channel_abort(dma_ch);
@@ -730,14 +773,15 @@ static void capture_task(void)
                         start_sending(count, trigger_abs - base, trigger_abs - base,
                                       LAR2_INFO_TRIGGER_FOUND);
                     }
-                } else if (dma_done) {
-                    /* Only reachable when count is nearly the whole buffer, so
-                     * no window can hold both the trigger and that many
-                     * samples. Re-arm and hope for an earlier trigger. */
+                } else {
+                    /* Vary the retry phase slightly so a periodic burst cannot
+                     * lock every event to the same unusably late position. */
                     if (++trigger_restarts > 2000) {
                         pio_sm_set_enabled(pio, sm, false); capturing = false;
                         configured = false; error("trigger too late"); return;
                     }
+                    abort_capture();
+                    busy_wait_us_32(37u + 23u * (trigger_restarts % 29u));
                     start_capture();
                 }
             } else if (dma_done) {
@@ -812,14 +856,24 @@ static bool flash_load_session(uint32_t slot)
     session_header_t hdr;
     memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof(hdr));
     if (hdr.magic != SESSION_MAGIC || hdr.sample_count == 0 ||
-        hdr.sample_count > SESSION_MAX_SAMPLES) return false;
+        hdr.sample_count > CAPTURE_BYTES || !hdr.channel_mask || hdr.channel_mask > 0xff ||
+        hdr.trigger_mode > LAR2_TRIGGER_UART || hdr.pretrigger >= hdr.sample_count ||
+        (hdr.trigger_index != LAR2_NO_TRIGGER && hdr.trigger_index >= hdr.sample_count)) return false;
+    bool supported = false;
+    for (unsigned i = 0; i < LAR2_RATE_COUNT; i++) if (hdr.sample_rate == lar2_rates[i]) supported = true;
+    if (!supported) return false;
     memcpy(samples, (void *)(XIP_BASE + offset + FLASH_SECTOR_BYTES), hdr.sample_count);
     rate = hdr.sample_rate;
     count = hdr.sample_count;
     mask = hdr.channel_mask;
     pretrigger = hdr.pretrigger;
+    trig_mode = hdr.trigger_mode;
     win_base = (const uint8_t *)samples;
     win_len = count;
+    win_trigger = hdr.trigger_index;
+    snapshot_valid = true;
+    configured = false;
+    ui_set_capture(win_base, win_len, rate, win_trigger == LAR2_NO_TRIGGER ? 0 : win_trigger, true);
     return true;
 }
 
@@ -829,65 +883,47 @@ static bool flash_load_session(uint32_t slot)
 static int compare_with_golden(void)
 {
     if (!has_golden) { snprintf(decode_buf, sizeof(decode_buf), "SIG: no golden ref"); return -1; }
-    uint32_t capture_words = (win_len + 3) / 4;
-    if (capture_words > CAPTURE_WORDS) capture_words = CAPTURE_WORDS;
-    uint32_t compare_words = capture_words < golden_count ? capture_words : golden_count;
-    uint32_t mismatches = 0;
-    uint32_t first_mismatch = 0;
-    const uint32_t *cur = (const uint32_t *)win_base;
-    for (uint32_t i = 0; i < compare_words; i++) {
-        if (cur[i] != golden_samples[i]) {
-            if (mismatches == 0) first_mismatch = i * 4;
-            mismatches++;
-        }
+    uint32_t current = win_len < sizeof(golden_samples) ? win_len : sizeof(golden_samples);
+    uint32_t compared = current < golden_count ? current : golden_count;
+    uint32_t mismatches = current > golden_count ? current - golden_count : golden_count - current;
+    uint32_t first = compared;
+    const uint8_t *gold = (const uint8_t *)golden_samples;
+    for (uint32_t i = 0; i < compared; i++) {
+        if (win_base[i] != gold[i]) { if (first == compared) first = i; mismatches++; }
     }
-    if (mismatches <= golden_tolerance) {
-        snprintf(decode_buf, sizeof(decode_buf), "SIG: MATCH (%u mismatches <= %u tol, %u samples)", mismatches, golden_tolerance, compare_words * 4);
-    } else {
-        snprintf(decode_buf, sizeof(decode_buf), "SIG: MISMATCH %u/%u samples at sample %u", mismatches, compare_words * 4, first_mismatch);
-    }
+    snprintf(decode_buf, sizeof(decode_buf), "SIG: %s (%u mismatches, %u samples, first %u, tol %u)",
+             mismatches <= golden_tolerance ? "MATCH" : "MISMATCH", (unsigned)mismatches, (unsigned)compared, (unsigned)first, (unsigned)golden_tolerance);
     return (int)mismatches;
 }
 
 static void save_golden(void)
 {
-    uint32_t words = (win_len + 3) / 4;
-    if (words > 16384) words = 16384;
-    memcpy(golden_samples, win_base, words * sizeof(uint32_t));
-    golden_count = words;
+    golden_count = win_len < sizeof(golden_samples) ? win_len : sizeof(golden_samples);
+    memcpy(golden_samples, win_base, golden_count);
     has_golden = true;
 }
 
-/* ---------- Capture diff ---------- */
-/* Compare two sessions from flash by loading each into samples buffer alternately. */
+/* Compare bytes directly from XIP flash: keep the user's golden reference
+ * intact, and never read beyond an odd-length or unaligned capture window. */
 static int diff_with_loaded_session(uint32_t slot)
 {
     if (slot >= MAX_SESSIONS) { snprintf(decode_buf, sizeof(decode_buf), "DIFF: bad slot"); return -1; }
-    /* Load session from flash into a temporary buffer (reuse golden buffer). */
     uint32_t offset = SESSION_OFFSET(slot);
     session_header_t hdr;
-    memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof(hdr));
-    if (hdr.magic != SESSION_MAGIC) { snprintf(decode_buf, sizeof(decode_buf), "DIFF: no session in slot %u", slot); return -1; }
-    uint32_t limit_samples = win_len < hdr.sample_count ? win_len : hdr.sample_count;
-    uint32_t limit_words = (limit_samples + 3) / 4;
-    if (limit_words > 16384) limit_words = 16384;
-    /* Load from flash into golden buffer temporarily. */
-    uint32_t samples_offset = offset + FLASH_SECTOR_BYTES;
-    memcpy(golden_samples, (void *)(XIP_BASE + samples_offset), limit_words * sizeof(uint32_t));
-    /* Compare current samples with loaded session. */
-    const uint32_t *cur = (const uint32_t *)win_base;
-    uint32_t first_diff = 0;
-    int found = 0;
-    for (uint32_t i = 0; i < limit_words; i++) {
-        if (cur[i] != golden_samples[i]) { first_diff = i; found = 1; break; }
+    memcpy(&hdr, (void *)(XIP_BASE + offset), sizeof hdr);
+    if (hdr.magic != SESSION_MAGIC || !hdr.sample_count || hdr.sample_count > CAPTURE_BYTES) {
+        snprintf(decode_buf, sizeof(decode_buf), "DIFF: no valid session in slot %u", (unsigned)slot); return -1;
     }
-    if (!found) {
-        snprintf(decode_buf, sizeof(decode_buf), "DIFF: identical");
-    } else {
-        snprintf(decode_buf, sizeof(decode_buf), "DIFF: first mismatch at sample %u (A=0x%08X B=0x%08X)",
-                 first_diff * 4, cur[first_diff], golden_samples[first_diff]);
+    const uint8_t *saved = (const uint8_t *)(XIP_BASE + offset + FLASH_SECTOR_BYTES);
+    uint32_t compared = win_len < hdr.sample_count ? win_len : hdr.sample_count;
+    uint32_t first = 0;
+    while (first < compared && win_base[first] == saved[first]) first++;
+    if (first == compared && win_len == hdr.sample_count) {
+        snprintf(decode_buf, sizeof(decode_buf), "DIFF: identical (%u samples)", (unsigned)compared); return 0;
     }
-    return found;
+    snprintf(decode_buf, sizeof(decode_buf), "DIFF: first mismatch at sample %u (lengths %u/%u)",
+             (unsigned)first, (unsigned)win_len, (unsigned)hdr.sample_count);
+    return 1;
 }
 
 /* ---------- main ---------- */
@@ -902,10 +938,12 @@ int main(void)
     for (uint i = 0; i < 8; i++) { pio_gpio_init(pio, i); gpio_disable_pulls(i); }
     sm = pio_claim_unused_sm(pio, true);
     offset = pio_add_program(pio, &logic_capture_program);
+    stream_offset = pio_add_program(pio, &logic_stream_program);
     dma_ch = dma_claim_unused_channel(true);
     /* Slot-completion interrupt for streaming; the snapshot path never
      * enables it, so it stays quiet until ANALYZE_STREAM_START. */
     irq_set_exclusive_handler(DMA_IRQ_0, stream_dma_isr);
+    irq_set_priority(DMA_IRQ_0, 0x40); /* re-arm before the 16-sample FIFO fills */
     irq_set_enabled(DMA_IRQ_0, true);
     bool connected = false;
     while (true) {
@@ -943,7 +981,7 @@ int main(void)
         }
         /* UI capture: the buttons and the serial keys feed the same event
          * queue, and a request runs the very same capture path as LAR2 ARM. */
-        if (!capturing && !sending && ui_take_capture_request()) {
+        if (!streaming && !capturing && !sending && ui_take_capture_request()) {
             rate = ui_cfg.rate; count = ui_cfg.count; mask = ui_cfg.mask;
             pretrigger = ui_cfg.pretrigger; trig_mode = ui_cfg.trig_mode;
             trig_channel = ui_cfg.trig_channel; trig_edge = ui_cfg.trig_edge;

@@ -1,0 +1,37 @@
+RP2350-LA/1.2+trg+an+str+ui18+sync+opt1
+{
+  "status": "PASS",
+  "steps": 15,
+  "initial_lo": {
+    "start": 27966,
+    "visible": 3584,
+    "count": 65536,
+    "trigger": 32768,
+    "rate": 25000000,
+    "screen": 2,
+    "zoom": 5,
+    "protocol": 1,
+    "events": 0
+  },
+  "initial_hi": {
+    "start": 39254,
+    "visible": 224,
+    "count": 65536,
+    "trigger": 32768,
+    "rate": 25000000,
+    "screen": 3,
+    "zoom": 1,
+    "protocol": 1,
+    "events": 3
+  },
+  "button_capture": {
+    "rate": 25000000,
+    "count": 65536,
+    "trigger_index": 32768,
+    "pretrigger": 32768,
+    "channels": 8,
+    "unit": 1,
+    "mask": 255,
+    "flags": 1
+  }
+}

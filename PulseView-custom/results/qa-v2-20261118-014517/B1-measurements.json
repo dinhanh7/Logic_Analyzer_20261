@@ -1,0 +1,38 @@
+[
+  {
+    "periods": 261,
+    "period_samples_mean": 999.9961685823755,
+    "frequency_hz": 1000.0038314323043,
+    "duty": 0.5000019157161522,
+    "jitter_pp_samples": 1,
+    "jitter_rms_samples": 0.06177975286052528,
+    "min_period_samples": 999,
+    "max_period_samples": 1000,
+    "rate": 1000000,
+    "error_percent": 0.0003831432304313154
+  },
+  {
+    "periods": 51,
+    "period_samples_mean": 4999.980392156863,
+    "frequency_hz": 1000.0039215840062,
+    "duty": 0.4999980392079969,
+    "jitter_pp_samples": 1,
+    "jitter_rms_samples": 0.1386483884679505,
+    "min_period_samples": 4999,
+    "max_period_samples": 5000,
+    "rate": 5000000,
+    "error_percent": 0.00039215840061945784
+  },
+  {
+    "periods": 10,
+    "period_samples_mean": 24999.9,
+    "frequency_hz": 1000.004000016,
+    "duty": 0.49999799999199995,
+    "jitter_pp_samples": 1,
+    "jitter_rms_samples": 0.3,
+    "min_period_samples": 24999,
+    "max_period_samples": 25000,
+    "rate": 25000000,
+    "error_percent": 0.000400001599998312
+  }
+]

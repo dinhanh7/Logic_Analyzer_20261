@@ -1,0 +1,6 @@
+can-1: Data byte 0: 0xd8
+can-1: Data byte 1: 0xa7
+can-1: Data byte 2: 0xb8
+can-1: Data byte 3: 0xe9
+
+bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8)

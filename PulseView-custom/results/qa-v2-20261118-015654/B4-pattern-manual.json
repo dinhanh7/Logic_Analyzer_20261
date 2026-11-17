@@ -1,0 +1,34 @@
+{
+  "pattern": {
+    "rate": 25000000,
+    "count": 65536,
+    "trigger_index": 32768,
+    "pretrigger": 32768,
+    "channels": 8,
+    "unit": 1,
+    "mask": 255,
+    "flags": 1
+  },
+  "manual": {
+    "rate": 1000000,
+    "count": 1031,
+    "trigger_index": 4294967295,
+    "pretrigger": 0,
+    "channels": 8,
+    "unit": 1,
+    "mask": 255,
+    "flags": 0
+  },
+  "recovery": {
+    "rate": 1000000,
+    "count": 1031,
+    "trigger_index": 4294967295,
+    "pretrigger": 0,
+    "channels": 8,
+    "unit": 1,
+    "mask": 255,
+    "flags": 0
+  },
+  "reference_level": true,
+  "never_match_value": 0
+}

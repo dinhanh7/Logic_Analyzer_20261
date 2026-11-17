@@ -1,0 +1,46 @@
+{
+  "id": "B2",
+  "objective": "Actual UART bit-width metrology",
+  "conditions": "UART115200;1/5/25MHz;unit-width run clusters",
+  "expected": "mean<2%;25MHz mean<1sample error",
+  "status": "PASS",
+  "actual": [
+    {
+      "rate": 1000000,
+      "expected_samples": 8.680555555555555,
+      "mean_samples": 8.666666666666666,
+      "count": 21,
+      "error_percent": -0.16000000000000458,
+      "jitter_pp_samples": 1,
+      "jitter_rms_samples": 0.4714045207910317
+    },
+    {
+      "rate": 5000000,
+      "expected_samples": 43.40277777777778,
+      "mean_samples": 43.523809523809526,
+      "count": 21,
+      "error_percent": 0.27885714285713625,
+      "jitter_pp_samples": 1,
+      "jitter_rms_samples": 0.4994327848429293
+    },
+    {
+      "rate": 25000000,
+      "expected_samples": 217.01388888888889,
+      "mean_samples": 217,
+      "count": 21,
+      "error_percent": -0.006399999999995298,
+      "jitter_pp_samples": 2,
+      "jitter_rms_samples": 0.6172133998483676
+    }
+  ],
+  "seconds": 0.708,
+  "evidence": [
+    "B2-1000000.raw",
+    "B2-1000000.sr",
+    "B2-25000000.raw",
+    "B2-25000000.sr",
+    "B2-5000000.raw",
+    "B2-5000000.sr",
+    "B2-bit-width.json"
+  ]
+}

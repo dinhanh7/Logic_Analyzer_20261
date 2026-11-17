@@ -8,3 +8,12 @@ sample:
 done:
     jmp done
 .wrap
+
+; Continuous mode retains exactly four clocks/sample, without an X counter
+; that would silently stop after 2**32 samples (~71 minutes at 1 MS/s).
+.program logic_stream
+.wrap_target
+stream_sample:
+    in pins, 8 [2]
+    jmp stream_sample
+.wrap

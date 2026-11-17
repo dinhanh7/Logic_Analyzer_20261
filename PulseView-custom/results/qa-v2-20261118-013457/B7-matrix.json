@@ -1,0 +1,182 @@
+[
+  {
+    "protocol": "UART",
+    "rate": 1000000,
+    "info": {
+      "rate": 1000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.3270888549996016
+  },
+  {
+    "protocol": "I2C",
+    "rate": 1000000,
+    "info": {
+      "rate": 1000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.3129181440017419
+  },
+  {
+    "protocol": "SPI",
+    "rate": 1000000,
+    "info": {
+      "rate": 1000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.3210273660006351
+  },
+  {
+    "protocol": "CAN",
+    "rate": 1000000,
+    "info": {
+      "rate": 1000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.3234396320003725
+  },
+  {
+    "protocol": "UART",
+    "rate": 5000000,
+    "info": {
+      "rate": 5000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.28744310299953213
+  },
+  {
+    "protocol": "I2C",
+    "rate": 5000000,
+    "info": {
+      "rate": 5000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.21317711000301642
+  },
+  {
+    "protocol": "SPI",
+    "rate": 5000000,
+    "info": {
+      "rate": 5000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.22621066800275003
+  },
+  {
+    "protocol": "CAN",
+    "rate": 5000000,
+    "info": {
+      "rate": 5000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.22277335800026776
+  },
+  {
+    "protocol": "UART",
+    "rate": 25000000,
+    "info": {
+      "rate": 25000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.20537892099673627
+  },
+  {
+    "protocol": "I2C",
+    "rate": 25000000,
+    "info": {
+      "rate": 25000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.22975221299930126
+  },
+  {
+    "protocol": "SPI",
+    "rate": 25000000,
+    "info": {
+      "rate": 25000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.3277491810003994
+  },
+  {
+    "protocol": "CAN",
+    "rate": 25000000,
+    "info": {
+      "rate": 25000000,
+      "count": 65536,
+      "trigger_index": 32768,
+      "pretrigger": 32768,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 1
+    },
+    "seconds": 0.238109183999768
+  }
+]

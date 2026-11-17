@@ -1,0 +1,8 @@
+bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8)
+sr: session: Starting.
+cli: Received SR_DF_HEADER.
+sr: rp2350-la: CDC disconnected.
+sr: rp2350-la: Cannot open /dev/serial/by-id/usb-Raspberry_Pi_Pico_907CBC57E4828DD6-if00: Permission denied
+sr: rp2350-la: Reconnect required after abort.
+cli: Received SR_DF_END.
+sr: session: Stopped.

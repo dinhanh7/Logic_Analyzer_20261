@@ -43,7 +43,7 @@
 #define C_EDIT    RGB565(0x06, 0x5F, 0x46)
 #define C_EDIT_T  RGB565(0x34, 0xD3, 0x99)
 #define C_TEXT    RGB565(0xE2, 0xE8, 0xF0)
-#define C_DIM     RGB565(0x64, 0x74, 0x8B)
+#define C_DIM     RGB565(0x94, 0xA3, 0xB8)
 #define C_TRIG    RGB565(0xEF, 0x44, 0x44)
 #define C_CURSOR  RGB565(0xF8, 0xFA, 0xFC)
 
@@ -129,6 +129,9 @@ static const uint8_t zoom_spp[] = { 1, 2, 4, 8, 16, 32, 64, 128 };
 #define ZOOM_FIT 0xFF
 #define ZOOM_N (sizeof(zoom_spp) / sizeof(zoom_spp[0]))
 static uint32_t wave_t;
+typedef struct { uint32_t start; uint8_t zoom; } wave_view;
+static wave_view wave_views[2];
+static bool render_deferred, render_pending;
 static uint32_t cap_trigger;
 
 /* Decode screen. */
@@ -143,6 +146,7 @@ static la_channel_map dec_map;      /* map the current decode is using */
 static uint8_t dec_proto;           /* LAR2_PROTO_* actually decoded */
 
 static uint8_t event_count;
+static uint32_t frame_version;
 
 static const uint8_t *cap_samples;
 static uint32_t cap_len;
@@ -344,18 +348,6 @@ static const char *cond_name(char *buf, size_t n)
     return buf;
 }
 
-static const char *bus_config(char *buf, size_t n)
-{
-    switch (proto_sel) {
-    case 0: snprintf(buf, n, "AUTO %s", baud_lbl[baud_idx]); break;
-    case 1: snprintf(buf, n, "RX %s", baud_lbl[baud_idx]); break;
-    case 2: snprintf(buf, n, "SCL/SDA"); break;
-    case 3: snprintf(buf, n, "CS/SCK/MOSI"); break;
-    default: snprintf(buf, n, "CAN 250K"); break;
-    }
-    return buf;
-}
-
 /* ---------- screen 0: standby / boot ---------- */
 /* Two interleaved square waves with a red trigger line, as the device's
  * signature. Drawn from samples, not pre-baked, so the edges stay square. */
@@ -480,9 +472,6 @@ static void draw_track(unsigned ch, int y)
 {
     uint16_t color = C_CH[ch & 3u];
     uint32_t visible = visible_samples();
-    uint32_t span = WAVE_W ? visible / WAVE_W : 0;
-    if (!span) span = 1;
-
     const int hi = y + 5, lo = y + 17;
     fill(WAVE_X0, y, WAVE_W, WAVE_TRACK_H - 1, C_BG);
 
@@ -490,13 +479,14 @@ static void draw_track(unsigned ch, int y)
     snprintf(label, sizeof label, "%u", ch);
 
     for (int col = 0; col < WAVE_W; col++) {
-        uint32_t a = wave_t + (uint32_t)col * span;
+        uint32_t a = wave_t + (uint32_t)((uint64_t)visible * (unsigned)col / WAVE_W);
         if (a >= cap_len) break;
-        uint32_t b = a + span;
+        uint32_t b = wave_t + (uint32_t)((uint64_t)visible * (unsigned)(col + 1) / WAVE_W);
+        if (b <= a) b = a + 1;
         if (b > cap_len) b = cap_len;
-        unsigned level = sample_bit(a, ch);
+        unsigned level = sample_bit(a ? a - 1 : a, ch);
         bool edge = false;
-        for (uint32_t i = a + 1; i < b && !edge; i++)
+        for (uint32_t i = a; i < b && !edge; i++)
             if (sample_bit(i, ch) != level) edge = true;
         int x = WAVE_X0 + col;
         if (edge) {
@@ -508,6 +498,42 @@ static void draw_track(unsigned ch, int y)
     hline(WAVE_X0, y + WAVE_TRACK_H - 1, WAVE_W, C_BROWSE);
     text(2, y + 8, label, color);
 }
+
+static void reset_wave_views(void)
+{
+    for (unsigned page = 0; page < 2; page++) {
+        uint32_t at = 0, shortest = UINT32_MAX;
+        bool found = false;
+        for (unsigned ch = page * 4; ch < page * 4 + 4 && !found; ch++) {
+            uint32_t previous = 0;
+            unsigned edges = 0;
+            for (uint32_t i = 1; i < cap_len; i++) {
+                if (sample_bit(i, ch) == sample_bit(i - 1, ch)) continue;
+                if (!edges) at = i;
+                else if (i - previous < shortest) shortest = i - previous;
+                previous = i;
+                found = true;
+                if (++edges == 128) break;
+            }
+        }
+        uint8_t z = ZOOM_FIT;
+        if (found) {
+            z = 0;
+            if (shortest == UINT32_MAX) shortest = 96;
+            while ((unsigned)z + 1 < ZOOM_N && zoom_spp[z + 1] <= shortest / 6u) z++;
+        }
+        uint32_t visible = z == ZOOM_FIT ? cap_len : WAVE_W * zoom_spp[z];
+        if (visible > cap_len) visible = cap_len;
+        uint32_t start = at > visible / 4 ? at - visible / 4 : 0;
+        if (start > cap_len - visible) start = cap_len - visible;
+        wave_views[page] = (wave_view){start, z};
+    }
+    unsigned page = screen == SCR_WAVE_HI ? 1u : 0u;
+    wave_t = wave_views[page].start;
+    zoom_idx = wave_views[page].zoom;
+}
+
+static const char *rate_badge(char *buf, size_t n);
 
 /* ---------- time ruler + scrollbar (below the tracks) ---------- */
 
@@ -597,17 +623,17 @@ static void draw_wave(bool high_page)
     unsigned first = high_page ? 4 : 0;
     /* 21 characters is the whole header; "3/5 WAVE CH0-3 25M" is exactly 20. */
     snprintf(buf, sizeof buf, "%u/5 WAVE CH%u-%u %s",
-             high_page ? 4u : 3u, first, first + 3, rate_lbl[rate_idx]);
+             high_page ? 4u : 3u, first, first + 3, rate_badge((char[8]){0}, 8));
     header(buf);
     fill(0, HDR_H, SCR_W, SCR_H - HDR_H, C_BG);
 
     char zl[8];
-    snprintf(buf, sizeof buf, "Z:%s  %s", zoom_label(zl, sizeof zl),
-             high_page ? "OK:DECODE" : "OK:CH4-7");
-    text(4, 17, buf, C_DIM);
+    snprintf(buf, sizeof buf, "Z:%s", zoom_label(zl, sizeof zl));
+    text(3, 17, buf, C_DIM);
+    text(45, 17, "U/D:PAN", C_DIM);
     /* Capture state moved up here to leave the caption bar for the two time
      * values. */
-    text_right(SCR_W - 3, 17, capturing ? "RUN" : (cap_ok ? "STOP" : "FAIL"),
+    text_right(SCR_W - 3, 17, capturing ? "RUN" : (!cap_len ? "WAIT" : (cap_ok ? "STOP" : "FAIL")),
                capturing ? C_EDIT_T : (cap_ok ? C_DIM : C_TRIG));
 
     for (unsigned i = 0; i < 4; i++)
@@ -615,10 +641,8 @@ static void draw_wave(bool high_page)
 
     /* Trigger marker (red), drawn under nothing else. */
     uint32_t visible = visible_samples();
-    uint32_t span = WAVE_W ? visible / WAVE_W : 0;
-    if (!span) span = 1;
     if (cap_trigger >= wave_t && cap_trigger < wave_t + visible) {
-        int tx = WAVE_X0 + (int)((cap_trigger - wave_t) / span);
+        int tx = WAVE_X0 + (int)((uint64_t)(cap_trigger - wave_t) * WAVE_W / visible);
         if (tx < SCR_W) vline(tx, WAVE_TOP, 4 * WAVE_TRACK_H, C_TRIG);
     }
 
@@ -639,13 +663,13 @@ static void draw_wave(bool high_page)
     snprintf(buf, sizeof buf, "T:%s", tb);
     text(3, BOTTOM_Y + 2, buf, C_TEXT);
     if (cap_rate) {
-        ui_format_time((uint64_t)span * (WAVE_W / RULER_DIVS) * 1000000000ull
-               / (uint32_t)cap_rate, db, sizeof db);
+        ui_format_time((uint64_t)visible * 1000000000ull
+               / ((uint64_t)cap_rate * RULER_DIVS), db, sizeof db);
         snprintf(buf, sizeof buf, "1div:%s", db);
         text_right(SCR_W - 3, BOTTOM_Y + 2, buf, C_ACC);
     }
 
-    text_center(HINT_Y, high_page ? "OK DECODE  BACK" : "OK CH4-7  BACK", C_DIM);
+    text_center(HINT_Y, "HOLD U/D:ZOOM OK:>", C_DIM);
 }
 
 /* ---------- screen 5: decode ----------
@@ -748,10 +772,10 @@ static void run_decode(void)
 static const char *rate_badge(char *buf, size_t n)
 {
     uint32_t r = (uint32_t)cap_rate;
-    if (!r) { snprintf(buf, n, "-"); return buf; }
-    if (r >= 1000000 && r % 1000000 == 0) snprintf(buf, n, "%uM", r / 1000000);
-    else if (r >= 1000) snprintf(buf, n, "%uk", r / 1000);
-    else snprintf(buf, n, "%u", r);
+    if (!r || r > 25000000u) { snprintf(buf, n, "-"); return buf; }
+    if (r >= 1000000 && r % 1000000 == 0) snprintf(buf, n, "%uM", (unsigned)(r / 1000000));
+    else if (r >= 1000) snprintf(buf, n, "%uk", (unsigned)(r / 1000));
+    else snprintf(buf, n, "%u", (unsigned)r);
     return buf;
 }
 
@@ -785,7 +809,7 @@ static const char *proto_badge(char *buf, size_t n)
 static void card(int x, int w, const char *label, const char *value,
                  bool focused, bool editing)
 {
-    uint16_t bg = editing ? C_CARD_ON : C_CARD_BD;
+    uint16_t bg = editing ? C_CARD_ON : C_HDR;
     fill(x, CARD_Y, w, CARD_H, bg);
     frame_rect(x, CARD_Y, w, CARD_H, focused ? C_ACC : C_CARD_BD);
     /* Label on top, value under it: two 8 px lines inside 22 px. */
@@ -918,16 +942,8 @@ static void draw_strip(void)
 static const char *gap_text(uint32_t gap, uint32_t rate, char *buf, size_t n)
 {
     if (!rate) { snprintf(buf, n, "-"); return buf; }
-    /* nanoseconds = gap * 1e9 / rate, kept in 64 bit. */
-    uint64_t ns = (uint64_t)gap * 1000000000ull / rate;
     if (!gap) snprintf(buf, n, "0");
-    else if (ns < 1000) snprintf(buf, n, "%uns", (unsigned)ns);
-    else if (ns < 1000000) snprintf(buf, n, "%uus", (unsigned)(ns / 1000));
-    else if (ns < 1000000000ull) snprintf(buf, n, "%u.%ums",
-                                          (unsigned)(ns / 1000000),
-                                          (unsigned)((ns / 100000) % 10));
-    else snprintf(buf, n, "%u.%us", (unsigned)(ns / 1000000000ull),
-                  (unsigned)((ns / 100000000ull) % 10));
+    else ui_format_time((uint64_t)gap * 1000000000ull / rate, buf, n);
     return buf;
 }
 
@@ -1043,6 +1059,7 @@ static void draw_decode(void)
 /* ---------- screen switching ---------- */
 static void refresh(void)
 {
+    if (render_deferred) { render_pending = true; return; }
     switch (screen) {
     case SCR_STANDBY:  draw_standby(); break;
     case SCR_CONFIG:   draw_config(); break;
@@ -1052,11 +1069,18 @@ static void refresh(void)
     case SCR_DECODE:   draw_decode(); break;
     }
     tft_flush_fb(fb);
+    frame_version++;
 }
 
 static void enter(ui_screen s)
 {
+    if (screen == SCR_WAVE_LO || screen == SCR_WAVE_HI)
+        wave_views[screen == SCR_WAVE_HI] = (wave_view){wave_t, zoom_idx};
     screen = s;
+    if (s == SCR_WAVE_LO || s == SCR_WAVE_HI) {
+        wave_view v = wave_views[s == SCR_WAVE_HI];
+        wave_t = v.start; zoom_idx = v.zoom;
+    }
     switch (s) {
     case SCR_STANDBY: blink_phase = 0xFF; break;
     case SCR_CONFIG:  cfg_edit = false; cfg_row = 0; break;
@@ -1213,22 +1237,23 @@ static void event(btn_id id, bool long_press, uint32_t held_ms)
     case SCR_WAVE_HI:
         if (id == BTN_UP || id == BTN_DOWN) {
             bool up = id == BTN_UP;
-            if (long_press && !up) {
-                /* X1..X128, then FIT, then back to X1. Zooming keeps the
-                 * sample under the centre cursor instead of jumping to 0. */
+            if (long_press) {
                 uint32_t centre = wave_t + visible_samples() / 2;
-                if (zoom_is_fit()) zoom_idx = 0;
-                else if ((unsigned)zoom_idx + 1u >= ZOOM_N) zoom_idx = ZOOM_FIT;
-                else zoom_idx++;
+                if (up) {
+                    if (zoom_is_fit()) zoom_idx = ZOOM_N - 1;
+                    else if (zoom_idx) zoom_idx--;
+                } else if (!zoom_is_fit()) {
+                    if ((unsigned)zoom_idx + 1 >= ZOOM_N) zoom_idx = ZOOM_FIT;
+                    else zoom_idx++;
+                }
                 wave_centre_on(centre);
-            } else if (long_press) {
-                wave_centre_on(cap_trigger);
             } else {
                 wave_scroll(up ? -1 : +1);
             }
             refresh();
         } else if (id == BTN_OK) {
-            enter(screen == SCR_WAVE_LO ? SCR_WAVE_HI : SCR_DECODE);
+            if (long_press) { reset_wave_views(); refresh(); }
+            else enter(screen == SCR_WAVE_LO ? SCR_WAVE_HI : SCR_DECODE);
         } else {
             if (screen == SCR_WAVE_LO) enter(SCR_CONFIG);
             else enter(SCR_WAVE_LO);
@@ -1460,7 +1485,7 @@ void ui_load_demo(void)
     apply_config();
     wave_t = 0;
     zoom_idx = 4;                                   /* X16: a bit is ~13 px */
-    wave_centre_on(cap_trigger);
+    reset_wave_views();
     dec_scroll = 0;
     proto_sel = 0;                                  /* AUTO on every demo load */
     memset(&dec_auto, 0, sizeof dec_auto);
@@ -1470,6 +1495,8 @@ void ui_load_demo(void)
 /* ---------- public API ---------- */
 void ui_init(void)
 {
+    cap_samples = NULL; cap_len = 0; cap_trigger = 0; cap_rate = 0;
+    wave_views[0] = (wave_view){0, 4}; wave_views[1] = (wave_view){0, 0};
     rate_idx = (uint8_t)(RATE_N - 1);               /* 25 MHz */
     count_idx = 1;                                  /* 64K, enough post-trigger UART */
     mask_idx = 0;                                   /* CH 0-7 */
@@ -1502,6 +1529,7 @@ void ui_tick(void)
 {
     buttons_update();
     btn_event ev;
+    render_deferred = true;
     while (buttons_get_event(&ev)) event(ev.id, ev.long_press, ev.held_ms);
 
     /* Blink the standby prompt only when the 600 ms phase actually flips,
@@ -1512,11 +1540,29 @@ void ui_tick(void)
         blink_phase = ph;
         refresh();
     }
+    render_deferred = false;
+    if (render_pending) { render_pending = false; refresh(); }
 }
 
 uint8_t ui_screen_id(void)
 {
     return (uint8_t)screen;
+}
+
+uint32_t ui_frame_version(void) { return frame_version; }
+
+size_t ui_copy_frame(uint16_t offset, uint8_t *out, size_t len)
+{
+    if (offset >= sizeof fb) return 0;
+    if (len > sizeof fb - offset) len = sizeof fb - offset;
+    memcpy(out, (const uint8_t *)fb + offset, len);
+    return len;
+}
+
+void ui_get_view(ui_view_state *out)
+{
+    *out = (ui_view_state){wave_t, visible_samples(), cap_len, cap_trigger, cap_rate,
+                          (uint8_t)screen, zoom_idx, proto_sel, event_count};
 }
 
 bool ui_show_capture(uint8_t screen_id, uint8_t protocol)
@@ -1526,10 +1572,6 @@ bool ui_show_capture(uint8_t screen_id, uint8_t protocol)
         return false;
     proto_sel = protocol;
     baud_idx = 2; /* Bench/demo contract: UART 115200, CAN 250000. */
-    if (screen_id != SCR_DECODE) {
-        zoom_idx = ZOOM_FIT;
-        wave_centre_on(cap_trigger);
-    }
     enter((ui_screen)screen_id);
     return true;
 }
@@ -1611,10 +1653,8 @@ void ui_set_capture(const uint8_t *samples, uint32_t len, uint64_t rate,
     cap_trigger = trigger_index;
     cap_ok = ok;
     dec_scroll = 0;
-    /* Open on the trigger: a captured window is far wider than one view, and
-     * the interesting edge is where the user put it. wave_centre_on() is
-     * FIT-safe; indexing zoom_spp[] with a possible ZOOM_FIT was not. */
-    wave_centre_on(trigger_index);
+    /* Each channel page opens on its own first activity at a readable zoom. */
+    reset_wave_views();
     if (screen == SCR_DECODE) {
         dec_sel = 0;
         run_decode();

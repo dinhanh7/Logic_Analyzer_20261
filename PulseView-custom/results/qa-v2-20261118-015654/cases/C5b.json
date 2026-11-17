@@ -1,0 +1,58 @@
+{
+  "id": "C5b",
+  "objective": "USB send deadline under prolonged host stall",
+  "conditions": "raw500k;4s unread interval exceeds3s deadline",
+  "expected": "explicitINVALID;no permanent hang;freshcapture<15s",
+  "status": "PASS",
+  "actual": {
+    "stream": {
+      "rate": 500000,
+      "samples": 491649,
+      "received_samples": 491649,
+      "mask": 255,
+      "channels": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "dropped": 0,
+      "seconds": 5.015435927001818,
+      "rle": false,
+      "blocks": 1005,
+      "raw_blocks": 1005,
+      "rle_blocks": 0,
+      "wire_bytes": 512754,
+      "host_mib_s": 0.09749906639259776,
+      "start_reply_seconds": 0.03454298699944047,
+      "stop_counters_hex": null,
+      "valid": false,
+      "error": "CRC mismatch",
+      "exit_code": 1
+    },
+    "recovered": {
+      "rate": 1000000,
+      "count": 1031,
+      "trigger_index": 4294967295,
+      "pretrigger": 0,
+      "channels": 8,
+      "unit": 1,
+      "mask": 255,
+      "flags": 0
+    },
+    "seconds": 5.477913679002086,
+    "policy": "4s stall exceeds send_frame3s deadline;integrity error is explicit;HELLO recovers"
+  },
+  "seconds": 5.926,
+  "evidence": [
+    "C5b-checked.json",
+    "C5b-recovered.json",
+    "C5b.json",
+    "C5b.log",
+    "C5b.sr"
+  ]
+}

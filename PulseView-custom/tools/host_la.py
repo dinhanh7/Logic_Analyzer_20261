@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Talk to a RP2350 logic analyzer over USB CDC using the LAR2 protocol.
 
-This is the host side of the trigger work: the libsigrok driver still speaks
-the manual-only v1 profile, so the trigger is driven from here first. The
-capture is written as a raw sample file (one byte per sample, bit n = channel
-n), which is the same layout PulseView receives over SUMP.
+Snapshot, trigger and analysis helpers share the same LAR2 framing as the
+libsigrok driver. Raw samples use bit n for physical channel CHn.
 """
 import argparse
+import glob
 import os
 import select
 import struct
@@ -28,6 +27,14 @@ from lar2 import (ACK, ARM, CAPS, CONFIG, END, ERROR, GET_CAPS, HELLO, ID, INFO,
 TRIGGER_MANUAL, TRIGGER_EDGE, TRIGGER_PATTERN = 0, 1, 2
 EDGE_RISING, EDGE_FALLING = 0, 1
 NO_TRIGGER = 0xffffffff
+
+
+def default_port():
+    """Use the stable USB identity so a flash/GUI release can renumber ttyACM."""
+    if os.environ.get('LA_PORT'):
+        return os.environ['LA_PORT']
+    boards = sorted(glob.glob('/dev/serial/by-id/usb-Raspberry_Pi_Pico_*-if00'))
+    return boards[0] if len(boards) == 1 else '/dev/ttyACM0'
 
 
 def open_port(path):
@@ -59,11 +66,18 @@ class Device:
     def close(self):
         os.close(self.fd)
 
+    def recover(self):
+        """Abort a failed snapshot/stream and establish a fresh LAR2 session."""
+        self.tx_seq = self.rx_seq = 0
+        self.parser = Parser()
+        self.pending = []
+        return self.hello()
+
     def _read(self, deadline):
         while True:
             if self.pending:
                 return self.pending.pop(0)
-            remaining = deadline - time.time()
+            remaining = deadline - time.monotonic()
             if remaining <= 0:
                 raise TimeoutError('no frame from device')
             ready, _, _ = select.select([self.fd], [], [], min(remaining, 0.2))
@@ -76,7 +90,7 @@ class Device:
     def command(self, kind, payload=b'', timeout=2.0):
         os.write(self.fd, frame(kind, self.tx_seq, payload))
         self.tx_seq = (self.tx_seq + 1) & 0xffff
-        return self._read(time.time() + timeout)
+        return self._read(time.monotonic() + timeout)
 
     def hello(self):
         """Start a session. Frames still in flight from a previous capture
@@ -84,7 +98,7 @@ class Device:
         drain until the ID shows up instead of failing on the first frame."""
         os.write(self.fd, frame(HELLO, self.tx_seq))
         self.tx_seq = (self.tx_seq + 1) & 0xffff
-        deadline = time.time() + 3.0
+        deadline = time.monotonic() + 3.0
         while True:
             kind, seq, payload = self._read(deadline)
             if kind == ID:
@@ -152,16 +166,17 @@ class Device:
         self.analyze(ANALYZE_SAVE, slot)
 
     def load_session(self, slot):
-        self.analyze(ANALYZE_LOAD, slot)
+        if self.analyze(ANALYZE_LOAD, slot) is None:
+            raise RuntimeError('session slot is empty or invalid')
 
     def save_golden(self):
         self.analyze(ANALYZE_SIG_SAVE)
 
     def compare_golden(self, tolerance=0):
-        return self.analyze(ANALYZE_SIG_COMPARE, 0, tolerance)
+        return self.analyze(ANALYZE_SIG_COMPARE, 0, tolerance, strip_status=False)
 
     def diff_session(self, slot):
-        return self.analyze(ANALYZE_DIFF, slot)
+        return self.analyze(ANALYZE_DIFF, slot, strip_status=False)
 
     def pinprobe(self, mode=0):
         """Read CH0..CH7 with an internal pull applied.
@@ -178,7 +193,7 @@ class Device:
 
     def capture(self, timeout=60.0):
         """Read one capture and return (samples, info dict)."""
-        deadline = time.time() + timeout
+        deadline = time.monotonic() + timeout
         kind, seq, payload = self._read(deadline)
         if kind == ERROR:
             raise RuntimeError('device error: %s' % payload.decode('utf-8', 'replace'))
@@ -187,20 +202,30 @@ class Device:
         info = dict(zip(('rate', 'count', 'trigger_index', 'pretrigger',
                          'channels', 'unit', 'mask', 'flags'),
                         struct.unpack('<QIII4B', payload)))
+        if (info['channels'] != 8 or info['unit'] != 1 or not 0 < info['count'] <= MAX_SAMPLES
+                or info['flags'] & 2 or (info['trigger_index'] != NO_TRIGGER
+                                        and info['trigger_index'] >= info['count'])):
+            raise RuntimeError('invalid capture metadata/error flags')
+        expected = (seq + 1) & 0xffff
         out = bytearray()
         crc = 0
         while True:
             kind, seq, payload = self._read(deadline)
             if kind == ERROR:
                 raise RuntimeError('device error: %s' % payload.decode('utf-8', 'replace'))
+            if seq != expected:
+                raise RuntimeError('capture sequence gap')
+            expected = (expected + 1) & 0xffff
             if kind == SAMPLES:
+                if len(out) + len(payload) > info['count']:
+                    raise RuntimeError('capture exceeds declared sample count')
                 out += payload
                 crc = zlib.crc32(payload, crc)
             elif kind == END:
                 total, device_crc = struct.unpack('<II', payload)
-                if total != len(out):
+                if total != len(out) or total != info['count']:
                     raise RuntimeError('sample count mismatch: %d != %d' % (len(out), total))
-                if device_crc != zlib.crc32(out):
+                if device_crc != crc:
                     raise RuntimeError('capture CRC mismatch')
                 return bytes(out), info
             else:

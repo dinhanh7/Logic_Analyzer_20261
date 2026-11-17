@@ -1,0 +1,32 @@
+{
+  "rate": 1000000,
+  "samples": 60001692,
+  "received_samples": 37030909,
+  "mask": 255,
+  "channels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "dropped": 22970783,
+  "seconds": 60.39118151599905,
+  "rle": false,
+  "blocks": 75487,
+  "raw_blocks": 75487,
+  "rle_blocks": 0,
+  "wire_bytes": 38616177,
+  "host_mib_s": 0.6098118181864242,
+  "valid": false,
+  "error": null,
+  "device_sent": 37030909,
+  "device_dropped": 22970783,
+  "device_captured": 60001692,
+  "hardware_faults": 0,
+  "capture_seconds": 60.001694,
+  "effective_sample_rate": 999999.9666676078
+}

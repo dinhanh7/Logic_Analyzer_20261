@@ -82,11 +82,11 @@ static int config_set(uint32_t key,GVariant *data,const struct sr_dev_inst *sdi,
         /* "CH0".."CH7", empty string means no trigger. */
         const char *src=g_variant_get_string(data,NULL);
         if (!src || !*src) { d->trig_mode=LAR2_TRIGGER_MANUAL; return SR_OK; }
-        if (src[0]!='C' || src[1]!='H') return SR_ERR_ARG;
-        int ch=atoi(src+2);
-        if (ch<0 || ch>7) return SR_ERR_ARG;
+        if (strlen(src)!=3 || src[0]!='C' || src[1]!='H' || src[2]<'0' || src[2]>'7') return SR_ERR_ARG;
+        int ch=src[2]-'0';
         d->trig_channel=(uint8_t)ch;
         if (d->trig_mode==LAR2_TRIGGER_MANUAL) d->trig_mode=LAR2_TRIGGER_EDGE;
+        if (d->limit>d->max_samples/2) d->limit=d->max_samples/2;
         return SR_OK;
     }
     if (key==SR_CONF_TRIGGER_SLOPE) {
@@ -96,29 +96,39 @@ static int config_set(uint32_t key,GVariant *data,const struct sr_dev_inst *sdi,
         else if (!g_ascii_strcasecmp(slope,"falling")) d->trig_edge=LAR2_EDGE_FALLING;
         else return SR_ERR_ARG;
         if (d->trig_mode==LAR2_TRIGGER_MANUAL) d->trig_mode=LAR2_TRIGGER_EDGE;
+        if (d->limit>d->max_samples/2) d->limit=d->max_samples/2;
         return SR_OK;
     }
     if (key==SR_CONF_TRIGGER_PATTERN) {
         /* "0xVV/MM" or "0xVV"; the mask defaults to all ones. */
         const char *pat=g_variant_get_string(data,NULL);
         if (!pat || !*pat) { d->trig_mode=LAR2_TRIGGER_MANUAL; return SR_OK; }
-        unsigned v,m=0xff; int n=sscanf(pat,"%x/%x",&v,&m);
-        if (n<1) return SR_ERR_ARG;
-        if (n==1) m=0xff;
+        char *end;
+        if (!g_ascii_isxdigit(*pat)) return SR_ERR_ARG;
+        guint64 v=g_ascii_strtoull(pat,&end,16), m=0xff;
+        if (*end=='/') {
+            const char *part=end+1;
+            if (!g_ascii_isxdigit(*part)) return SR_ERR_ARG;
+            m=g_ascii_strtoull(part,&end,16);
+        }
+        if (*end || v>0xff || m>0xff) return SR_ERR_ARG;
         d->trig_value=(uint8_t)v; d->trig_mask=(uint8_t)m;
         d->trig_mode=LAR2_TRIGGER_PATTERN;
+        if (d->limit>d->max_samples/2) d->limit=d->max_samples/2;
         return SR_OK;
     }
     if (key==SR_CONF_HORIZ_TRIGGERPOS) {
         double pos=g_variant_get_double(data);
-        if (pos<0.0 || pos>1.0) return SR_ERR_ARG;
+        if (!(pos>=0.0 && pos<=0.5)) return SR_ERR_ARG;
         d->horiz_triggerpos=pos; return SR_OK;
     }
     if (key!=SR_CONF_LIMIT_SAMPLES && key!=SR_CONF_SAMPLERATE) return SR_ERR_NA;
     value=g_variant_get_uint64(data);
     if (key==SR_CONF_LIMIT_SAMPLES) {
         if (!value || value>d->max_samples) return SR_ERR_ARG;
-        d->limit=value; return SR_OK;
+        d->limit=value;
+        if (d->trig_mode!=LAR2_TRIGGER_MANUAL && d->limit>d->max_samples/2) d->limit=d->max_samples/2;
+        return SR_OK;
     }
     for (uint32_t i=0;i<d->num_rates;i++) if (d->rates[i]==value) { d->rate=value; return SR_OK; }
     return SR_ERR_ARG;
@@ -132,7 +142,7 @@ static int config_list(uint32_t key,GVariant **data,const struct sr_dev_inst *sd
         *data=std_gvar_samplerates(d->rates,d->num_rates); return SR_OK;
     case SR_CONF_LIMIT_SAMPLES:
         if (!d) return SR_ERR_ARG;
-        *data=g_variant_new("(tt)",(uint64_t)1,(uint64_t)d->max_samples); return SR_OK;
+        *data=g_variant_new("(tt)",(uint64_t)1,(uint64_t)(d->trig_mode==LAR2_TRIGGER_MANUAL ? d->max_samples : d->max_samples/2)); return SR_OK;
     default:
         return STD_CONFIG_LIST(key,data,sdi,cg,scanopts,drvopts,devopts);
     }
@@ -151,6 +161,7 @@ static int dev_acquisition_start(const struct sr_dev_inst *sdi)
         if (ch->enabled) d->mask|=1u<<ch->index;
     }
     if (!d->mask) d->mask=0xff;  /* PulseView may start with no channel ticked */
+    if (d->trig_mode!=LAR2_TRIGGER_MANUAL && d->limit>d->max_samples/2) d->limit=d->max_samples/2;
     lar2_put64(cfg,d->rate); lar2_put32(cfg+8,d->limit); cfg[16]=d->mask;
     size_t cfglen=LAR2_CONFIG_V1_SIZE;
     if (d->trig_mode!=LAR2_TRIGGER_MANUAL) {

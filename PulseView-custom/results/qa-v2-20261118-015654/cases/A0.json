@@ -1,0 +1,12 @@
+{
+  "id": "A0",
+  "objective": "Compile the production C oracle bridge",
+  "conditions": "offline compiler",
+  "expected": "build succeeds with sanitizers",
+  "status": "PASS",
+  "actual": "ASan/UBSan bridge built from production decoder/autodetect sources",
+  "seconds": 0.843,
+  "evidence": [
+    "A0-build.log"
+  ]
+}

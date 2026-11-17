@@ -1,0 +1,17 @@
+{
+  "id": "F1",
+  "objective": "50 consecutive independent snapshots",
+  "conditions": "manual1MHz65536;sameDevice session",
+  "expected": "50/50CRC/sequence/metadata correct",
+  "status": "PASS",
+  "actual": {
+    "captures": 50,
+    "max_seconds": 0.3204650589977973,
+    "host_peak_rss_kib": 29532,
+    "limitation": "No MCU heap watermark API;successful repetition does not prove absence of all leaks"
+  },
+  "seconds": 14.844,
+  "evidence": [
+    "F1-repeated-captures.json"
+  ]
+}

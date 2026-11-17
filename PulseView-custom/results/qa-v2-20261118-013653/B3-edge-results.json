@@ -1,0 +1,98 @@
+[
+  {
+    "channel": 0,
+    "edge": "rising",
+    "index": 32768,
+    "seconds": 0.26021169399973587,
+    "before": 0,
+    "after": 1
+  },
+  {
+    "channel": 0,
+    "edge": "falling",
+    "index": 32768,
+    "seconds": 0.2644416879993514,
+    "before": 1,
+    "after": 0
+  },
+  {
+    "channel": 1,
+    "edge": "rising",
+    "index": 32768,
+    "seconds": 0.5671644680005556,
+    "before": 0,
+    "after": 1
+  },
+  {
+    "channel": 1,
+    "edge": "falling",
+    "index": 32768,
+    "seconds": 0.36504208400219795,
+    "before": 1,
+    "after": 0
+  },
+  {
+    "channel": 2,
+    "edge": "rising",
+    "index": 32768,
+    "seconds": 0.2316083450023143,
+    "before": 0,
+    "after": 1
+  },
+  {
+    "channel": 2,
+    "edge": "falling",
+    "index": 32768,
+    "seconds": 0.19862267300050007,
+    "before": 1,
+    "after": 0
+  },
+  {
+    "channel": 3,
+    "edge": "rising",
+    "index": 32768,
+    "seconds": 0.5644379559998924,
+    "before": 0,
+    "after": 1
+  },
+  {
+    "channel": 3,
+    "edge": "falling",
+    "index": 32768,
+    "seconds": 0.16570897800193052,
+    "before": 1,
+    "after": 0
+  },
+  {
+    "channel": 5,
+    "edge": "rising",
+    "index": 32768,
+    "seconds": 0.13967051899817307,
+    "before": 0,
+    "after": 1
+  },
+  {
+    "channel": 5,
+    "edge": "falling",
+    "index": 32768,
+    "seconds": 0.2336214410024695,
+    "before": 1,
+    "after": 0
+  },
+  {
+    "channel": 7,
+    "edge": "rising",
+    "index": 32768,
+    "seconds": 0.22805909199814778,
+    "before": 0,
+    "after": 1
+  },
+  {
+    "channel": 7,
+    "edge": "falling",
+    "index": 32768,
+    "seconds": 0.19801520799956052,
+    "before": 1,
+    "after": 0
+  }
+]

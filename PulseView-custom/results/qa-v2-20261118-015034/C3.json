@@ -1,0 +1,12 @@
+{
+  "id": "C3",
+  "objective": "Continuous five-minute lossless soak",
+  "conditions": "1MHzRLE;real bus traffic;>=300s",
+  "expected": "0drop/seq/CRC/fault;readable .sr;fresh capture",
+  "status": "NOT-VERIFIED",
+  "actual": "Full soak needs >=300s;this run requested 0s",
+  "seconds": 0.0,
+  "evidence": [
+    "C3.json"
+  ]
+}

@@ -1,0 +1,2128 @@
+{
+    "channels": [
+        "CH0",
+        "CH1",
+        "CH2",
+        "CH3",
+        "CH4",
+        "CH5",
+        "CH6",
+        "CH7"
+    ],
+    "decoders": [
+        {
+            "annotations": [
+                {
+                    "class": "rx-data-bit",
+                    "sample": 32986,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 33203,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 33420,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 33637,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 33854,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 34071,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 34288,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 34505,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 35156,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 35373,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 35590,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 35807,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 36024,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 36241,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 36458,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 36675,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 37326,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 37543,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 37760,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 37977,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 38194,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 38411,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 38628,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 38845,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 39496,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 39713,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 39930,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 40147,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 40364,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 40581,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 40798,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 41015,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 41666,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 41883,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 42100,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 42317,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 42534,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 42751,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 42968,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 43185,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 43836,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 44053,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 44270,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 44487,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 44704,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 44921,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 45138,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 45355,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 46006,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 46223,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 46440,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 46657,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 46874,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 47091,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 47308,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-data-bit",
+                    "sample": 47525,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "rx-start",
+                    "sample": 32769,
+                    "text": "Start bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-data",
+                    "sample": 32986,
+                    "text": "4C",
+                    "visible": true
+                },
+                {
+                    "class": "rx-stop",
+                    "sample": 34722,
+                    "text": "Stop bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-start",
+                    "sample": 34939,
+                    "text": "Start bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-data",
+                    "sample": 35156,
+                    "text": "41",
+                    "visible": true
+                },
+                {
+                    "class": "rx-stop",
+                    "sample": 36892,
+                    "text": "Stop bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-start",
+                    "sample": 37109,
+                    "text": "Start bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-data",
+                    "sample": 37326,
+                    "text": "31",
+                    "visible": true
+                },
+                {
+                    "class": "rx-stop",
+                    "sample": 39062,
+                    "text": "Stop bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-start",
+                    "sample": 39279,
+                    "text": "Start bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-data",
+                    "sample": 39496,
+                    "text": "32",
+                    "visible": true
+                },
+                {
+                    "class": "rx-stop",
+                    "sample": 41232,
+                    "text": "Stop bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-start",
+                    "sample": 41449,
+                    "text": "Start bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-data",
+                    "sample": 41666,
+                    "text": "33",
+                    "visible": true
+                },
+                {
+                    "class": "rx-stop",
+                    "sample": 43402,
+                    "text": "Stop bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-start",
+                    "sample": 43619,
+                    "text": "Start bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-data",
+                    "sample": 43836,
+                    "text": "34",
+                    "visible": true
+                },
+                {
+                    "class": "rx-stop",
+                    "sample": 45572,
+                    "text": "Stop bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-start",
+                    "sample": 45789,
+                    "text": "Start bit",
+                    "visible": true
+                },
+                {
+                    "class": "rx-data",
+                    "sample": 46006,
+                    "text": "0A",
+                    "visible": true
+                },
+                {
+                    "class": "rx-stop",
+                    "sample": 47742,
+                    "text": "Stop bit",
+                    "visible": true
+                }
+            ],
+            "name": "UART"
+        },
+        {
+            "annotations": [
+                {
+                    "class": "bit",
+                    "sample": 33880,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34169,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34458,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34747,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35036,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35325,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35614,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35904,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36484,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36773,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37062,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37351,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37641,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37930,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38219,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38508,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 39243,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 39536,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 39825,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 40113,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 40402,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 40692,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 40980,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 41269,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "address-write",
+                    "sample": 33880,
+                    "text": "Address write: 68",
+                    "visible": true
+                },
+                {
+                    "class": "start",
+                    "sample": 33589,
+                    "text": "Start",
+                    "visible": true
+                },
+                {
+                    "class": "address-write",
+                    "sample": 35904,
+                    "text": "Write",
+                    "visible": true
+                },
+                {
+                    "class": "ack",
+                    "sample": 36192,
+                    "text": "ACK",
+                    "visible": true
+                },
+                {
+                    "class": "data-write",
+                    "sample": 36484,
+                    "text": "Data write: 01",
+                    "visible": true
+                },
+                {
+                    "class": "ack",
+                    "sample": 38796,
+                    "text": "ACK",
+                    "visible": true
+                },
+                {
+                    "class": "data-write",
+                    "sample": 39243,
+                    "text": "Data write: 5A",
+                    "visible": true
+                },
+                {
+                    "class": "ack",
+                    "sample": 41558,
+                    "text": "ACK",
+                    "visible": true
+                },
+                {
+                    "class": "stop",
+                    "sample": 41988,
+                    "text": "Stop",
+                    "visible": true
+                }
+            ],
+            "name": "I2C"
+        },
+        {
+            "annotations": [
+                {
+                    "class": "miso-bit",
+                    "sample": 43254,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43279,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43304,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43329,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43354,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43379,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43404,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43429,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43454,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43479,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43504,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43529,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43554,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43579,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43604,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43629,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43654,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43679,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43704,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43729,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43754,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43779,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43804,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43829,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43854,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43879,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43904,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43929,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43954,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 43979,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44004,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44029,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44054,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44079,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44104,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44129,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44154,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44179,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44204,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44229,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44254,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44279,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44304,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44329,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44354,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44379,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44404,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44429,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44454,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44479,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44504,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44529,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44554,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44579,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44604,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44629,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44654,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44679,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44704,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44729,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44754,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44779,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44804,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-bit",
+                    "sample": 44829,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "miso-data",
+                    "sample": 43254,
+                    "text": "FF",
+                    "visible": false
+                },
+                {
+                    "class": "miso-data",
+                    "sample": 43454,
+                    "text": "FF",
+                    "visible": false
+                },
+                {
+                    "class": "miso-data",
+                    "sample": 43654,
+                    "text": "FF",
+                    "visible": false
+                },
+                {
+                    "class": "miso-data",
+                    "sample": 43854,
+                    "text": "FF",
+                    "visible": false
+                },
+                {
+                    "class": "miso-data",
+                    "sample": 44054,
+                    "text": "FF",
+                    "visible": false
+                },
+                {
+                    "class": "miso-data",
+                    "sample": 44254,
+                    "text": "FF",
+                    "visible": false
+                },
+                {
+                    "class": "miso-data",
+                    "sample": 44454,
+                    "text": "FF",
+                    "visible": false
+                },
+                {
+                    "class": "miso-data",
+                    "sample": 44654,
+                    "text": "FF",
+                    "visible": false
+                },
+                {
+                    "class": "miso-transfer",
+                    "sample": 43242,
+                    "text": "FF FF FF FF FF FF FF FF",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43254,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43279,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43304,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43329,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43354,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43379,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43404,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43429,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43454,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43479,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43504,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43529,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43554,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43579,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43604,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43629,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43654,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43679,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43704,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43729,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43754,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43779,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43804,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43829,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43854,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43879,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43904,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43929,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43954,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 43979,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44004,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44029,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44054,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44079,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44104,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44129,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44154,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44179,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44204,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44229,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44254,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44279,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44304,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44329,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44354,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44379,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44404,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44429,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44454,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44479,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44504,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44529,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44554,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44579,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44604,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44629,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44654,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44679,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44704,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44729,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44754,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44779,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44804,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-bit",
+                    "sample": 44829,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "mosi-data",
+                    "sample": 43254,
+                    "text": "DE",
+                    "visible": true
+                },
+                {
+                    "class": "mosi-data",
+                    "sample": 43454,
+                    "text": "AD",
+                    "visible": true
+                },
+                {
+                    "class": "mosi-data",
+                    "sample": 43654,
+                    "text": "BE",
+                    "visible": true
+                },
+                {
+                    "class": "mosi-data",
+                    "sample": 43854,
+                    "text": "EF",
+                    "visible": true
+                },
+                {
+                    "class": "mosi-data",
+                    "sample": 44054,
+                    "text": "00",
+                    "visible": true
+                },
+                {
+                    "class": "mosi-data",
+                    "sample": 44254,
+                    "text": "01",
+                    "visible": true
+                },
+                {
+                    "class": "mosi-data",
+                    "sample": 44454,
+                    "text": "02",
+                    "visible": true
+                },
+                {
+                    "class": "mosi-data",
+                    "sample": 44654,
+                    "text": "03",
+                    "visible": true
+                },
+                {
+                    "class": "mosi-transfer",
+                    "sample": 43242,
+                    "text": "DE AD BE EF 00 01 02 03",
+                    "visible": false
+                }
+            ],
+            "name": "SPI"
+        },
+        {
+            "annotations": [
+                {
+                    "class": "bit",
+                    "sample": 31489,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 31589,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 31689,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 31789,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 31889,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 31989,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32089,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32189,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32289,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32389,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32489,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32589,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32689,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32789,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32889,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 32989,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33089,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33189,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33289,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33389,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33489,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33589,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33689,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33789,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33889,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 33989,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34089,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34189,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34289,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34389,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34489,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34589,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34689,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34789,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34889,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 34989,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35089,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35189,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35289,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35389,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35489,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35589,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35689,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35789,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35889,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 35989,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36089,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36189,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36289,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36389,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36489,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36589,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36689,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36789,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36889,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 36989,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37089,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37189,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37289,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37389,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37489,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37589,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37689,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37789,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37889,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 37989,
+                    "text": "0",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38089,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38189,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38289,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38389,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38489,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38589,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38689,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38789,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38889,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "bit",
+                    "sample": 38989,
+                    "text": "1",
+                    "visible": false
+                },
+                {
+                    "class": "sof",
+                    "sample": 31489,
+                    "text": "Start of frame",
+                    "visible": true
+                },
+                {
+                    "class": "id",
+                    "sample": 31589,
+                    "text": "Identifier: 291 (0x123)",
+                    "visible": true
+                },
+                {
+                    "class": "rtr",
+                    "sample": 32689,
+                    "text": "Remote transmission request: data frame",
+                    "visible": true
+                },
+                {
+                    "class": "ide",
+                    "sample": 32789,
+                    "text": "Identifier extension bit: standard frame",
+                    "visible": true
+                },
+                {
+                    "class": "reserved-bit",
+                    "sample": 32889,
+                    "text": "Reserved bit 0: 0",
+                    "visible": true
+                },
+                {
+                    "class": "dlc",
+                    "sample": 32989,
+                    "text": "Data length code: 4",
+                    "visible": true
+                },
+                {
+                    "class": "data",
+                    "sample": 33389,
+                    "text": "Data byte 0: 0xd4",
+                    "visible": true
+                },
+                {
+                    "class": "data",
+                    "sample": 34189,
+                    "text": "Data byte 1: 0xa3",
+                    "visible": true
+                },
+                {
+                    "class": "data",
+                    "sample": 34989,
+                    "text": "Data byte 2: 0xb4",
+                    "visible": true
+                },
+                {
+                    "class": "data",
+                    "sample": 35789,
+                    "text": "Data byte 3: 0xe5",
+                    "visible": true
+                },
+                {
+                    "class": "crc-sequence",
+                    "sample": 36589,
+                    "text": "CRC-15 sequence: 0x72ca",
+                    "visible": true
+                },
+                {
+                    "class": "crc-delimiter",
+                    "sample": 38089,
+                    "text": "CRC delimiter: 1",
+                    "visible": true
+                },
+                {
+                    "class": "ack-slot",
+                    "sample": 38189,
+                    "text": "ACK slot: NACK",
+                    "visible": true
+                },
+                {
+                    "class": "ack-delimiter",
+                    "sample": 38289,
+                    "text": "ACK delimiter: 1",
+                    "visible": true
+                },
+                {
+                    "class": "eof",
+                    "sample": 38389,
+                    "text": "End of frame",
+                    "visible": true
+                }
+            ],
+            "name": "CAN"
+        }
+    ],
+    "device": "RP2350 Pico 2 / 2 W Logic Analyzer",
+    "device_config": {
+        "pretrigger": 0.5,
+        "samplerate": 25000000,
+        "samples": 65536,
+        "trigger_slope": "falling",
+        "trigger_source": "CH0"
+    },
+    "screenshot_saved": true,
+    "session": "Session 1",
+    "toolbar_samplerate": 25000000,
+    "toolbar_samples": 65536
+}

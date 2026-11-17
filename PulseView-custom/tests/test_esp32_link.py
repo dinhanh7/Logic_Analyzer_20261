@@ -11,6 +11,7 @@ bytes rather than just "some edges arrived".
 Requires the board on /dev/ttyACM0, the ESP32 console on /dev/ttyUSB0 and the
 host sigrok stack built by scripts/build.sh host.
 """
+import json
 import os
 import re
 import subprocess
@@ -28,7 +29,7 @@ from lar2 import (ANALYZE_RUNTIME, EDGE_FALLING, TRIGGER_EDGE,  # noqa: E402
 
 CLI = os.path.join(ROOT, 'scripts', 'run-sigrok-cli.sh')
 UART_PORT = os.environ.get('ESP32_PORT', '/dev/ttyUSB0')
-LA_PORT = os.environ.get('LA_PORT', '/dev/ttyACM0')
+LA_PORT = host_la.default_port()
 
 # (label, trigger channel, sample rate, substring the decoder must print)
 SNAPSHOT = [
@@ -109,8 +110,12 @@ def snapshot(d):
 def stream(d, seconds=6, out=None):
     """Run the real streaming CLI and return the .sr path."""
     subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'stream_capture.py'),
-                    '-t', str(seconds), '-r', '1000000', '-o', out],
+                    '--port', LA_PORT, '-t', str(seconds), '-r', '1000000', '-o', out],
                    cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
+    with open(os.path.splitext(out)[0] + '.json') as saved:
+        stats = json.load(saved)
+    if not stats['valid'] or stats['dropped'] or stats['received_samples'] != stats['device_sent']:
+        raise RuntimeError('stream counters do not verify: ' + str(stats))
     # Streaming advances the device frame counter with its own SAMPLES frames;
     # restart the LAR2 session before using the host API again.
     d.tx_seq = 0

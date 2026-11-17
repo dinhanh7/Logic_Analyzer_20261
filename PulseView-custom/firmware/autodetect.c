@@ -21,7 +21,7 @@ void la_profile_channels(const uint8_t *buf, uint32_t len, la_chprof out[8])
         /* Idle level = level of the longest stable run (not sample 0: a
          * capture can start mid-frame or before the transmitter is live). */
         uint32_t min_run = n, max_run = 0, run = 1;
-        uint32_t edges = 0, high = 0;
+        uint32_t edges = 0, high = bit_at(buf, 0, ch);
         uint32_t best_run = 0;
         unsigned best_level = (unsigned)bit_at(buf, 0, ch);
         unsigned run_level = best_level;
@@ -83,16 +83,19 @@ static uint32_t longest_run_inside(const uint8_t *buf, uint32_t n, unsigned ch)
     return best;
 }
 
-/* Observed shortest run must sit within ±25 % of the expected bit width for
+/* Observed shortest run must sit within ±15 % of the expected bit width for
  * the baud the UI is using. Without this gate the CAN decoder happily emits
  * a fake frame from any falling edge (UART start bits score higher as CAN
  * than as UART because one frame expands into ID+DLC+data packets). */
 static int bit_matches(uint32_t observed, uint32_t expected)
 {
     if (!observed || !expected) return 0;
-    uint32_t slack = expected / 4u;     /* 25 % */
-    if (!slack) slack = 1;
-    return observed + slack >= expected && observed <= expected + slack;
+    /* A 100 kHz I2C half-clock is 25% wider than a CAN250k bit.
+     * The old inclusive 25% gate accepted that alias as a fabricated CAN
+     * frame. Require a closer match; low-resolution ambiguous input should
+     * remain unclassified rather than produce a confident wrong protocol. */
+    return (uint64_t)observed * 100u >= (uint64_t)expected * 85u &&
+           (uint64_t)observed * 100u <= (uint64_t)expected * 115u;
 }
 
 static uint32_t score_uart(const uint8_t *buf, uint32_t n, uint32_t rate,

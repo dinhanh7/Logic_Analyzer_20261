@@ -1,0 +1,8 @@
+# Preserve byte-exact QA fixtures and generated evidence on every platform.
+results/**/*.raw binary
+results/**/*.sr binary
+results/**/*.png binary
+docs/*.docx binary
+# Diff context and verbatim measurement logs retain upstream/native whitespace.
+patches/*.patch -whitespace
+results/** -whitespace

@@ -1,0 +1,76 @@
+{
+  "id": "A2",
+  "objective": "Byte-level C versus sigrok differential",
+  "conditions": "exact A1 byte stream;real firmware C",
+  "expected": "100% fields/bytes identical",
+  "status": "PASS",
+  "actual": {
+    "same_file": "A1-four-protocols.sr",
+    "firmware": {
+      "UART": [
+        76,
+        65,
+        49,
+        50,
+        51,
+        52,
+        10
+      ],
+      "I2C": [
+        1,
+        90
+      ],
+      "SPI": [
+        222,
+        173,
+        190,
+        239,
+        0,
+        1,
+        2,
+        3
+      ],
+      "CAN": [
+        222,
+        173,
+        190,
+        239
+      ]
+    },
+    "oracle": {
+      "UART": [
+        76,
+        65,
+        49,
+        50,
+        51,
+        52,
+        10
+      ],
+      "I2C": [
+        1,
+        90
+      ],
+      "SPI": [
+        222,
+        173,
+        190,
+        239,
+        0,
+        1,
+        2,
+        3
+      ],
+      "CAN": [
+        222,
+        173,
+        190,
+        239
+      ]
+    }
+  },
+  "seconds": 0.022,
+  "evidence": [
+    "A2-production-decoder.json"
+  ]
+}

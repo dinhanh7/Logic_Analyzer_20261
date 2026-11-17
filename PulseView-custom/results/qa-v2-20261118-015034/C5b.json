@@ -1,0 +1,28 @@
+{
+  "rate": 500000,
+  "samples": 491649,
+  "received_samples": 491649,
+  "mask": 255,
+  "channels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "dropped": 0,
+  "seconds": 5.01571786400018,
+  "rle": false,
+  "blocks": 1005,
+  "raw_blocks": 1005,
+  "rle_blocks": 0,
+  "wire_bytes": 512754,
+  "host_mib_s": 0.09749358590209425,
+  "start_reply_seconds": 0.03439707100187661,
+  "stop_counters_hex": null,
+  "valid": false,
+  "error": "CRC mismatch"
+}

@@ -13,7 +13,7 @@ static int handle_frame(const struct sr_dev_inst *sdi)
     switch (f[5]) {
     case LAR2_INFO:
         if (d->have_info || n!=24 || lar2_u64(p)!=d->rate || lar2_u32(p+8)!=d->limit ||
-            p[20]!=8 || p[21]!=1 || p[22]!=d->mask)
+            p[20]!=8 || p[21]!=1 || p[22]!=d->mask || (p[23]&LAR2_INFO_CAPTURE_ERROR))
             return SR_ERR_DATA;
         /* A capture without a trigger reports the reserved index, a capture
          * with a trigger reports where the event sits inside the window. */

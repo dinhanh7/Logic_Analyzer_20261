@@ -1,0 +1,146 @@
+[
+  {
+    "protocol": "UART",
+    "moved": false,
+    "detected": {
+      "proto": 1,
+      "score": 7,
+      "map": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  {
+    "protocol": "UART",
+    "moved": true,
+    "detected": {
+      "proto": 1,
+      "score": 7,
+      "map": [
+        6,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  {
+    "protocol": "I2C",
+    "moved": false,
+    "detected": {
+      "proto": 2,
+      "score": 3,
+      "map": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  {
+    "protocol": "I2C",
+    "moved": true,
+    "detected": {
+      "proto": 2,
+      "score": 3,
+      "map": [
+        0,
+        5,
+        6,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  {
+    "protocol": "SPI",
+    "moved": false,
+    "detected": {
+      "proto": 4,
+      "score": 8,
+      "map": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  {
+    "protocol": "SPI",
+    "moved": true,
+    "detected": {
+      "proto": 4,
+      "score": 8,
+      "map": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        2,
+        6,
+        7
+      ]
+    }
+  },
+  {
+    "protocol": "CAN",
+    "moved": false,
+    "detected": {
+      "proto": 8,
+      "score": 5,
+      "map": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  {
+    "protocol": "CAN",
+    "moved": true,
+    "detected": {
+      "proto": 8,
+      "score": 5,
+      "map": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        3
+      ]
+    }
+  }
+]

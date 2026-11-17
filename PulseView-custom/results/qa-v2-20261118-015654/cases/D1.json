@@ -1,0 +1,12 @@
+{
+  "id": "D1",
+  "objective": "Device capability discovery",
+  "conditions": "actual rp2350-la over USB CDC",
+  "expected": "correct name8channels/8rates",
+  "status": "PASS",
+  "actual": "Driver functions:\n    Logic analyzer\nScan options:\n    conn\nrp2350-la - RP2350 Pico 2 / 2 W Logic Analyzer LAR2 v1 with 8 channels: CH0 CH1 CH2 CH3 CH4 CH5 CH6 CH7\nSupported configuration options:\n    samplerate - supported samplerates:\n      1 kHz\n      10 kHz\n      100 kHz\n      250 kHz\n      500 kHz\n      1 MHz (current)\n      5 MHz\n      25 MHz\n    Maximum number of samples: 262144\n    logic_channels\n    triggersource:  (current)\n    triggerslope: rising (current)\n    triggerpattern:  (current)\n    horiz_triggerpos: 0.000000 (current)\nbash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8)\n",
+  "seconds": 0.226,
+  "evidence": [
+    "D1-device-show.log"
+  ]
+}

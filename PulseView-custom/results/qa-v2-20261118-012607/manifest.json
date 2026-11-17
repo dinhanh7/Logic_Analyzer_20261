@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-11-18T01:26:07+0700",
+  "commit": "460d90e8a308fc2dfa7f3ae58aa319b8172a4560",
+  "dirty": " M PulseView-custom/driver/acquisition.c\n M PulseView-custom/driver/api.c\n M PulseView-custom/firmware/CMakeLists.txt\n M PulseView-custom/firmware/autodetect.c\n M PulseView-custom/firmware/buttons.c\n M PulseView-custom/firmware/buttons.h\n M PulseView-custom/firmware/decoders.c\n M PulseView-custom/firmware/font6x8.c\n M PulseView-custom/firmware/logic_capture.pio\n M PulseView-custom/firmware/main.c\n M PulseView-custom/firmware/tft_st7735.c\n M PulseView-custom/firmware/ui.c\n M PulseView-custom/firmware/ui.h\n M PulseView-custom/protocol/lar2.h\n M PulseView-custom/scripts/test.sh\n M PulseView-custom/tests/test_decode.c\n M PulseView-custom/tests/test_esp32_link.py\n M PulseView-custom/tests/test_integration.py\n M PulseView-custom/tests/test_stream.py\n M PulseView-custom/tests/test_ui.c\n M PulseView-custom/tools/demo.py\n M PulseView-custom/tools/emulator.py\n M PulseView-custom/tools/flash_pico.py\n M PulseView-custom/tools/host_la.py\n M PulseView-custom/tools/lar2.py\n M PulseView-custom/tools/plan_checks.py\n M PulseView-custom/tools/render_ui.c\n M PulseView-custom/tools/stream_capture.py\n M PulseView-custom/tools/sweep.py\n M PulseView-custom/tools/ui_cycle.py\n M PulseView-custom/tools/ui_keys.py\n?? PulseView-custom/docs/TEST-PLAN-v2.md\n?? PulseView-custom/firmware/capture_buffer.h\n?? PulseView-custom/results/\n?? PulseView-custom/test-generator/\n?? PulseView-custom/tests/qa_common.py\n?? PulseView-custom/tests/qa_decoder_bridge.c\n?? PulseView-custom/tests/qa_offline.py\n?? PulseView-custom/tests/qa_signals.py\n?? PulseView-custom/tests/run_qa.py\n?? PulseView-custom/tests/test_capture_buffer.c\n?? PulseView-custom/tests/test_qa_offline.sh\n?? PulseView-custom/tools/capture_ui.py\n?? PulseView-custom/tools/stream_benchmark.py\n?? PulseView-custom/tools/test_generator_hardware.py\n?? PulseView-custom/tools/test_storage_hardware.py\n?? PulseView-custom/tools/test_ui_hardware.py\n",
+  "hashes": {
+    "firmware/buttons.h": "e8f1102b300a3c1e29e9214aaf170803f1f592c243d6701e95d4427da66c4136",
+    "firmware/main.c": "387e99e34f0056d93dad646ec905024f13423a5238a0097c438ee102e163bec6",
+    "firmware/ui.c": "89fdc66839b15c339963cc581b2140013a51c0106287a90296da8fa2a644cec0",
+    "firmware/decoders.h": "8c67ceb8a35eb7cfa4dcfa90c025a9eadfd34e83d1bb323105dd81b64558d867",
+    "firmware/tft_st7735.c": "e901ca4b09eaf62816c590514020f3220b9e04a169affcb7b61c32a42a2d4386",
+    "firmware/font6x8.h": "186f99e725c9a683c0d5f9e0aa97ad09fdf2175a4ec7c81c36e73f5b403ff33c",
+    "firmware/autodetect.h": "234d68d75e006406e1b2db1f41d40401a43181756cf201383c174997c422ae48",
+    "firmware/capture_buffer.h": "1c4c706790ed4607f2cbc1eee4771c60eb6169869a8e1266f96a24bf17f6ccca",
+    "firmware/font6x8.c": "6600026d2afc3f3cb42f15d80aee9e452559307c97d1197109ab5c6742787744",
+    "firmware/test_image.h": "677c1f7c702956dc12d02d2f664cebf5524f5774eed727363368b9493b3eb08c",
+    "firmware/ui.h": "d34f5a72622a5ea43c9bd2f5a3d71f620ea678e9a2e5aafa8a551bc9e65a6a7d",
+    "firmware/tft_st7735.h": "4444e3b96786c72df447d1f9deca248474544563a0508763ad27b937e8cd0a3f",
+    "firmware/decoders.c": "1b26de3e3b58da95b1a301ac3d364a9b7b6aeaf1dded5aa379133a0dcd467ce2",
+    "firmware/buttons.c": "19f497794b783b072ced55f69019092d70732cb6d4d473936ab52fb4be507218",
+    "firmware/autodetect.c": "97a400e1c26c94f1f66034b6b6358ff3aa1658566235e46effb8404195acb78c",
+    "driver/protocol.c": "9eedb274a2163a8ef062fa680471d3ac2cb766cb8e11c5e277f4af9d36392a2e",
+    "driver/acquisition.c": "05d9d8706c1433089320da4f17bc6409ed0c44c2b8274ef09285b7858b4ff1b8",
+    "driver/protocol.h": "485b163f6187d15deb789e3942f5fcffff701545ea0d2cb3a389fedba132201b",
+    "driver/api.c": "9bd5b93f4abaa17534b254ac5489f61e3aa3ec401ea174affd57015ec07c8654",
+    "protocol/lar2.h": "744a3ab87f7cc400a0680fb9bd26dbe10e4d9be9993232ff0c26a9aa6888c527",
+    "protocol/trigger_match.h": "973434cd17118c7d58457c5366443b86ba32dc928f5051fd5d3e1fa7b4c311f3",
+    "build/firmware-pico2/rp2350_la.uf2": "500352b2e8215989d3daa9a77820cbf9424258895f82a8edcc526f5984ca9859",
+    "build/pulseview/pulseview": "5b6f79c637bba19139f938ae6bb8e650ff067c6087b74bcbf983f86b384892b5"
+  },
+  "port": "/dev/serial/by-id/usb-Raspberry_Pi_Pico_907CBC57E4828DD6-if00",
+  "python": "3.13.13 | packaged by Anaconda, Inc. | (main, Apr 14 2026, 06:19:41) [GCC 14.3.0]",
+  "soak_seconds": 300
+}

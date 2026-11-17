@@ -5,3 +5,7 @@ third_party/
 __pycache__/
 *.sr
 *.raw
+
+# QA evidence intentionally retains sigrok sessions and raw fixtures.
+!results/**/*.sr
+!results/**/*.raw

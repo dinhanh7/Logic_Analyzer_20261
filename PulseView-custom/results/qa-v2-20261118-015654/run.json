@@ -1,0 +1,10 @@
+{
+  "counts": {
+    "PASS": 28,
+    "BLOCKED": 2,
+    "NOT-VERIFIED": 3
+  },
+  "exit_code": 0,
+  "complete_matrix": true,
+  "product_qualified": false
+}

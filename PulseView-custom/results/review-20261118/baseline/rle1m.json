@@ -1,0 +1,8 @@
+{
+  "rate": 1000000,
+  "samples": 30066960,
+  "mask": 255,
+  "dropped": 0,
+  "seconds": 30.101,
+  "rle": true
+}

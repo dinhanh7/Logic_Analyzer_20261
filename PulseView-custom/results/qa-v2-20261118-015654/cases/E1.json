@@ -1,0 +1,12 @@
+{
+  "id": "E1",
+  "objective": "12VDC/200Vpulse protection",
+  "conditions": "source inventory and evidence review;no safe pulse fixture",
+  "expected": "rated schematic plus measured clamp behavior required",
+  "status": "NOT-VERIFIED",
+  "actual": "CHƯA KIỂM CHỨNG BẰNG ĐO:missing schematic/component ratings and safe measured12V/200V front-end evidence",
+  "seconds": 0.0,
+  "evidence": [
+    "E1-protection-assessment.md"
+  ]
+}

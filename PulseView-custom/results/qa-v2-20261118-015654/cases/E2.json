@@ -1,0 +1,12 @@
+{
+  "id": "E2",
+  "objective": "Budget conformity",
+  "conditions": "priced BOM inventory",
+  "expected": "quantity*price total<=450000VND with traceable prices",
+  "status": "NOT-VERIFIED",
+  "actual": "Historical4-channel/OLED estimate sums338000-453000VND;current8-channel/TFT as-built BOM/receipts missing;<=450000not verified",
+  "seconds": 0.0,
+  "evidence": [
+    "E2-BOM-assessment.md"
+  ]
+}

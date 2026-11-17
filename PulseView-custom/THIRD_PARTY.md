@@ -13,3 +13,9 @@ Mã upstream được tải khi build, không vendor vào Git của bài tập. 
 Pico SDK pin TinyUSB ở `86ad6e56c1700e85f1c5678607a762cfe3aa2f47`; công cụ pioasm/picotool theo cấu hình SDK 2.2.0. Không bật wireless; Pico 2 W chỉ dùng như MCU/USB CDC.
 
 Giấy phép upstream: libsigrok và libsigrokdecode GPL-3.0-or-later; sigrok-cli và PulseView GPL-2.0-or-later; Pico SDK và các thư viện phụ thuộc theo LICENSE của từng thành phần (SDK BSD-3-Clause, TinyUSB MIT). Khi phân phối binary phải kèm thông tin giấy phép và cung cấp mã nguồn tương ứng theo điều kiện áp dụng.
+
+
+QA v2 duy trì thêm `patches/libsigrokdecode-session-race.patch`: bảo vệ danh sách
+session/instance dùng chung khi PulseView tạo nhiều decoder worker đồng thời,
+bằng Python GIL và detach an toàn sau join. Có regression40session song song
+trong `tests/qa_srd_threads.c`. Build scripts áp dụng patch có kiểm idempotence.

@@ -1,0 +1,26 @@
+{
+  "id": "C6",
+  "objective": "Unsupported rates cannot silently succeed",
+  "conditions": "2MHz/5MHz stream requests",
+  "expected": "explicit error;no invalid VALID file",
+  "status": "PASS",
+  "actual": [
+    {
+      "rate": 2000000,
+      "exit": 2
+    },
+    {
+      "rate": 5000000,
+      "exit": 2
+    },
+    {
+      "device_rate": 5000000,
+      "rejection": "ANALYZE error from device"
+    }
+  ],
+  "seconds": 0.088,
+  "evidence": [
+    "C6-2000000.log",
+    "C6-5000000.log"
+  ]
+}

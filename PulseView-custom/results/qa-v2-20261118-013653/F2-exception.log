@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_common.py", line 38, in case
+    actual=fn();row.update(status='PASS',actual=actual)
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_regression.py", line 42, in f2
+    ctx.save('F2-reset-reflash.log',p.stdout+p.stderr);require_run(p)
+                                                       ~~~~~~~~~~~^^^
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/qa_common.py", line 67, in require_run
+    assert p.returncode==0,p.stderr[-1500:]
+           ^^^^^^^^^^^^^^^
+AssertionError: board is neither running (/dev/ttyACM0) nor in BOOTSEL
+

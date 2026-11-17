@@ -1,0 +1,21 @@
+{
+  "channels": 8,
+  "snapshot_rate_max_hz": 25000000,
+  "resolution_ns": 40,
+  "manual_samples_max": 262144,
+  "manual_window_ms": 10.48576,
+  "triggered_samples_max": 131072,
+  "trigger_window_ms": 5.24288,
+  "demo_samples": 65536,
+  "demo_window_ms": 2.62144,
+  "stream_rate_max_hz": 1000000,
+  "raw_recommended_hz": 500000,
+  "streaming_policy": "RLE1MHz for compressible traffic; dense/raw1MHz can overrun; strict counters expose loss",
+  "unknown": [
+    "absolute clock accuracy versus calibrated instrument",
+    "channel skew/crosstalk",
+    "input resistance/capacitance/bandwidth",
+    "5V front-end compatibility",
+    "12V/200V protection"
+  ]
+}

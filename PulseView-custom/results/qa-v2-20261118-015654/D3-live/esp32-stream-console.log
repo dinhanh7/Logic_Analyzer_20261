@@ -1,0 +1,33 @@
+> stress off
+stress: 0 Hz on GPIO26 (50 %); UART restored
+
+> uart on
+
+> set uart 115200
+uart: 115200 baud
+
+> set i2c 100
+i2c: 100 kHz (half period 5 us, real 100.0 kHz)
+
+> set can 250
+can: 250 kbps
+
+> burst on
+
+> set spi 100
+spi: 100000 Hz
+
+> set spi 1000
+spi: 1000000 Hz
+
+> status
+status:
+  SQ      GPIO 4  1000 Hz hardware (asked 1000 Hz), 50 % duty
+  GPIO25  reserved for SPI MISO (SQ2 disabled)
+  PAT0-3  GPIO 13,14,16,17  12.5/25/37.5/50 % duty, same period
+  I2C     GPIO 18 SCL, 19 SDA  100 kHz, write 68 reg 01 data 5A
+  SPI     GPIO 21 CS, 22 SCK, 23 MOSI, 25 MISO  1000000 Hz, frame DE AD BE EF 00 01 02 03
+  UART    GPIO 26 TX at 115200 baud, sending "LA1234\n" at scheduler tick intervals when independent
+  CAN     GPIO 32 TX @250 kbps, ID 0x123, data DE AD BE EF (incrementing)
+  stress  0 Hz, CAN queued=113 errors=0, SPI errors=0
+  mode    burst: all four protocols together every 100 ms

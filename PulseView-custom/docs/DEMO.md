@@ -7,7 +7,7 @@ cd /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom
 bash scripts/demo.sh
 ```
 
-Cần ESP32 đã chạy firmware signal generator của dự án, Pico 2 chạy LAR2, tám dây tín hiệu đúng bảng dưới và chung GND. Đóng PulseView/serial monitor đang giữ hai cổng trước khi chạy lại; script không tự đóng ứng dụng của bạn. Lần đầu script có thể build phần hỗ trợ demo và nạp firmware Pico 2 mới nếu ID chưa có `+ui18+sync`. Những lần sau không tự flash lại nếu đã có hỗ trợ. Quá trình flash vẫn cần bootloader mount được như `tools/flash_pico.py` hiện có; nếu không mount được, xem `flash.log`.
+Cần ESP32 đã chạy firmware signal generator của dự án, Pico 2 chạy LAR2, tám dây tín hiệu đúng bảng dưới và chung GND. Script tự đóng PulseView do lần demo trước tạo; đóng các serial monitor/PulseView session khác đang giữ cổng trước khi chạy lại. Lần đầu script có thể build phần hỗ trợ demo và nạp firmware Pico 2 mới nếu ID chưa có `+ui18+sync+opt3`. Những lần sau không tự flash lại nếu đã có hỗ trợ. Quá trình flash vẫn cần bootloader mount được như `tools/flash_pico.py` hiện có; nếu không mount được, xem `flash.log`.
 
 | Kênh Pico / GP | GPIO ESP32 | Tín hiệu |
 |---|---|---|
@@ -29,7 +29,7 @@ Cần ESP32 đã chạy firmware signal generator của dự án, Pico 2 chạy 
 5. Nhả cổng, mở PulseView với driver thật, tự đặt 25 MHz/65536 mẫu, trigger source được chọn ở bước 2, slope falling, pre-trigger 50%. Tự gán bốn decoder: UART RX CH0/115200; I2C CH1/2; SPI CLK CH4, MISO CH6, MOSI CH5, CS CH3; CAN CH7/250000.
 6. PulseView tự thực hiện một capture mới. Phiên bản custom ghi JSON chứa annotation sinh **bên trong GUI**, trạng thái 8 kênh, cấu hình driver và ảnh cửa sổ. Script chỉ báo `PASS` khi cả bốn annotation cần thiết đang visible và chứa dữ liệu đúng, cấu hình đọc lại đúng. Có thể thử thu lại tối đa 4 lần bằng tín hiệu Run của PulseView khi lần trước đã dừng.
 
-Khi thành công, PulseView được giữ mở. Nhấn **Space/Run** để thu lại, **F** để fit toàn bộ, lăn chuột để zoom. Sau mỗi snapshot từ PC, firmware tự đồng bộ cửa sổ, vị trí trigger và bảng packet trên TFT. Khi nhấn Run thu lại trong PulseView, TFT đang ở DECODE sẽ giải mã lại capture mới; không dùng bảng byte cũ với RAM vừa bị ghi lại. Đóng PulseView trước khi chạy script demo lần nữa để tránh hai chương trình cùng mở cổng.
+Khi thành công, PulseView được giữ mở. Nhấn **Space/Run** để thu lại, **F** để fit toàn bộ, lăn chuột để zoom. Sau mỗi snapshot từ PC, firmware tự đồng bộ cửa sổ, vị trí trigger và bảng packet trên TFT. Khi nhấn Run thu lại trong PulseView, TFT đang ở DECODE sẽ giải mã lại capture mới; không dùng bảng byte cũ với RAM vừa bị ghi lại. Khi chạy lại, script đóng chính GUI demo cũ; không đóng session khác của người dùng.
 
 `PASS` chứng minh trạng thái và nội dung số đã kiểm. Việc màu panel, backlight, dây nút vật lý hoặc chất lượng hình ảnh ngoài đời cần quan sát trên TFT; script không có camera để tự xác nhận chúng.
 
@@ -79,14 +79,14 @@ Nếu thiếu hẳn build tree hoặc host stack, cần dựng môi trường d�
 
 - CONFIG: OK ngắn sửa giá trị, UP/DOWN thay đổi, OK lưu; giữ OK khi đang duyệt để thu.
 - Chỉ cung cấp 16K/64K/131K mẫu và pre-trigger 0/25/50%, đúng giới hạn trigger thực; mặc định 64K/50%/CH0 falling.
-- WAVE: OK đi từ CH0–3 tới CH4–7 rồi DECODE; BACK quay lại. Trang sóng do script mở ở FIT để thấy toàn cửa sổ.
+- WAVE: OK đi từ CH0–3 tới CH4–7 rồi DECODE; BACK quay lại. Mỗi trang sóng tự mở vùng hoạt động ở zoom dễ đọc; UP/DOWN ngắn pan, giữ UP zoom in, giữ DOWN zoom out tới FIT; giữ OK reset view.
 - DECODE: OK vào sửa PROTO, DOWN chuyển AUTO/UART/I2C/SPI/CAN, OK áp dụng; khi đang duyệt, UP/DOWN chọn dòng và preview theo byte. Giữ UP/DOWN đổi focus PROTO/baud. Giữ OK về STANDBY.
-- Nhãn tốc độ cực đại trên STANDBY đã sửa từ 100 MSPS thành **25 MSPS**. `100MHz` là clock hệ thống, không phải rate lấy mẫu.
+- Nhãn tốc độ cực đại trên STANDBY đã sửa từ 100 MSPS thành **25 MSPS**. `100 MHz` là clock hệ thống, không phải rate lấy mẫu.
 - Caption `T:`/`ST:` tính theo trigger thực được trả về, không dùng pre-trigger yêu cầu khi cửa sổ đã dịch.
 
 ## Kết quả kiểm chứng trên máy thật — 17–18/11/2026
 
-Sau khi phiên được chuyển sang `danger-full-access`, đã truy cập được cả hai cổng và desktop X11. Đã nạp firmware `RP2350-LA/1.2+trg+an+str+ui18+sync` lên Pico 2 bằng script, không cần BOOTSEL thủ công.
+Sau khi phiên được chuyển sang `danger-full-access`, đã truy cập được cả hai cổng và desktop X11. Đã nạp firmware `RP2350-LA/1.2+trg+an+str+ui18+sync+opt3` lên Pico 2 bằng script, không cần BOOTSEL thủ công.
 
 - `bash scripts/test.sh`: toàn bộ PASS, bao gồm driver integration 9/9, demo 8/8 và 2 ca kiểm tra retry cửa sổ ESP32.
 - `python3 tests/test_esp32_link.py`: 4 snapshot + 4 streaming PASS. Có một lần chạy trước gặp CAN trigger muộn làm cắt frame; giữ log lỗi và bổ sung retry hữu hạn chỉ khi số mẫu sau trigger không đủ. Decode sai trong cửa sổ đủ dài vẫn báo FAIL.
@@ -97,3 +97,17 @@ Sau khi phiên được chuyển sang `danger-full-access`, đã truy cập đư
 Bằng chứng chạy thật nằm trong [real-run](demo-validation-2026-11-17/real-run/README.md). Các log lỗi sandbox ở thư mục cha được giữ làm lịch sử, không phải trạng thái kiểm thử hiện tại.
 
 TFT được kiểm qua dữ liệu thực dùng để vẽ, screen ID và bảng byte. Chưa có ảnh camera của panel hoặc phép thử tiếp điểm bốn nút vật lý; kết quả này không chứng nhận màu/backlight hay nút đã hàn. Các yêu cầu bảo vệ đầu vào và BOM vẫn cần nghiệm thu riêng.
+
+
+## Cập nhật QA ngày18/11/2026
+
+Trước snapshot, demo kiểm thêm stream1 MHz RLE6s và bốn decoder PC, sender/receiver
+counters, flags và duration. SPI tạm100 kHz rồi restore1 MHz. Firmware yêu cầu
+`+opt3` để có fix DMA IRQ cũ từ snapshot. Mặc định `--dwell 2`: mỗi màn TFT ít
+nhất khoảng2 giây, cộng thời gian chụp framebuffer. Không dùng UI_DEMO làm fallback.
+
+Mỗi lần lưu thêm `stream.sr/.json`, log stream từng protocol và ảnh TFT đọc từ
+framebuffer thật: `tft-wave-3.png`, `tft-wave-4.png`, `tft-uart/i2c/spi/can.png`.
+Patch libsigrokdecode sửa race tạo session song song; kiểm40session có trong QA.
+Xem [TESTING](../TESTING.md),[TEST-REPORT](TEST-REPORT.md) và [OPINION](../OPINION.md)
+cho số liệu, giới hạn và việc bàn giao.

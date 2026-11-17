@@ -27,14 +27,6 @@ static void tft_write_data8(uint8_t data) {
     gpio_put(TFT_PIN_CS, 1);
 }
 
-static void tft_write_data16(uint16_t data) {
-    uint8_t buf[2] = { (uint8_t)(data >> 8), (uint8_t)(data & 0xFF) };
-    gpio_put(TFT_PIN_DC, 1);
-    gpio_put(TFT_PIN_CS, 0);
-    spi_write_blocking(TFT_SPI_PORT, buf, 2);
-    gpio_put(TFT_PIN_CS, 1);
-}
-
 static void tft_reset(void) {
     gpio_put(TFT_PIN_RST, 1);
     sleep_ms(5);
@@ -163,6 +155,7 @@ void tft_flush_fb(const uint16_t *fb) {
                           (const uint8_t *)fb,
                           (size_t)TFT_WIDTH * TFT_HEIGHT * 2, true);
     dma_channel_wait_for_finish_blocking((uint)dma);
+    while (spi_is_busy(TFT_SPI_PORT)) tight_loop_contents(); /* DMA done is not wire done */
     gpio_put(TFT_PIN_CS, 1);
 }
 

@@ -216,7 +216,7 @@ def check_protocols(dev, fd):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--port', default='/dev/ttyACM0')
+    ap.add_argument('--port', default=host_la.default_port())
     ap.add_argument('-i', '--interval', type=float, default=3.0,
                     help='seconds per screen (default 3)')
     ap.add_argument('--rounds', type=int, default=1,

@@ -47,6 +47,14 @@ bool ui_take_capture_request(void);
 uint8_t ui_screen_id(void);
 /* Present the last real capture without loading the synthetic demo. */
 bool ui_show_capture(uint8_t screen_id, uint8_t protocol);
+uint32_t ui_frame_version(void);
+size_t ui_copy_frame(uint16_t offset, uint8_t *out, size_t len);
+typedef struct {
+    uint32_t start, visible, count, trigger;
+    uint64_t rate;
+    uint8_t screen, zoom, protocol, events;
+} ui_view_state;
+void ui_get_view(ui_view_state *out);
 /* Number of UI events dispatched since boot, saturating at 255. */
 uint8_t ui_event_count(void);
 /* Text the decode screen is currently showing. Read-only, valid until the

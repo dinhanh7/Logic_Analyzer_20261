@@ -1,0 +1,14 @@
+{
+  "id": "B4",
+  "objective": "Pattern/manual and never-match recovery",
+  "conditions": "CH0high pattern;UART-off driven-high CH0 opposite pattern;400ms host timeout",
+  "expected": "match correct;manual no trigger;subsequent capture valid",
+  "status": "PASS",
+  "actual": "matching pattern and manual valid;never-match host timeout+HELLO recovery valid",
+  "seconds": 2.401,
+  "evidence": [
+    "B4-driven-idle-reference.raw",
+    "B4-driven-idle-reference.sr",
+    "B4-pattern-manual.json"
+  ]
+}

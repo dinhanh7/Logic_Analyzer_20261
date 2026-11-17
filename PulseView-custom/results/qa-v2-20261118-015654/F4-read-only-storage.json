@@ -1,0 +1,11 @@
+{
+  "slot": 1,
+  "count": 10000,
+  "crc32": "e2e18d09",
+  "odd_length": 3,
+  "invalid_headers_rejected": [
+    0
+  ],
+  "flash_writes": 0,
+  "scope": "load/replay/golden/diff checked;new save/erase skipped to preserve occupied user slots"
+}

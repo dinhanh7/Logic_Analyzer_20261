@@ -1,0 +1,42 @@
+A0    PASS          ASan/UBSan bridge built from production decoder/autodetect sources
+A1    PASS          {'UART': [76, 65, 49, 50, 51, 52, 10], 'I2C': [1, 90], 'SPI': [222, 173, 190, 239, 0, 1, 2, 3], 'CAN': [222, 173, 190, 239]}
+A2    PASS          {'same_file': 'A1-four-protocols.sr', 'firmware': {'UART': [76, 65, 49, 50, 51, 52, 10], 'I2C': [1, 90], 'SPI': [222, 173, 190, 239, 0, 1, 2, 3], 'CAN
+A3    PASS          {'vectors': 32, 'runs': 64, 'sanitizer_errors': 0, 'parity_validation': 'unsupported: firmware is 8N1; this case verifies safety only'}
+A4    PASS          {'cases': 12, 'max_error_percent': 0.0953950221142863}
+A5    PASS          {'bus_cases': 8, 'noise_cases': 8, 'wrong_guesses': 0}
+B1    PASS          {'reference': 'ESP32 LEDC timer2 on existing CH0 wire;not external calibration', 'measurements': [{'periods': 261, 'period_samples_mean': 999.99233716
+B2    PASS          [{'rate': 1000000, 'expected_samples': 8.680555555555555, 'mean_samples': 8.666666666666666, 'count': 21, 'error_percent': -0.16000000000000458, 'jitt
+B3    BLOCKED       Tested 14 polarities; no external transitions on CH[6]; see B3-edge-results.json
+B4    PASS          matching pattern and manual valid;never-match host timeout+HELLO recovery valid
+B5    PASS          [{'request_count': 65536, 'request_pre': 0, 'info': {'rate': 25000000, 'count': 65536, 'trigger_index': 0, 'pretrigger': 0, 'channels': 8, 'unit': 1, 
+B6    PASS          {'captures': 100, 'max_seconds': 0.49939930000255117, 'host_peak_rss_kib': 28776}
+B7    PASS          {'cases': 12, 'all_expected_bytes': True}
+B8    BLOCKED       Current wiring edge counts [126, 168, 42, 6, 384, 72, 0, 98]; distinct8-channel reference/common-edge skew source is not connected
+C1    PASS          {'rate': 1000000, 'samples': 10000064, 'received_samples': 10000064, 'mask': 255, 'channels': [0, 1, 2, 3, 4, 5, 6, 7], 'dropped': 0, 'seconds': 10.10
+C2    PASS          {'rate': 500000, 'samples': 2500028, 'received_samples': 2500028, 'mask': 255, 'channels': [0, 1, 2, 3, 4, 5, 6, 7], 'dropped': 0, 'seconds': 5.055765
+C3    PASS          {'rate': 1000000, 'samples': 299999984, 'received_samples': 299999984, 'mask': 255, 'channels': [0, 1, 2, 3, 4, 5, 6, 7], 'dropped': 0, 'seconds': 300
+C4    PASS          [{'signal': 'sigint', 'exit': 0, 'recovered': {'rate': 1000000, 'count': 1031, 'trigger_index': 4294967295, 'pretrigger': 0, 'channels': 8, 'unit': 1,
+C5    PASS          {'stream': {'rate': 500000, 'samples': 2500020, 'received_samples': 2305525, 'mask': 255, 'channels': [0, 1, 2, 3, 4, 5, 6, 7], 'dropped': 194495, 'se
+C5b   PASS          {'stream': {'rate': 500000, 'samples': 491649, 'received_samples': 491649, 'mask': 255, 'channels': [0, 1, 2, 3, 4, 5, 6, 7], 'dropped': 0, 'seconds':
+C6    PASS          [{'rate': 2000000, 'exit': 2}, {'rate': 5000000, 'exit': 2}, {'device_rate': 5000000, 'rejection': 'ANALYZE error from device'}]
+D1    PASS          Driver functions:
+    Logic analyzer
+Scan options:
+    conn
+rp2350-la - RP2350 Pico 2 / 2 W Logic Analyzer LAR2 v1 with 8 channels: CH0 CH1 CH2 CH3 CH
+PASS driver capture + PC UART/I2C/SPI/CAN (attempt 1)
+D2    PASS          {'file': 'D2/capture.sr', 'trigger': 'CH0', 'rate': 25000000, 'count': 65536, 'decoder_oracle': 'UART/I2C/SPI/CAN payload checked by demo.capture_driv
+D3    PASS          {'summary': 'PASS', 'gui': 'PASS_LIVE', 'config': {'pretrigger': 0.5, 'samplerate': 25000000, 'samples': 65536, 'trigger_slope': 'falling', 'trigger_s
+D4    PASS          {'probes': 8, 'unitsize_derived': 1, 'binary_bytes': 65536, 'rate': 25000000}
+D5    PASS          sessions=40 failures=0 annotations=2640
+E1    NOT-VERIFIED  CHƯA KIỂM CHỨNG BẰNG ĐO:missing schematic/component ratings and safe measured12V/200V front-end evidence
+E2    NOT-VERIFIED  Historical4-channel/OLED estimate sums338000-453000VND;current8-channel/TFT as-built BOM/receipts missing;<=450000not verified
+E3    NOT-VERIFIED  Digital limits are derived/tested;analog loading,5V compatibility and absolute calibration lack measurements;see E3-practical-limits.json
+Closed previous demo PulseView: [230986]
+F1    PASS          {'captures': 50, 'max_seconds': 0.3204650589977973, 'host_peak_rss_kib': 29532, 'limitation': 'No MCU heap watermark API;successful repetition does no
+F2    PASS          actual USB reenumeration during active driver capture;error not marked valid;reflash/reconnect capture passed
+F4    PASS          {'slot': 1, 'count': 10000, 'crc32': 'e2e18d09', 'odd_length': 3, 'invalid_headers_rejected': [0], 'flash_writes': 0, 'scope': 'load/replay/golden/dif
+F3    PASS          legacy suite and4protocol x snapshot/streaming PASS;new runner checks all executed cases;blocked criteria remain explicit
+
+ {'PASS': 28, 'BLOCKED': 2, 'NOT-VERIFIED': 3} Evidence: /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/results/qa-v2-20261118-015654
+Exit 0 means no executed FAIL; BLOCKED/NOT-VERIFIED never certify the product.

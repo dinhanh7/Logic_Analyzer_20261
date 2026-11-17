@@ -25,7 +25,7 @@ sys.path.insert(0, HERE)
 import host_la  # noqa: E402
 
 REPO = os.path.dirname(HERE)
-SIGROK = os.path.join(REPO, '.local', 'bin', 'sigrok-cli')
+SIGROK = os.path.join(REPO, 'scripts', 'run-sigrok-cli.sh')
 LOCAL_LIB = os.path.join(REPO, '.local', 'lib')
 CAN_OK = re.compile(r'CAN ID=0x123 DLC=4 DATA=[0-9A-F]{2}( [0-9A-F]{2}){3}')
 
@@ -184,7 +184,7 @@ def section_pv(la, port):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--la', default='/dev/ttyACM0')
+    ap.add_argument('--la', default=host_la.default_port())
     ap.add_argument('--gen', default='/dev/ttyUSB0')
     ap.add_argument('--only', choices=('can', 'ch7', 'ui', 'pv', 'all'),
                     default='all')

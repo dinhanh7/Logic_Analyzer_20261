@@ -1,0 +1,13 @@
+{
+  "id": "F3",
+  "objective": "Full regression gate",
+  "conditions": "oldsoftware tests+realESP32test+currentQAresults",
+  "expected": "no executedFAIL;never relabel BLOCKED as PASS",
+  "status": "PASS",
+  "actual": "legacy suite and4protocol x snapshot/streaming PASS;new runner checks all executed cases;blocked criteria remain explicit",
+  "seconds": 40.614,
+  "evidence": [
+    "F3-esp32.log",
+    "F3-legacy.log"
+  ]
+}

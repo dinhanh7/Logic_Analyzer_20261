@@ -1,5 +1,10 @@
 # Plan — Topic 2 Upgrade: Logic Analyzer 8 kênh 25 MHz trên Pico 2 (RP2350)
 
+> Đây là plan lịch sử, không phải báo cáo nghiệm thu. Pico hiện dùng vòng lặp Pico SDK,
+> chưa chuyển RTOS.262144byte chứa262144mẫu8kênh, không chia cho8 nữa.
+> Opcode0x06 là ANALYZE; bảo vệ/BOM cần bằng chứng as-built và đo thật.
+> Trạng thái mới xem [TESTING](../TESTING.md) và [TEST-REPORT](TEST-REPORT.md).
+
 ## 1. Mục tiêu
 
 Nâng cấp thiết bị từ Topic 1 (4 kênh, 8 MHz) lên Topic 2 (8 kênh, 25 MHz) bằng

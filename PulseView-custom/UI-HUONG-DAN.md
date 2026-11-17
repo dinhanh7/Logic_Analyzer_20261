@@ -109,15 +109,15 @@ Các dòng: `Mode`, `Chan`, `Condition`, `Baud/Clk`.
 | Nút | Hành động |
 |---|---|
 | UP / DOWN, nhấn ngắn | Cuộn cửa sổ sóng sang trái/phải |
-| DOWN, giữ | Thay đổi zoom: X1 → X2 → X4 → X8 → X16 → X32 → X64 → X128 → FIT → X1... |
-| UP, giữ | Nhảy để vạch trigger nằm giữa màn hình |
+| DOWN, giữ | Zoom out: tăng samples/pixel tới X128 rồi FIT |
+| UP, giữ | Zoom in: giảm samples/pixel; từ FIT về X128 |
+| OK, giữ | Reset về vùng đầu tiên có hoạt động, zoom tự chọn theo tín hiệu |
 | OK | Màn 3 → màn 4; màn 4 → màn 5/5 DECODE |
 | BACK | Màn 4 → màn 3; màn 3 → màn 1/5 CẤU HÌNH ĐO |
 
-- **Zoom FIT** = hiển thị toàn bộ buffer. **X16** là mức mở đầu với dữ liệu mô
-  phỏng (tâm đúng vạch trigger, một bit UART ~13 px); **X8** là mức mặc định
-  sau khi thu thật. Giữ DOWN đổi zoom **không nhảy về mẫu 0**: mẫu dưới con
-  trỏ giữa được giữ nguyên vị trí.
+- **Zoom FIT** xem toàn bộ buffer. X1 =1sample/pixel, X32 =32sample/pixel.
+  Mỗi trang tự chọn zoom/vị trí có hoạt động; giữ pan/zoom riêng khi chuyển trang.
+  Zoom giữ mẫu dưới cursor giữa, không tự nhảy về đầu buffer.
 - Vạch **đỏ** là vị trí trigger. Đường **trắng đứt nét** giữa màn là cursor đo;
   dữ liệu trượt bên dưới cursor.
 - **Thước thời gian kiểu máy hiện sóng** dưới các track: một đường trục chia

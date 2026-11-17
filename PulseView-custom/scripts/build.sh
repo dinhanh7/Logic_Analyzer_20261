@@ -9,6 +9,11 @@ mkdir -p build/logs
 jobs="${JOBS:-4}"
 if [[ "$mode" != firmware ]]; then
     python3 scripts/integrate.py
+    if git -C third_party/libsigrokdecode apply --check "$RP2350_ROOT/patches/libsigrokdecode-session-race.patch" 2>/dev/null; then
+        git -C third_party/libsigrokdecode apply "$RP2350_ROOT/patches/libsigrokdecode-session-race.patch"
+    else
+        git -C third_party/libsigrokdecode apply --reverse --check "$RP2350_ROOT/patches/libsigrokdecode-session-race.patch"
+    fi
     if git -C third_party/pulseview apply --check "$RP2350_ROOT/patches/pulseview-title.patch" 2>/dev/null; then
         git -C third_party/pulseview apply "$RP2350_ROOT/patches/pulseview-title.patch"
     else

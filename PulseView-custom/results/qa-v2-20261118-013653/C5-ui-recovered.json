@@ -1,0 +1,18 @@
+{
+  "source": "RP2350 TFT framebuffer",
+  "width": 128,
+  "height": 160,
+  "frame_version": 110,
+  "rgb565_sha256": "bd81ed81754d93cce41acf20ab4cbc57390c7ab948ec77a75ee9b44612131372",
+  "view": {
+    "start": 0,
+    "visible": 1031,
+    "count": 1031,
+    "trigger": 0,
+    "rate": 1000000,
+    "screen": 3,
+    "zoom": 255,
+    "protocol": 1,
+    "events": 1
+  }
+}

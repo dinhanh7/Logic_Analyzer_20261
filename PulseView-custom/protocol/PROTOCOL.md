@@ -28,7 +28,7 @@ Mỗi hướng có sequence riêng, tăng cho **mọi** frame, quay vòng 65535�
 | `0x03` | CONFIG | 20 byte (v1) / 28 byte (v2), mô tả dưới |
 | `0x04` | ARM | rỗng; yêu cầu CONFIG hợp lệ |
 | `0x05` | ABORT | rỗng; hợp lệ cả khi đang capture/truyền |
-| `0x06` | ANALYZE | 8 byte (op, arg, arg2, arg32), xem dưới |
+| `0x06` | ANALYZE | 8 byte (op, arg:u16, arg32:u32, reserved:u8), xem dưới |
 | `0x81` | ID | chuỗi UTF-8 không NUL, bắt đầu `RP2350-LA` |
 | `0x82` | CAPS | số kênh, đơn vị mẫu, tính năng, buffer, danh sách rate |
 | `0x83` | ACK | 1 byte: type command vừa xử lý |
@@ -72,7 +72,7 @@ Payload tùy thuộc vào `op` của ANALYZE tương ứng:
 - `SAVE/LOAD/SIG_SAVE`: 1 byte status (`RESULT_OK=0`, `RESULT_ERROR=1`, `RESULT_ABSENT=2`).
 - `SIG_COMPARE`: text UTF-8 (MATCH/MISMATCH).
 - `DIFF`: text UTF-8 (first mismatch hoặc "identical").
-- `SESSION`: struct `session_header_t` (24 byte).
+- `SESSION`: struct `session_header_t` (32 byte).
 - `REPLAY`: stream SAMPLES + END như capture bình thường.
 - `PINPROBE`: 1 byte status + 1 byte mức 8 bit (CH0..CH7) + 12 byte chẩn đoán (gpio_in u32, pad0 u32, pad1 u32).
 
@@ -82,7 +82,7 @@ Payload tùy thuộc vào `op` của ANALYZE tương ứng:
 |---|---|---|
 | 0 | u8 | channel_count=8 |
 | 1 | u8 | sample_unit_size=1 |
-| 2 | u16 | feature_flags=0: manual only |
+| 2 | u16 | feature_flags=0: legacy field; features in ID |
 | 4 | u32 | max_samples=262144 |
 | 8 | u32 | rate_count=8 |
 | 12 | u64[rate_count] | 1000,10000,100000,250000,500000,1000000,5000000,25000000 Hz |
@@ -125,7 +125,7 @@ HELLO → ID; GET_CAPS → CAPS; CONFIG/ARM/ABORT → ACK hoặc ERROR. ARM ACK 
 |---|---|---|
 | 0 | u8 | channel_count=8 |
 | 1 | u8 | sample_unit_size=1 |
-| 2 | u16 | feature_flags=0: manual only |
+| 2 | u16 | feature_flags=0: legacy field; features in ID |
 | 4 | u32 | max_samples=262144 |
 | 8 | u32 | rate_count=8 |
 | 12 | u64[rate_count] | 1000,10000,100000,250000,500000,1000000,5000000,25000000 Hz |
@@ -179,36 +179,21 @@ Với capture có trigger, `trigger_index` là **vị trí của xung trigger b�
 
 Driver v1 kiểm tra toàn bộ metadata trên trước khi chấp nhận SAMPLES. Không gửi INFO nhiều lần; không gửi SAMPLES trước INFO; tổng mẫu không vượt cấu hình; END chỉ hợp lệ khi đủ mẫu và CRC toàn capture trùng khớp. Mỗi mẫu là một thời điểm, mọi kênh dùng cùng PIO IN. Thời gian `sample_index / sample_rate_hz`, không lấy từ thời điểm USB nhận frame.
 
-### Ngữ nghĩa trigger (firmware v1.1)
+### Ngữ nghĩa trigger hiện tại
 
-Vùng capture của firmware là vùng tuyến tính 262.144 mẫu trong SRAM, DMA ghi liên
-tục nên **không mất mẫu nào** và không cần vòng đệm. CPU quét vùng này theo thời gian
-thực để tìm điều kiện trigger.
+Firmware hiện tại giữ cửa sổ triggered tối đa131072 mẫu, pre-trigger tối đa50%.
+`count=262144` gửi trực tiếp qua Python/LAR2 được clamp; driver công bố limit
+trigger131072 nên CLI có thể từ chối sớm yêu cầu lớn hơn.
 
-Quy tắc:
+Trigger chỉ được chấp nhận sau khi có đủ pre-history. Khi event quá muộn để
+đủ cả pre và post trong RAM, firmware re-arm với phase backoff nhỏ thay vì slide
+và làm lệch trigger. Cửa sổ thành công có trigger_index = pre đã clamp. Nếu chưa
+thấy event, re-arm hữu hạn; host được timeout/HELLO/ABORT để phục hồi. Giữa các
+lần re-arm có khoảng trống, không phải pre-trigger ring liên tục25MHz vô hạn.
 
-1. Trigger chỉ được chấp nhận **sau khi vùng pre-trigger đã đầy**, tức từ mẫu có chỉ
-   số `pretrigger` trở đi. Nhờ vậy cửa sổ luôn có đủ lịch sử phía trước.
-2. Khi phát hiện trigger tại mẫu tuyệt đối `T`, firmware chờ tới khi có đủ
-   `count - pretrigger` mẫu sau đó rồi dừng DMA.
-3. Cửa sổ gửi đi là `[T - pretrigger, T + (count - pretrigger))`, tức đúng `count` mẫu
-   và **liên tục trong RAM**, không cần xoay vòng.
-4. `trigger_index = pretrigger`, `pretrigger_count = pretrigger`, `flags` có bit 0
-   (`LAR2_INFO_TRIGGER_FOUND`).
-5. Nếu quét hết vùng capture mà không có trigger: firmware trả ERROR `no trigger`.
-6. Nếu trigger xuất hiện quá muộn, không đủ mẫu phía sau cho cửa sổ: ERROR
-   `trigger too late`.
-
-Giới hạn cần nói rõ trong báo cáo: firmware chỉ chờ trigger trong một vùng capture,
-tức 262.144 mẫu, tương đương **10,49 ms ở 25 MHz** hay **262 ms ở 1 MHz**. Muốn chờ
- lâu hơn thì phải dùng vòng đệm, khi đó cần xử lý khoảng trống khi nạp lại DMA, hoặc
-dùng chế độ ring của DMA trên RP2350 (giới hạn 32 KB).
-
-### Nhận dạng tính năng
-
-Chuỗi ID trả về cho HELLO là `RP2350-LA/1.1+trg`. Driver v1 chỉ kiểm tra tiền tố
-`RP2350-LA` và độ dài tối thiểu 9 byte nên vẫn kết nối được. Host muốn dùng trigger
-thì kiểm tra hậu tố `+trg` trong chuỗi ID rồi gửi CONFIG 28 byte.
+ID hiện tại: `RP2350-LA/1.2+trg+an+str+ui18+sync+opt3`. Frame header vẫn version1.
+Các extension giữ tương thích prefix, opcode và layout cũ; feature flags CAPS0
+không có nghĩa firmware hiện chỉ manual. Xem `lar2.h` là nguồn chính xác.
 
 ## Timeout và lỗi
 
@@ -259,3 +244,41 @@ UI_TABLE, UI_STATE and RUNTIME to read back the result. See `docs/DEMO.md`.
 Firmware `+ui18+sync` also refreshes the TFT capture pointer, trigger, text
 and packet cache after each completed host snapshot. The decode page stays
 on its selected protocol while displaying the new acquisition.
+
+
+## Streaming và UI extension hiện tại
+
+`STREAM_BLOCK=0x94`: `encoding:u8, sample_offset:u32, body[]`; encoding0 là raw,
+encoding1 là cặp `run:u8,value:u8`. Offset modulo2^32, sequence modulo2^16. Raw
+block hiện tối đa491mẫu; host nhận tối đa500 để giữ tương thích. Tám bit sample
+vẫn giữ vị trí CH0..CH7 kể cả khi mask chỉ bật vài channel.
+
+| ANALYZE op | Ý nghĩa |
+|---|---|
+|10|BOOTLOADER|
+|11|RUNTIME,32byte diagnostic reply|
+|12|UI_DEMO, chỉ dùng fixture mô phỏng|
+|13/14/15|UI_TEXT / UI_TABLE / UI_STATE|
+|16|STREAM_START; rate từ CONFIG; argbit0 bật RLE; max1MHz|
+|17|STREAM_STOP; freeze DMA,flush tail rồi gửi counters|
+|18|UI_SHOW_CAPTURE:arg=screen2/3/4,arg32=AUTO0/UART1/I2C2/SPI3/CAN4|
+|19|UI_FRAME:arg=byteoffset,arg32=length≤1000; replystatus,width,height,versionu32,offsetu16,totalu16,pixelsBE565|
+|20|UI_VIEW:29byte gồmstatus + start/visible/count/triggeru32,rateu64,screen/zoom/proto/eventsu8|
+
+STREAM_STOP hiện trả25byte, little endian:
+
+| Offset | Kiểu | Nội dung |
+|---|---|---|
+|0|u8|status|
+|1|u32|samples sent|
+|5|u32|samples dropped|
+|9|u32|captured sample span|
+|13|u32|hardware fault flags|
+|17|u64|capture duration microseconds|
+
+9byte đầu giữ layout counters cũ. Host phải drain mọi STREAM_BLOCK trước RESULT,
+đối chiếu sender/receiver, kiểm offset/sequence/CRC và rate/duration. Gap hoặc
+fault phải INVALID. RLE1MHz chỉ lossless với dữ liệu nén đủ, không cam kết raw1MHz.
+Khi stream, chỉ STOP/RUNTIME và HELLO/ABORT được dùng; UI redraw hoãn tới sau STOP.
+Snapshot completion có thể để pending DMA IRQ: firmware phải clear trước bật
+stream IRQ để không tạo slot64KiB giả.

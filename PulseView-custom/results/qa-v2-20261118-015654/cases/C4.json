@@ -1,0 +1,45 @@
+{
+  "id": "C4",
+  "objective": "Graceful stop and killed-host recovery",
+  "conditions": "SIGINT and SIGKILL injected into real active host",
+  "expected": "SIGINT tail verified;after each fault capture valid",
+  "status": "PASS",
+  "actual": [
+    {
+      "signal": "sigint",
+      "exit": 0,
+      "recovered": {
+        "rate": 1000000,
+        "count": 1031,
+        "trigger_index": 4294967295,
+        "pretrigger": 0,
+        "channels": 8,
+        "unit": 1,
+        "mask": 255,
+        "flags": 0
+      }
+    },
+    {
+      "signal": "killed",
+      "exit": -9,
+      "recovered": {
+        "rate": 1000000,
+        "count": 1031,
+        "trigger_index": 4294967295,
+        "pretrigger": 0,
+        "channels": 8,
+        "unit": 1,
+        "mask": 255,
+        "flags": 0
+      }
+    }
+  ],
+  "seconds": 3.185,
+  "evidence": [
+    "C4-killed.log",
+    "C4-recovery.json",
+    "C4-sigint.json",
+    "C4-sigint.log",
+    "C4-sigint.sr"
+  ]
+}
