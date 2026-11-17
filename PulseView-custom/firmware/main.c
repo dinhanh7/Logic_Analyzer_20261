@@ -66,7 +66,7 @@ static uint8_t mask = 0xff;
 static bool configured, capturing, sending;
 static volatile bool streaming;
 static volatile uint32_t stream_prod;   /* slots completed by DMA */
-static uint32_t stream_cons;            /* slots shipped to the host */
+static uint32_t stream_ship;            /* samples already sent as a prefix */
 static uint32_t stream_sent_samples;
 static uint32_t stream_dropped;
 static bool stream_rle;
@@ -107,6 +107,7 @@ static void start_sending(uint32_t sample_count, uint32_t trigger_index,
                           uint32_t pre, uint8_t flags);
 static bool start_stream(uint64_t rate, uint8_t mask, bool rle);
 static void stop_stream(void);
+static void stream_ship_pending(bool final);
 
 /* Global variables used in command() before their definition. */
 static uint32_t golden_tolerance = 0;
@@ -419,6 +420,7 @@ static void command(void)
             send_frame(LAR2_RESULT, result, 1);
             break;
         case LAR2_ANALYZE_STREAM_STOP: {
+            stream_ship_pending(true);   /* flush the tail before stopping */
             stop_stream();
             result[0] = LAR2_RESULT_OK;
             lar2_put32(result + 1, stream_sent_samples);
@@ -584,7 +586,7 @@ static bool start_stream(uint64_t r, uint8_t m, bool rle)
     channel_config_set_write_increment(&dc, true);
     channel_config_set_dreq(&dc, pio_get_dreq(pio, sm, false));
 
-    stream_prod = 0; stream_cons = 0;
+    stream_prod = 0; stream_ship = 0;
     stream_sent_samples = 0; stream_dropped = 0;
     stream_rle = rle; streaming = true;
     pio->fdebug = 1u << (PIO_FDEBUG_RXSTALL_LSB + sm);
@@ -605,26 +607,50 @@ static void stop_stream(void)
     dma_hw->ints0 = 1u << dma_ch;
 }
 
+/* Ship everything the DMA has already written: the completed slots plus the
+ * filled part of the slot being written right now. Without the partial flush a
+ * 1 kHz capture stays silent for 65 s until a whole 64 KB slot fills up. */
+static void stream_ship_pending(bool final)
+{
+    uint32_t save = save_and_disable_interrupts();
+    uint32_t prod = stream_prod;
+    uint32_t written = dma_hw->ch[dma_ch].write_addr - (uint32_t)(uintptr_t)samples;
+    restore_interrupts(save);
+    /* write_addr is relative to the ring; the slot being filled starts at
+     * (prod % STREAM_SLOTS). A completed transfer can push it to the next slot
+     * base in between, hence the clamp. */
+    uint32_t filled = written - (prod % STREAM_SLOTS) * STREAM_SLOT_BYTES;
+    if (filled > STREAM_SLOT_BYTES) filled = STREAM_SLOT_BYTES;
+    uint32_t pending = prod * STREAM_SLOT_BYTES + filled - stream_ship;
+
+    if (!final) {
+        uint32_t room = (STREAM_SLOTS - 1u) * STREAM_SLOT_BYTES;
+        if (pending > room) {
+            /* The writer lapped the sender: skip the overwritten samples and
+             * report the loss instead of shipping stale data as contiguous. */
+            uint32_t skip = pending - room;
+            stream_ship += skip;
+            stream_dropped += skip;
+            pending = room;
+        }
+        /* At 1 kHz a per-iteration block would be 21 header bytes per sample;
+         * 500 samples caps the delivery latency at half a second. */
+        if (pending < STREAM_CHUNK) return;
+    }
+    while (pending) {
+        uint32_t mem = stream_ship % CAPTURE_BYTES;
+        uint32_t n = STREAM_SLOT_BYTES - (mem % STREAM_SLOT_BYTES);
+        if (n > pending) n = pending;
+        send_stream_slot((const uint8_t *)samples + mem, n, stream_ship);
+        stream_ship += n;
+        stream_sent_samples += n;
+        pending -= n;
+    }
+}
+
 static void stream_task(void)
 {
-    if (!streaming) return;
-    while (stream_cons < stream_prod) {
-        uint32_t pending = stream_prod - stream_cons;
-        if (pending >= STREAM_SLOTS) {
-            /* The writer lapped the sender: skip the overwritten slots and
-             * report how many samples were lost rather than shipping stale
-             * data as if it were contiguous. */
-            uint32_t skip = pending - (STREAM_SLOTS - 1u);
-            stream_cons += skip;
-            stream_dropped += skip * STREAM_SLOT_BYTES;
-        }
-        uint32_t slot = stream_cons % STREAM_SLOTS;
-        uint32_t offset = stream_cons * STREAM_SLOT_BYTES;
-        send_stream_slot((const uint8_t *)samples + slot * STREAM_SLOT_BYTES,
-                         STREAM_SLOT_BYTES, offset);
-        stream_sent_samples += STREAM_SLOT_BYTES;
-        stream_cons++;
-    }
+    if (streaming) stream_ship_pending(false);
 }
 
 static void capture_task(void)
