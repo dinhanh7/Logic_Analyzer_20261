@@ -154,6 +154,13 @@ Giới hạn và cách dùng:
 Kiểm thử không cần board: `python3 tests/test_stream.py` chạy CLI thật trên
 emulator PTY, so từng byte giải nén với tín hiệu mô phỏng.
 
+Kiểm thử có board thật + máy phát ESP32: `python3 tests/test_esp32_link.py`
+bắt trigger snapshot cho từng giao thức, giải mã trên máy, rồi stream 1 MHz
+và giải mã file `.sr` bằng sigrok-cli. Cần `/dev/ttyACM0`, console ESP32 tại
+`/dev/ttyUSB0` và stack host đã build. Script tự đổi SPI generator xuống
+100 kHz trong lúc stream (1 MHz là 1 mẫu/bit nên decode không được) rồi đổi
+lại 1 MHz sau đó.
+
 ## Chạy trên máy hiện tại
 
 Stack đã được build vào `.local/`; toolchain phục vụ build đang nằm trong `.deps/`. Dùng các script bên dưới để nạp đúng thư viện custom thay vì libsigrok của hệ điều hành.
