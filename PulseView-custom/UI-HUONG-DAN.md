@@ -113,13 +113,19 @@ Các dòng: `Che do`, `Kenh`, `Dieu kien`, `Baud/Clk`.
   trỏ giữa được giữ nguyên vị trí.
 - Vạch **đỏ** là vị trí trigger. Đường **trắng đứt nét** giữa màn là cursor đo;
   dữ liệu trượt bên dưới cursor.
-- **Thước thời gian** dưới các track: vạch chia theo thang 1-2-5, nhãn là
-  thời gian **tuyệt đối tính từ mẫu 0** (cùng đơn vị với cột TIME ở màn
-  DECODE). Nhãn tự né nhau khi chật.
-- **Thanh cuộn ngang** dưới cùng của vùng sóng: chiều dài thumb = tỉ lệ cửa
-  sổ/buffer, vị trí = đang xem đoạn nào. FIT thì thumb phủ hết track.
-- Dòng dưới cùng `T:<thời gian>` (ví dụ `T:80us`) là thời điểm của mẫu tại
-  giữa màn; `STOP` / `RUN` / `FAIL` là trạng thái thu.
+- **Thước thời gian kiểu máy hiện sóng** dưới các track: một đường trục chia
+  4 khoảng, 5 vạch chính (4 px) và 4 vạch phụ ở giữa (2 px). **Không có chữ
+  số dưới từng vạch** - vạch khắc cố định trên màn như kính máy hiện sóng,
+  chỉ dạng sóng trượt đi khi cuộn/zoom.
+- **Thanh chú thích đáy** (được xoá sạch rồi vẽ lại mỗi khung) chỉ có 2 số:
+  `T:<thời gian>` là thời điểm mẫu tại con trỏ giữa, **tính tương đối so với
+  trigger** (`T:0` đúng tại trigger, `+` sau, `-` trước), và `1div:<thời gian>`
+  là thời gian của một khoảng chia (màu cyan). Đơn vị tự đổi: `400ns`,
+  `8.6u`, `1.25m`, `2.50s`.
+- `STOP` / `RUN` / `FAIL` (trạng thái thu) nằm ở dòng phụ thứ hai, cạnh nhãn
+  zoom.
+- **Thanh cuộn ngang** ngay dưới thước: chiều dài thumb = tỉ lệ cửa sổ/buffer,
+  vị trí = đang xem đoạn nào. FIT thì thumb phủ hết track.
 
 ### Màn 5/5 - DECODE
 
@@ -167,8 +173,11 @@ Bảng 5 dòng, mỗi dòng là **một gói/byte** do bộ giải mã tạo ra:
 | `ASCII` | Ký tự nếu in được (`'H'`), hoặc từ riêng của giao thức: `ACK`, `NAK`, `ADR`, `ID-hi`, `ID-lo`, `DLC` |
 | `TIME` | Khoảng cách tới gói trước đó (`0`, `86us`, `1.2ms`, ...) |
 
-- Dòng đang chọn có nền xanh; dải sóng phía trên chiếu đúng gói đó (thước bit
-  ở dưới dải sóng, thanh màu cho biết gói nằm ở đâu trong toàn giao dịch).
+- Dòng đang chọn có nền xanh; dải sóng phía trên chiếu đúng gói đó. Đáy dải
+  sóng là **trục thời gian có vạch chia theo từng bit** (gói dài thì vạch thưa
+  ra, khoảng 12 vạch), kèm 2 số: `ST:<thời gian>` là lúc gói bắt đầu (tương
+  đối so với trigger) và `1div:<thời gian>` là độ rộng một bit (với UART
+  115200 là `8.6u`).
 - Thanh cuộn bên phải báo vị trí trong danh sách gói (`PKT:<n>` ở header).
 - Ví dụ với UART "HELLO": `01|0x48|'H'|0`, `02|0x45|'E'|4us`, ...
 

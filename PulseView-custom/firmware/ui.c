@@ -68,12 +68,17 @@ static const uint16_t C_CH[4] = {
 #define WAVE_W (SCR_W - WAVE_X0)
 
 /* Below the tracks: a time ruler, then a horizontal scrollbar. Both end at
- * y=137 so the status bar at BOTTOM_Y=138 is untouched. */
-#define RULER_Y      (WAVE_BOT + 1)      /* 123 */
-#define RULER_H      8
-#define RULER_TICK_Y (RULER_Y + 8)       /* 131 */
-#define RULER_TICK_H 2
-#define RULER_TICK_PX 48                /* aim for a tick every ~48 px */
+ * y=137 so the status bar at BOTTOM_Y=138 is untouched.
+ *
+ * The ruler is an oscilloscope scale, not a chart axis: the ticks are etched in
+ * glass, so they never move when the waveform pans or zooms. The numbers live
+ * in the caption bar below (time at the cursor, time per division). Four
+ * divisions across the plot, majors 4 px and minors 2 px under the line. */
+#define RULER_Y       (WAVE_BOT + 1)     /* 123 */
+#define RULER_AXIS_Y  (RULER_Y + 4)      /* 127 */
+#define RULER_MAJOR   4
+#define RULER_MINOR   2
+#define RULER_DIVS    4
 #define WSBAR_X      WAVE_X0
 #define WSBAR_Y      134
 #define WSBAR_W      WAVE_W
@@ -489,46 +494,67 @@ static void draw_track(unsigned ch, int y)
 
 /* ---------- time ruler + scrollbar (below the tracks) ---------- */
 
-/* Defined with the decode grid; the ruler labels share its formatting. */
-static const char *gap_text(uint32_t gap, uint32_t rate, char *buf, size_t n);
-
-/* 1-2-5 ladder pitch in samples, aiming for a tick every RULER_TICK_PX. */
-static uint32_t ruler_pitch(uint32_t span)
+/* Compact duration, at most five characters of value: "400ns", "8.6u", "12.5m",
+ * "1.25m", "2.50s". Two of these plus their labels have to fit on one 128 px
+ * line at six pixels per character. */
+void ui_format_time(uint64_t ns, char *buf, size_t n)
 {
-    uint64_t want = (uint64_t)span * RULER_TICK_PX / WAVE_W;
-    uint32_t ladder[] = { 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000,
-                          10000, 20000, 50000, 100000, 200000, 500000, 1000000 };
-    const unsigned n = sizeof(ladder) / sizeof(ladder[0]);
-    for (unsigned i = 0; i < n; i++)
-        if ((uint64_t)ladder[i] * 2 >= want) return ladder[i];
-    return ladder[n - 1];
+    if (ns < 1000) {
+        snprintf(buf, n, "%uns", (unsigned)ns);
+    } else if (ns < 1000000) {
+        unsigned us = (unsigned)(ns / 1000);
+        if (us < 10) snprintf(buf, n, "%u.%uu", us, (unsigned)((ns % 1000) / 100));
+        else snprintf(buf, n, "%uu", us);
+    } else if (ns < 1000000000ull) {
+        unsigned ms = (unsigned)(ns / 1000000);
+        unsigned frac = (unsigned)((ns % 1000000) / 1000);
+        if (ms < 10) snprintf(buf, n, "%u.%02um", ms, frac / 10);
+        else if (ms < 100) snprintf(buf, n, "%u.%um", ms, frac / 100);
+        else snprintf(buf, n, "%um", ms);
+    } else {
+        unsigned sec = (unsigned)(ns / 1000000000ull);
+        unsigned cs = (unsigned)((ns % 1000000000ull) / 10000000ull);
+        if (sec < 10) snprintf(buf, n, "%u.%02us", sec, cs);
+        else if (sec < 100) snprintf(buf, n, "%u.%us", sec, cs / 10);
+        else snprintf(buf, n, "%us", sec);
+    }
 }
 
-/* Absolute time from sample 0, one tick per pitch. Labels are clipped and
- * skipped when they would collide, so nothing ever overlaps. */
+/* Signed time of `sample` relative to the trigger (sample 0 when the capture
+ * was manual, which is where cap_trigger already points). */
+void ui_format_offset(uint32_t sample, uint32_t ref, uint32_t rate,
+                      char *buf, size_t n)
+{
+    char t[10];
+    if (!rate) { snprintf(buf, n, "-"); return; }
+    if (sample == ref) { snprintf(buf, n, "0"); return; }
+    if (sample > ref) {
+        ui_format_time((uint64_t)(sample - ref) * 1000000000ull / rate, t, sizeof t);
+        snprintf(buf, n, "+%s", t);
+    } else {
+        ui_format_time((uint64_t)(ref - sample) * 1000000000ull / rate, t, sizeof t);
+        snprintf(buf, n, "-%s", t);
+    }
+}
+
+/* Etched scale under the tracks: one line, four divisions, five majors and a
+ * minor in between. No labels on purpose; the caption bar carries the two
+ * numbers that matter. */
 static void draw_time_ruler(void)
 {
-    fill(WAVE_X0, RULER_Y, WAVE_W, RULER_H, C_BG);
+    fill(WAVE_X0, RULER_Y, WAVE_W, RULER_AXIS_Y + RULER_MAJOR + 1 - RULER_Y, C_BG);
     if (!cap_rate || !cap_len) return;
 
-    uint32_t visible = visible_samples();
-    uint32_t span = WAVE_W ? visible / WAVE_W : 0;
-    if (!span) span = 1;
-    uint32_t pitch = ruler_pitch(span);
-
-    hline(WAVE_X0, RULER_TICK_Y, WAVE_W, C_BROWSE);
-    int last_right = -1000;
-    for (uint32_t t = (wave_t / pitch) * pitch; t < wave_t + visible; t += pitch) {
-        if (t < wave_t) continue;
-        int x = WAVE_X0 + (int)((t - wave_t) / span);
-        if (x < WAVE_X0 || x >= SCR_W) continue;
-        fill(x, RULER_TICK_Y, 1, RULER_TICK_H, C_DIM);
-        char lb[12];
-        gap_text(t, (uint32_t)cap_rate, lb, sizeof lb);
-        int w = (int)strlen(lb) * FONT6X8_W;
-        if (x - w / 2 < last_right + 4) continue;   /* label would collide */
-        text_clip(x - w / 2, RULER_Y, w + 2, lb, C_DIM, C_BG);
-        last_right = x - w / 2 + w;
+    hline(WAVE_X0, RULER_AXIS_Y, WAVE_W, C_DIM);
+    int div = WAVE_W / RULER_DIVS;
+    for (int i = 0; i <= RULER_DIVS; i++) {
+        int x = WAVE_X0 + i * div;
+        if (x >= SCR_W) x = SCR_W - 1;
+        fill(x, RULER_AXIS_Y + 1, 1, RULER_MAJOR, C_DIM);
+    }
+    for (int i = 0; i < RULER_DIVS; i++) {
+        int x = WAVE_X0 + i * div + div / 2;
+        if (x < SCR_W) fill(x, RULER_AXIS_Y + 1, 1, RULER_MINOR, C_DIM);
     }
 }
 
@@ -562,6 +588,10 @@ static void draw_wave(bool high_page)
     snprintf(buf, sizeof buf, "Z:%s  %s", zoom_label(zl, sizeof zl),
              high_page ? "OK:GIAI MA" : "OK:CH4-7");
     text(4, 17, buf, C_DIM);
+    /* Capture state moved up here to leave the caption bar for the two time
+     * values. */
+    text_right(SCR_W - 3, 17, capturing ? "RUN" : (cap_ok ? "STOP" : "FAIL"),
+               capturing ? C_EDIT_T : (cap_ok ? C_DIM : C_TRIG));
 
     for (unsigned i = 0; i < 4; i++)
         draw_track(first + i, WAVE_TOP + (int)i * WAVE_TRACK_H);
@@ -583,16 +613,20 @@ static void draw_wave(bool high_page)
     draw_time_ruler();
     draw_scrollbar();
 
+    /* Clean-Before-Draw: the bar is repainted every frame, so panning or
+     * zooming can never leave the previous digits behind. Exactly two values:
+     * the time at the centre cursor and the time covered by one division. */
     fill(0, BOTTOM_Y, SCR_W, 12, C_HDR);
-    /* Same clock as the DECODE grid's TIME column: absolute time of the
-     * sample under the centre cursor, not a bare sample count. */
-    char tb[12];
-    gap_text(wave_t + visible / 2, (uint32_t)cap_rate, tb, sizeof tb);
+    char tb[12], db[12];
+    ui_format_offset(wave_t + visible / 2, cap_trigger, (uint32_t)cap_rate, tb, sizeof tb);
     snprintf(buf, sizeof buf, "T:%s", tb);
-    text(4, BOTTOM_Y + 2, buf, C_TEXT);
-    text_right(SCR_W - 4, BOTTOM_Y + 2,
-               capturing ? "RUN" : (cap_ok ? "STOP" : "FAIL"),
-               capturing ? C_EDIT_T : C_TEXT);
+    text(3, BOTTOM_Y + 2, buf, C_TEXT);
+    if (cap_rate) {
+        ui_format_time((uint64_t)span * (WAVE_W / RULER_DIVS) * 1000000000ull
+               / (uint32_t)cap_rate, db, sizeof db);
+        snprintf(buf, sizeof buf, "1div:%s", db);
+        text_right(SCR_W - 3, BOTTOM_Y + 2, buf, C_ACC);
+    }
 
     text_center(HINT_Y, high_page ? "OK GIAI MA  BACK" : "OK CH4-7  BACK", C_DIM);
 }
@@ -749,7 +783,7 @@ static void draw_strip(void)
     if (b <= a) b = a + 1;
 
     int wx = GRID_X + 3, wy = STRIP_Y + 4;
-    int ww = GRID_W - 6, wh = 15;
+    int ww = GRID_W - 6, wh = 13;
     unsigned ch = dec_pkts.ch;
     int hi = wy, lo = wy + wh - 1;
 
@@ -779,32 +813,35 @@ static void draw_strip(void)
         else fill(x, level ? hi : lo, 1, 2, C_ACC);
     }
 
-    /* Bit ruler: a tick per bit boundary, so the row reads as bits and not as
-     * an abstract squiggle. Only drawn when the ticks do not merge. */
-    uint32_t nbits = (b - a) / (bitw ? bitw : 1);
-    int tick_y = STRIP_Y + 21;
-    if (nbits && nbits <= 24) {
-        for (uint32_t k = 0; k <= nbits; k++) {
+    /* Bit ruler along the bottom of the mini waveform: one tick per bit, so
+     * the row reads as a time scale and not as an abstract squiggle. The axis
+     * line is always there; the ticks are skipped when they would merge. */
+    int axis_y = STRIP_Y + 18;
+    hline(wx, axis_y, ww, C_DIM);
+    uint32_t nbits = bitw ? (b - a) / bitw : 0;
+    if (nbits) {
+        /* One tick per bit; on a long row every k-th bit, so the scale keeps
+         * roughly a dozen marks instead of turning into a solid block. */
+        uint32_t step = (nbits + 11u) / 12u;
+        if (!step) step = 1;
+        for (uint32_t k = 0; k <= nbits; k += step) {
             int tx = wx + (int)((uint64_t)k * (unsigned)ww / nbits);
             if (tx >= wx + ww) tx = wx + ww - 1;
-            fill(tx, tick_y, 1, 2, C_STRIP_BD);
+            fill(tx, axis_y + 1, 1, 2, C_DIM);
         }
     }
 
-    /* Field bar: where this row sits inside the whole transaction. */
-    int by = STRIP_Y + 24;
-    int track_h = 3;
-    fill(wx, by, ww, track_h, C_STRIP_BD);
-    uint32_t wa = dec_pkts.win_at, wb = dec_pkts.win_end;
-    if (wb > wa) {
-        uint32_t pa = at > wa ? at - wa : 0;
-        uint32_t pb = en > wa ? en - wa : pa + 1;
-        int bx0 = wx + (int)((uint64_t)pa * (unsigned)ww / (wb - wa));
-        int bx1 = wx + (int)((uint64_t)pb * (unsigned)ww / (wb - wa));
-        if (bx1 <= bx0) bx1 = bx0 + 2;
-        if (bx0 < wx) bx0 = wx;
-        if (bx1 > wx + ww) bx1 = wx + ww;
-        fill(bx0, by, bx1 - bx0, track_h, C_CH[ch & 3u]);
+    /* Two values only, under the ruler: where the packet starts and how much
+     * time one division (one bit here) covers. */
+    char tb[12], line[24];
+    ui_format_offset(at, cap_trigger, (uint32_t)(dec_pkts.rate ? dec_pkts.rate : cap_rate),
+            tb, sizeof tb);
+    snprintf(line, sizeof line, "ST:%s", tb);
+    text(GRID_X + 4, STRIP_Y + 21, line, C_TEXT);
+    if (dec_pkts.rate && bitw) {
+        ui_format_time((uint64_t)bitw * 1000000000ull / dec_pkts.rate, tb, sizeof tb);
+        snprintf(line, sizeof line, "1div:%s", tb);
+        text_right(GRID_X + GRID_W - 4, STRIP_Y + 21, line, C_ACC);
     }
 }
 

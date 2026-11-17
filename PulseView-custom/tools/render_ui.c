@@ -157,8 +157,41 @@ static int write_png(const char *path, int scale)
     return 0;
 }
 
+/* --selftest: the caption formatters are the only branchy part of the ruler,
+ * so they get checked here instead of by eye on the panel. */
+static int selftest(void)
+{
+    static const struct { uint64_t ns; const char *want; } cases[] = {
+        { 0, "0ns" }, { 400, "400ns" }, { 999, "999ns" },
+        { 1000, "1.0u" }, { 8680, "8.6u" }, { 20000, "20u" }, { 999999, "999u" },
+        { 1000000, "1.00m" }, { 1250000, "1.25m" }, { 12500000, "12.5m" },
+        { 125000000, "125m" }, { 1500000000ull, "1.50s" },
+        { 15000000000ull, "15.0s" }, { 150000000000ull, "150s" },
+    };
+    char b[12];
+    int bad = 0;
+    for (unsigned i = 0; i < sizeof cases / sizeof cases[0]; i++) {
+        ui_format_time(cases[i].ns, b, sizeof b);
+        if (strcmp(b, cases[i].want)) {
+            fprintf(stderr, "%llu ns: got %s, want %s\n",
+                    (unsigned long long)cases[i].ns, b, cases[i].want);
+            bad++;
+        }
+    }
+    /* 25 MHz: 217 samples is one 115200 bit, 2500 samples is 100 us. */
+    ui_format_offset(1217, 1000, 25000000, b, sizeof b);
+    if (strcmp(b, "+8.6u")) { fprintf(stderr, "offset +: got %s\n", b); bad++; }
+    ui_format_offset(1000, 1217, 25000000, b, sizeof b);
+    if (strcmp(b, "-8.6u")) { fprintf(stderr, "offset -: got %s\n", b); bad++; }
+    ui_format_offset(1000, 1000, 25000000, b, sizeof b);
+    if (strcmp(b, "0")) { fprintf(stderr, "offset 0: got %s\n", b); bad++; }
+    if (!bad) printf("render_ui selftest: caption format ok\n");
+    return bad ? 1 : 0;
+}
+
 int main(int argc, char **argv)
 {
+    if (argc > 1 && !strcmp(argv[1], "--selftest")) return selftest();
     const char *out = argc > 1 ? argv[1] : "ui.png";
     int scale = argc > 2 ? atoi(argv[2]) : 2;
     crc_init();
@@ -180,6 +213,12 @@ int main(int argc, char **argv)
     ui_set_now_ms(0);
     ui_load_demo();                 /* 3/5 WAVE CH0-3 */
     if (screen == 2) {              /* 3/5 WAVE CH0-3 */
+        /* argv[6] zoom steps (long DOWN), argv[7] pan steps (short DOWN), so
+         * the ruler and the caption can be checked while the wave moves. */
+        int zooms = argc > 6 ? atoi(argv[6]) : 0;
+        int pans = argc > 7 ? atoi(argv[7]) : 0;
+        for (int i = 0; i < zooms; i++) ui_handle_command('D');
+        for (int i = 0; i < pans; i++) ui_handle_command('d');
         ui_tick();
         if (!frame_valid) return 1;
         if (write_png(out, scale)) return 1;

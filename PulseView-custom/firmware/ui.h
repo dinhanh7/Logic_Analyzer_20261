@@ -11,6 +11,7 @@
 #define UI_H
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 typedef struct {
@@ -53,6 +54,13 @@ const char *ui_decode_text(void);
 /* The decode grid as the panel draws it: one line per visible row, columns
  * separated by '|'. Lets the host check the table without eyes on the panel. */
 const char *ui_decode_table(void);
+
+/* Time formatting used by the waveform/decode caption bars, exposed so the host
+ * harness can check the rounding and unit ladder without a panel. Both keep the
+ * value to five characters ("400ns", "8.6u", "1.25m", "2.50s"). */
+void ui_format_time(uint64_t ns, char *buf, size_t n);
+void ui_format_offset(uint32_t sample, uint32_t ref, uint32_t rate,
+                      char *buf, size_t n);
 /* Load the built-in mock waveform (UART "HELLO" on CH0 + square waves) and
  * jump to the waveform screen, so the UI can be checked with no signal
  * generator attached. */
