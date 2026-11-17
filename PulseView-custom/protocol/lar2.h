@@ -50,6 +50,12 @@
                                         line, columns separated by '|' */
 #define LAR2_ANALYZE_UI_DEMO     12u /* load the built-in mock waveform and show
                                         the waveform screen, no capture needed */
+#define LAR2_ANALYZE_STREAM_START 16u /* continuous capture to the host. rate and
+                                        mask come from the last CONFIG; arg bit0
+                                        selects RLE block encoding. Capped at
+                                        1 MHz: USB CDC full speed is 1.5 MB/s. */
+#define LAR2_ANALYZE_STREAM_STOP 17u  /* stop streaming; RESULT carries
+                                        samples sent and samples dropped */
 #define LAR2_ANALYZE_RUNTIME     11u /* trigger state, see the REPLY in main.c */
 #define LAR2_ANALYZE_BOOTLOADER  10u /* reboot into the UF2 bootloader so the
                                         host can flash without pressing BOOTSEL */
@@ -68,7 +74,7 @@
 
 /* Board identity. The host checks the "RP2350-LA" prefix and a minimum
  * length, so the suffix may advertise firmware features. */
-#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an"
+#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an+str"
 static const uint64_t lar2_rates[LAR2_RATE_COUNT] = {
     1000, 10000, 100000, 250000, 500000, 1000000, 5000000, 25000000
 };
@@ -77,6 +83,7 @@ enum lar2_type {
     LAR2_ANALYZE=6,
     LAR2_ID=0x81, LAR2_CAPS=0x82, LAR2_ACK=0x83,
     LAR2_INFO=0x90, LAR2_SAMPLES=0x91, LAR2_END=0x92, LAR2_RESULT=0x93,
+    LAR2_STREAM_BLOCK=0x94,
     LAR2_ERROR=0xff
 };
 static inline uint16_t lar2_u16(const uint8_t *p) { return p[0] | ((uint16_t)p[1]<<8); }

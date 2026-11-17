@@ -12,6 +12,7 @@ build/tests/test_decode
 cc -std=c11 -Wall -Wextra -Werror -g -fsanitize=address,undefined -Ifirmware -Iprotocol firmware/font6x8.c tests/test_ui.c -o build/tests/test_ui
 build/tests/test_ui
 python3 tests/test_host_la.py
+python3 tests/test_stream.py
 # The sigrok driver tests need the host stack built with scripts/build.sh host.
 if [[ -x "$RP2350_ROOT/.local/bin/sigrok-cli" ]]; then
     python3 tests/test_integration.py

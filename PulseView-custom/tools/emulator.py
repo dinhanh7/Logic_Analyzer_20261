@@ -94,8 +94,30 @@ class Emulator:
                 self.pending[2]=frame(SAMPLES,0x3456,data[:MAX_PAYLOAD])
             elif self.fault=='truncated': self.pending=self.pending[:2]
         elif kind==ANALYZE:
-            # Minimal ANALYZE support for emulation
-            self.queue(RESULT, bytes([RESULT_OK]))
+            op=payload[0]
+            if op==ANALYZE_STREAM_START:
+                rle=payload[1]&1
+                if not self.config: self.queue(RESULT, bytes([RESULT_ERROR])); return
+                rate,count,mask,pre,trigger=self.config
+                if rate>1000000: self.queue(RESULT, bytes([RESULT_ERROR])); return
+                self.queue(RESULT, bytes([RESULT_OK]))
+                self.stream_samples=pattern(65536,rate,self.mode)
+                for off in range(0,len(self.stream_samples),500):
+                    data=self.stream_samples[off:off+500]
+                    if rle:
+                        body=bytearray()
+                        k=0
+                        while k<len(data):
+                            v=data[k]; run=1
+                            while k+run<len(data) and data[k+run]==v and run<255: run+=1
+                            body.extend([run,v]); k+=run
+                        if len(body)<len(data):
+                            self.queue(STREAM_BLOCK, bytes([1])+struct.pack('<I',off)+bytes(body)); continue
+                    self.queue(STREAM_BLOCK, bytes([0])+struct.pack('<I',off)+data)
+            elif op==ANALYZE_STREAM_STOP:
+                self.queue(RESULT, bytes([RESULT_OK])+struct.pack('<II',65536,0))
+            else:
+                self.queue(RESULT, bytes([RESULT_OK]))
         else: self.queue(ERROR,b'command')
     def run(self):
         outgoing=b''

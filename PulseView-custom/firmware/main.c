@@ -19,6 +19,7 @@
 #include "hardware/flash.h"
 #include "hardware/regs/addressmap.h"
 #include "hardware/sync.h"
+#include "hardware/irq.h"
 #include "tusb.h"
 #include "logic_capture.pio.h"
 #include "lar2.h"
@@ -31,6 +32,16 @@
 #define CAPTURE_WORDS (LAR2_MAX_SAMPLES / 4u)
 #define CAPTURE_BYTES (LAR2_MAX_SAMPLES)
 #define DMA_LAG_BYTES 64u
+
+/* Streaming (continuous capture to the host). The capture buffer is reused as
+ * a four-slot ring: DMA fills one 64 KB slot while the CPU ships the previous
+ * ones. Four slots = 192 ms of slack at 1 MHz, which absorbs USB jitter.
+ * USB CDC full speed caps the useful rate at 1 MHz (1 byte/sample = 1 MB/s);
+ * the PIO itself still runs at whatever CONFIG asked for. */
+#define STREAM_SLOTS 4u
+#define STREAM_SLOT_BYTES (CAPTURE_BYTES / STREAM_SLOTS)
+#define STREAM_SLOT_WORDS (STREAM_SLOT_BYTES / 4u)
+#define STREAM_CHUNK 500u        /* RLE worst case 2*500+5 = 1005 < 1024 */
 
 /* Flash storage: use the last 1 MB of flash for session data.
  * Two slots of 512 KB: a slot is one header sector plus the samples, which
@@ -53,6 +64,12 @@ static uint64_t rate = 1000000;
 static uint32_t count = 100000, sent, crc;
 static uint8_t mask = 0xff;
 static bool configured, capturing, sending;
+static volatile bool streaming;
+static volatile uint32_t stream_prod;   /* slots completed by DMA */
+static uint32_t stream_cons;            /* slots shipped to the host */
+static uint32_t stream_sent_samples;
+static uint32_t stream_dropped;
+static bool stream_rle;
 static PIO pio = pio0;
 static int sm, offset;
 static int dma_ch;
@@ -88,6 +105,8 @@ static int compare_with_golden(void);
 static int diff_with_loaded_session(uint32_t slot);
 static void start_sending(uint32_t sample_count, uint32_t trigger_index,
                           uint32_t pre, uint8_t flags);
+static bool start_stream(uint64_t rate, uint8_t mask, bool rle);
+static void stop_stream(void);
 
 /* Global variables used in command() before their definition. */
 static uint32_t golden_tolerance = 0;
@@ -390,6 +409,23 @@ static void command(void)
         case LAR2_ANALYZE_REPLAY:
             start_sending(win_len, LAR2_NO_TRIGGER, 0, 0);
             break;
+        case LAR2_ANALYZE_STREAM_START:
+            if (!configured) { result[0] = LAR2_RESULT_ERROR; send_frame(LAR2_RESULT, result, 1); break; }
+            if (!start_stream(rate, mask, (arg & 1u) != 0)) {
+                result[0] = LAR2_RESULT_ERROR;
+                send_frame(LAR2_RESULT, result, 1);
+                break;
+            }
+            send_frame(LAR2_RESULT, result, 1);
+            break;
+        case LAR2_ANALYZE_STREAM_STOP: {
+            stop_stream();
+            result[0] = LAR2_RESULT_OK;
+            lar2_put32(result + 1, stream_sent_samples);
+            lar2_put32(result + 5, stream_dropped);
+            send_frame(LAR2_RESULT, result, 9);
+            break;
+        }
         case LAR2_ANALYZE_UI_TEXT: {
             /* What screen 5 is showing right now, so the host can check every
              * protocol without eyes on the panel. */
@@ -474,6 +510,121 @@ static void start_sending(uint32_t sample_count, uint32_t trigger_index, uint32_
     info[20] = 8; info[21] = 1; info[22] = mask; info[23] = flags;
     sending = true; sent = 0; crc = ~0u;
     send_frame(LAR2_INFO, info, sizeof(info));
+}
+
+/* ---------- streaming ---------- */
+static void __not_in_flash_func(stream_dma_isr)(void)
+{
+    if (!(dma_hw->ints0 & (1u << dma_ch))) return;
+    dma_hw->ints0 = 1u << dma_ch;
+    if (!streaming) return;
+    /* Slot just filled is (prod % STREAM_SLOTS); arm the next one at once so
+     * the PIO FIFO never stalls between slots. */
+    uint32_t next = (stream_prod + 1u) % STREAM_SLOTS;
+    stream_prod++;
+    dma_channel_set_write_addr(dma_ch,
+        (void *)((uint8_t *)samples + next * STREAM_SLOT_BYTES), false);
+    dma_channel_set_trans_count(dma_ch, STREAM_SLOT_WORDS, true);
+}
+
+/* RLE: (run:u8, value:u8) pairs. Falls back to raw when compression does not
+ * win, so a fast toggling line costs exactly one byte per sample. */
+static void send_stream_slot(const uint8_t *p, uint32_t len, uint32_t offset)
+{
+    uint8_t block[LAR2_MAX_PAYLOAD];
+    for (uint32_t i = 0; i < len; i += STREAM_CHUNK) {
+        uint32_t n = len - i;
+        if (n > STREAM_CHUNK) n = STREAM_CHUNK;
+        uint8_t enc = 0;
+        uint32_t out = n;
+        if (stream_rle) {
+            uint8_t *dst = block + 5;
+            uint32_t o = 0;
+            for (uint32_t k = 0; k < n;) {
+                uint8_t v = p[i + k];
+                uint32_t run = 1;
+                while (k + run < n && p[i + k + run] == v && run < 255) run++;
+                dst[o++] = (uint8_t)run;
+                dst[o++] = v;
+                k += run;
+            }
+            if (o < n) { enc = 1; out = o; }
+        }
+        block[0] = enc;
+        lar2_put32(block + 1, offset + i);
+        if (!enc) memcpy(block + 5, p + i, n);
+        send_frame(LAR2_STREAM_BLOCK, block, 5 + out);
+    }
+}
+
+static bool start_stream(uint64_t r, uint8_t m, bool rle)
+{
+    if (r > 1000000) return false;          /* USB CDC cannot keep up */
+    abort_capture();
+    rate = r; mask = m;
+    count = CAPTURE_BYTES;
+    trig_mode = LAR2_TRIGGER_MANUAL;
+    pretrigger = 0;
+
+    pio_sm_config c = logic_capture_program_get_default_config(offset);
+    sm_config_set_in_pins(&c, 0);
+    sm_config_set_in_shift(&c, true, true, 32);
+    sm_config_set_out_shift(&c, true, false, 32);
+    sm_config_set_clkdiv_int_frac(&c, (uint32_t)(25000000 / rate), 0);
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_consecutive_pindirs(pio, sm, 0, 8, false);
+    pio_sm_clkdiv_restart(pio, sm);
+    pio_sm_put_blocking(pio, sm, 0xFFFFFFFFu);   /* X-- runs ~4G samples */
+    pio_sm_exec(pio, sm, pio_encode_pull(false, true));
+    pio_sm_exec(pio, sm, pio_encode_out(pio_x, 32));
+
+    dma_channel_config dc = dma_channel_get_default_config(dma_ch);
+    channel_config_set_transfer_data_size(&dc, DMA_SIZE_32);
+    channel_config_set_read_increment(&dc, false);
+    channel_config_set_write_increment(&dc, true);
+    channel_config_set_dreq(&dc, pio_get_dreq(pio, sm, false));
+
+    stream_prod = 0; stream_cons = 0;
+    stream_sent_samples = 0; stream_dropped = 0;
+    stream_rle = rle; streaming = true;
+    pio->fdebug = 1u << (PIO_FDEBUG_RXSTALL_LSB + sm);
+    dma_channel_configure(dma_ch, &dc, samples, &pio->rxf[sm], STREAM_SLOT_WORDS, true);
+    dma_channel_set_irq0_enabled(dma_ch, true);
+    pio_sm_set_enabled(pio, sm, true);
+    return true;
+}
+
+static void stop_stream(void)
+{
+    if (!streaming) return;
+    streaming = false;
+    dma_channel_set_irq0_enabled(dma_ch, false);
+    pio_sm_set_enabled(pio, sm, false);
+    dma_channel_abort(dma_ch);
+    pio_sm_clear_fifos(pio, sm);
+    dma_hw->ints0 = 1u << dma_ch;
+}
+
+static void stream_task(void)
+{
+    if (!streaming) return;
+    while (stream_cons < stream_prod) {
+        uint32_t pending = stream_prod - stream_cons;
+        if (pending >= STREAM_SLOTS) {
+            /* The writer lapped the sender: skip the overwritten slots and
+             * report how many samples were lost rather than shipping stale
+             * data as if it were contiguous. */
+            uint32_t skip = pending - (STREAM_SLOTS - 1u);
+            stream_cons += skip;
+            stream_dropped += skip * STREAM_SLOT_BYTES;
+        }
+        uint32_t slot = stream_cons % STREAM_SLOTS;
+        uint32_t offset = stream_cons * STREAM_SLOT_BYTES;
+        send_stream_slot((const uint8_t *)samples + slot * STREAM_SLOT_BYTES,
+                         STREAM_SLOT_BYTES, offset);
+        stream_sent_samples += STREAM_SLOT_BYTES;
+        stream_cons++;
+    }
 }
 
 static void capture_task(void)
@@ -679,13 +830,22 @@ int main(void)
     sm = pio_claim_unused_sm(pio, true);
     offset = pio_add_program(pio, &logic_capture_program);
     dma_ch = dma_claim_unused_channel(true);
+    /* Slot-completion interrupt for streaming; the snapshot path never
+     * enables it, so it stays quiet until ANALYZE_STREAM_START. */
+    irq_set_exclusive_handler(DMA_IRQ_0, stream_dma_isr);
+    irq_set_enabled(DMA_IRQ_0, true);
     bool connected = false;
     bool ui_pending = false;
     while (true) {
         tud_task();
         bool now = tud_cdc_connected();
         if (!now) {
-            if (connected) { abort_capture(); configured = false; memset(&parser, 0, sizeof(parser)); }
+            if (connected) {
+                stop_stream();
+                abort_capture();
+                configured = false;
+                memset(&parser, 0, sizeof(parser));
+            }
         } else {
             while (tud_cdc_available()) {
                 uint8_t b; if (tud_cdc_read(&b, 1) != 1) break;
@@ -720,13 +880,19 @@ int main(void)
             start_capture();
             ui_pending = true;
         }
+        stream_task();
         capture_task();
         if (ui_pending && !capturing) {
             ui_pending = false;
             ui_set_capture(win_base, win_len, rate, pretrigger, !capture_faulted());
         }
-        ui_set_now_ms(to_ms_since_boot(get_absolute_time()));
-        ui_tick();
+        /* Streaming owns the CPU budget: a TFT redraw in the middle of a slot
+         * can stall USB long enough to overrun the ring. The panel simply
+         * keeps showing the last screen for the duration of the capture. */
+        if (!streaming) {
+            ui_set_now_ms(to_ms_since_boot(get_absolute_time()));
+            ui_tick();
+        }
         connected = now; tight_loop_contents();
     }
 }
