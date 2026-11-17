@@ -15,6 +15,12 @@ struct dev_context {
     uint8_t mask;
     gboolean active, have_info, complete;
     gint64 deadline;
+    /* Trigger configuration, translated from the libsigrok config options. */
+    uint8_t trig_mode;        /* 0 manual, 1 edge, 2 pattern */
+    uint8_t trig_channel, trig_edge, trig_value, trig_mask;
+    double horiz_triggerpos;  /* fraction of the window kept before the trigger */
+    uint32_t trigger_index;   /* trigger position inside the window */
+    gboolean trigger_sent;
 };
 SR_PRIV int rp2350_connect(struct dev_context *d);
 SR_PRIV int rp2350_command(struct dev_context *d, uint8_t type, const uint8_t *p, size_t n);

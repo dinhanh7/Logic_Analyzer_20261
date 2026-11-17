@@ -10,6 +10,9 @@ import threading
 import time
 import tty
 import zlib
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lar2 import *
 
 class Emulator:
@@ -38,19 +41,51 @@ class Emulator:
         if kind==GET_CAPS:
             self.queue(CAPS,struct.pack('<BBHII',8,1,0,MAX_SAMPLES,len(RATES))+struct.pack('<8Q',*RATES))
         elif kind==CONFIG:
-            if len(payload)!=20: self.queue(ERROR,b'config length'); return
-            rate,count,pre,mask,trigger,reserved=struct.unpack('<QIIBBH',payload)
-            if rate not in RATES or not 1<=count<=MAX_SAMPLES or pre or not mask or trigger or reserved:
-                self.config=None; self.queue(ERROR,b'config'); return
-            self.config=rate,count,mask; self.queue(ACK,bytes([kind]))
+            if len(payload) not in (20,28): self.queue(ERROR,b'config length'); return
+            if len(payload)==20:
+                rate,count,pre,mask,trigger,reserved=struct.unpack('<QIIBBH',payload)
+                if rate not in RATES or not 1<=count<=MAX_SAMPLES or pre or not mask or trigger or reserved:
+                    self.config=None; self.queue(ERROR,b'config'); return
+                self.config=rate,count,mask,0,None
+            else:
+                (rate,count,pre,mask,mode,channel,edge,value,pattern_mask,
+                 reserved,reserved2)=struct.unpack('<QIIBBBBBBHI',payload)
+                if rate not in RATES or not 1<=count<=MAX_SAMPLES or not mask or reserved or reserved2:
+                    self.config=None; self.queue(ERROR,b'config'); return
+                if mode==0:
+                    if pre: self.config=None; self.queue(ERROR,b'config'); return
+                    trigger=None
+                elif mode==1:
+                    if channel>7 or edge>1 or pre>=count:
+                        self.config=None; self.queue(ERROR,b'config'); return
+                    trigger=('edge',channel,edge,0,0)
+                elif mode==2:
+                    if channel>7 or pre>=count:
+                        self.config=None; self.queue(ERROR,b'config'); return
+                    trigger=('pattern',channel,0,value,pattern_mask)
+                else:
+                    self.config=None; self.queue(ERROR,b'config'); return
+                self.config=rate,count,mask,pre,trigger
+            self.queue(ACK,bytes([kind]))
         elif kind==ABORT:
             self.pending.clear(); self.config=None; self.queue(ACK,bytes([kind]))
         elif kind==ARM and self.config:
             self.queue(ACK,bytes([kind]))
-            rate,count,mask=self.config
+            rate,count,mask,pre,trigger=self.config
             if self.fault=='wait': return
             data=pattern(count,rate,self.mode)
-            self.queue(INFO,struct.pack('<QIII4B',rate+(self.fault=='metadata'),count,0xffffffff,0,8,1,mask,0))
+            trigger_index=0xffffffff
+            if trigger is not None:
+                # Mirror the firmware: the trigger is only accepted once the
+                # pre-trigger buffer is full, and the delivered window is
+                # [T-pre, T-pre+count) so the trigger sits at offset pre.
+                stream=pattern(pre+count+count,rate,self.mode)
+                hit=find_trigger(stream,pre,pre+count,trigger)
+                if hit is None:
+                    self.queue(ERROR,b'no trigger'); return
+                trigger_index=pre
+                data=stream[hit-pre:hit-pre+count]
+            self.queue(INFO,struct.pack('<QIII4B',rate+(self.fault=='metadata'),count,trigger_index,pre,8,1,mask,0))
             for i in range(0,count,MAX_PAYLOAD): self.queue(SAMPLES,data[i:i+MAX_PAYLOAD])
             self.queue(END,struct.pack('<II',count,zlib.crc32(data)^(self.fault=='capture-crc')))
             if self.fault=='crc':
@@ -58,6 +93,31 @@ class Emulator:
             elif self.fault=='sequence':
                 self.pending[2]=frame(SAMPLES,0x3456,data[:MAX_PAYLOAD])
             elif self.fault=='truncated': self.pending=self.pending[:2]
+        elif kind==ANALYZE:
+            op=payload[0]
+            if op==ANALYZE_STREAM_START:
+                rle=payload[1]&1
+                if not self.config: self.queue(RESULT, bytes([RESULT_ERROR])); return
+                rate,count,mask,pre,trigger=self.config
+                if rate>1000000: self.queue(RESULT, bytes([RESULT_ERROR])); return
+                self.queue(RESULT, bytes([RESULT_OK]))
+                self.stream_samples=pattern(65536,rate,self.mode)
+                for off in range(0,len(self.stream_samples),500):
+                    data=self.stream_samples[off:off+500]
+                    if rle:
+                        body=bytearray()
+                        k=0
+                        while k<len(data):
+                            v=data[k]; run=1
+                            while k+run<len(data) and data[k+run]==v and run<255: run+=1
+                            body.extend([run,v]); k+=run
+                        if len(body)<len(data):
+                            self.queue(STREAM_BLOCK, bytes([1])+struct.pack('<I',off)+bytes(body)); continue
+                    self.queue(STREAM_BLOCK, bytes([0])+struct.pack('<I',off)+data)
+            elif op==ANALYZE_STREAM_STOP:
+                self.queue(RESULT, bytes([RESULT_OK])+struct.pack('<II',65536,0))
+            else:
+                self.queue(RESULT, bytes([RESULT_OK]))
         else: self.queue(ERROR,b'command')
     def run(self):
         outgoing=b''

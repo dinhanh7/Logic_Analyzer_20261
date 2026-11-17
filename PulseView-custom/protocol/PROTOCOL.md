@@ -1,4 +1,4 @@
-# LAR2 v1 — hợp đồng firmware / libsigrok
+# LAR2 v1.2 — hợp đồng firmware / libsigrok
 
 Tất cả số nhiều byte đều **little-endian**, không truyền struct C trực tiếp.
 USB CDC 115200/8N1, không flow control, DTR=1. Baud chỉ để cấu hình CDC, không quyết định tốc độ mẫu hay tốc độ USB. Không trộn debug text vào CDC.
@@ -25,16 +25,97 @@ Mỗi hướng có sequence riêng, tăng cho **mọi** frame, quay vòng 65535�
 |---|---|---|
 | `0x01` | HELLO | rỗng |
 | `0x02` | GET_CAPS | rỗng |
-| `0x03` | CONFIG | 20 byte, mô tả dưới |
+| `0x03` | CONFIG | 20 byte (v1) / 28 byte (v2), mô tả dưới |
 | `0x04` | ARM | rỗng; yêu cầu CONFIG hợp lệ |
 | `0x05` | ABORT | rỗng; hợp lệ cả khi đang capture/truyền |
+| `0x06` | ANALYZE | 8 byte (op, arg, arg2, arg32), xem dưới |
 | `0x81` | ID | chuỗi UTF-8 không NUL, bắt đầu `RP2350-LA` |
 | `0x82` | CAPS | số kênh, đơn vị mẫu, tính năng, buffer, danh sách rate |
 | `0x83` | ACK | 1 byte: type command vừa xử lý |
 | `0x90` | CAPTURE_INFO | 24 byte |
 | `0x91` | SAMPLES | 1…1024 byte trạng thái GPIO theo thứ tự thời gian |
 | `0x92` | CAPTURE_END | `u32 sample_count`, `u32 crc32(samples)` |
+| `0x93` | RESULT | payload tùy loại ANALYZE (kết quả decode, status, v.v.) |
 | `0xff` | ERROR | chuỗi lỗi UTF-8 ngắn, không NUL |
+
+HELLO → ID; GET_CAPS → CAPS; CONFIG/ARM/ABORT → ACK hoặc ERROR. ARM ACK phải đi trước INFO. Firmware còn phục vụ ABORT trong lúc DMA chạy và giữa các sample chunk. Không có ACK từ PC cho sample chunk.
+
+### ANALYZE (8 byte payload)
+
+| Offset | Kiểu | Ý nghĩa |
+|---|---|---|
+| 0 | u8 | operation (`op`) |
+| 1 | u16 | `arg` (slot, protocol mask, probe mode, v.v.) |
+| 3 | u32 | `arg32` (baud rate cho decode, tolerance, v.v.) |
+| 7 | u8 | reserved (0) |
+
+Các giá trị `op` hợp lệ:
+
+| op | Tên | arg | arg32 | Mô tả |
+|---|---|---|---|---|
+| 0 | DECODE | protocol mask | baud (0=auto) | Chạy decoder on-device. Trả về text qua RESULT. |
+| 1 | SAVE | slot | 0 | Lưu phiên capture hiện tại vào flash. |
+| 2 | LOAD | slot | 0 | Nạp phiên từ flash vào RAM (không stream). |
+| 3 | SIG_SAVE | 0 | 0 | Lưu buffer hiện tại làm golden reference. |
+| 4 | SIG_COMPARE | 0 | tolerated mismatches | So sánh buffer hiện tại với golden ref. |
+| 5 | DIFF | slot | 0 | So sánh buffer hiện tại với phiên trong flash. |
+| 6 | SESSION | slot | 0 | Đọc header phiên từ flash (trả về qua RESULT). |
+| 7 | REPLAY | 0 | 0 | Stream lại cửa sổ capture hiện tại (không ACK). |
+| 8 | PINPROBE | 0=pull-down, 1=pull-up, 2=float | 0 | Đọc CH0..CH7 với pull áp dụng; RESULT[1]=mức 8 bit. |
+| 9 | DECODE_ALL | UART baud / 100 (0 = 115200) | CAN baud (0 = 250000) | Decode cả 4 giao thức trên map 8 kênh cố định: UART CH0, I2C SCL/SDA CH1/CH2, SPI CS/SCK/MOSI/MISO CH3..CH6, CAN CH7. |
+
+### RESULT
+
+Payload tùy thuộc vào `op` của ANALYZE tương ứng:
+- `DECODE`: text UTF-8, kết quả decode (UART/I2C/SPI/CAN).
+- `DECODE_ALL`: text UTF-8 gồm 4 dòng, mỗi giao thức một dòng theo thứ tự UART, I2C, SPI, CAN.
+- `SAVE/LOAD/SIG_SAVE`: 1 byte status (`RESULT_OK=0`, `RESULT_ERROR=1`, `RESULT_ABSENT=2`).
+- `SIG_COMPARE`: text UTF-8 (MATCH/MISMATCH).
+- `DIFF`: text UTF-8 (first mismatch hoặc "identical").
+- `SESSION`: struct `session_header_t` (24 byte).
+- `REPLAY`: stream SAMPLES + END như capture bình thường.
+- `PINPROBE`: 1 byte status + 1 byte mức 8 bit (CH0..CH7) + 12 byte chẩn đoán (gpio_in u32, pad0 u32, pad1 u32).
+
+### CAPS
+
+| Offset | Kiểu | Giá trị v1 |
+|---|---|---|
+| 0 | u8 | channel_count=8 |
+| 1 | u8 | sample_unit_size=1 |
+| 2 | u16 | feature_flags=0: manual only |
+| 4 | u32 | max_samples=262144 |
+| 8 | u32 | rate_count=8 |
+| 12 | u64[rate_count] | 1000,10000,100000,250000,500000,1000000,5000000,25000000 Hz |
+
+`feature_flags` vẫn bằng 0 để driver v1 cũ tiếp tục kết nối được. Firmware có hỗ trợ
+trigger được phát hiện qua hậu tố `+trg` trong chuỗi ID (xem mục "Nhận dạng tính năng").
+Firmware có hỗ trợ ANALYZE được phát hiện qua hậu tố `+an` trong chuỗi ID.
+
+### CONFIG (20 byte v1, 28 byte v2)
+
+v1 giữ nguyên như cũ, host cũ gửi 20 byte thì firmware coi là capture manual.
+
+| Offset | Kiểu | v1 | v2 |
+|---|---|---|---|
+| 0 | u64 | sample_rate_hz, phải thuộc CAPS | như v1 |
+| 8 | u32 | sample_count, 1…max_samples | như v1 |
+| 12 | u32 | pretrigger_count=0 | pretrigger_count, 0 ≤ pre < count |
+| 16 | u8 | channel_mask, khác 0 | như v1 |
+| 17 | u8 | trigger_mode=0 (manual) | trigger_mode |
+| 18 | u8 | reserved=0 | trigger_channel (0…7) |
+| 19 | u8 | reserved=0 | trigger_edge (0 = sườn lên, 1 = sườn xuống) |
+| 20 | u8 | — | pattern_value |
+| 21 | u8 | — | pattern_mask |
+| 22 | u16 | — | reserved=0 |
+| 24 | u32 | — | reserved=0 |
+
+Tổng v2 = 28 byte. Firmware nhận cả hai kích thước: 20 byte là manual, 28 byte là
+bản có trigger. Driver v1 gửi 20 byte nên không bị ảnh hưởng.
+
+`trigger_mode`: 0 = manual, 1 = edge, 2 = pattern, 3 = UART byte.
+Mẫu: `(sample & pattern_mask) == (pattern_value & pattern_mask)`. Bit n của sample là
+kênh n. Firmware tự mask `pattern_value`, nên host gửi giá trị chưa mask vẫn cho
+kết quả mong muốn.
 
 HELLO → ID; GET_CAPS → CAPS; CONFIG/ARM/ABORT → ACK hoặc ERROR. ARM ACK phải đi trước INFO. Firmware còn phục vụ ABORT trong lúc DMA chạy và giữa các sample chunk. Không có ACK từ PC cho sample chunk.
 
@@ -49,16 +130,34 @@ HELLO → ID; GET_CAPS → CAPS; CONFIG/ARM/ABORT → ACK hoặc ERROR. ARM ACK 
 | 8 | u32 | rate_count=8 |
 | 12 | u64[rate_count] | 1000,10000,100000,250000,500000,1000000,5000000,25000000 Hz |
 
-### CONFIG (20 byte)
+`feature_flags` vẫn bằng 0 để driver v1 cũ tiếp tục kết nối được. Firmware có hỗ trợ
+trigger được phát hiện qua hậu tố `+trg` trong chuỗi ID (xem mục "Nhận dạng tính năng").
 
-| Offset | Kiểu | Ý nghĩa |
-|---|---|---|
-| 0 | u64 | sample_rate_hz, phải thuộc CAPS |
-| 8 | u32 | sample_count, 1…max_samples |
-| 12 | u32 | pretrigger_count=0 |
-| 16 | u8 | channel_mask, khác 0 |
-| 17 | u8 | trigger_mode=0 (manual) |
-| 18 | u16 | reserved=0 |
+### CONFIG (20 byte v1, 28 byte v2)
+
+v1 giữ nguyên như cũ, host cũ gửi 20 byte thì firmware coi là capture manual.
+
+| Offset | Kiểu | v1 | v2 |
+|---|---|---|---|
+| 0 | u64 | sample_rate_hz, phải thuộc CAPS | như v1 |
+| 8 | u32 | sample_count, 1…max_samples | như v1 |
+| 12 | u32 | pretrigger_count=0 | pretrigger_count, 0 ≤ pre < count |
+| 16 | u8 | channel_mask, khác 0 | như v1 |
+| 17 | u8 | trigger_mode=0 (manual) | trigger_mode |
+| 18 | u8 | reserved=0 | trigger_channel (0…7) |
+| 19 | u8 | reserved=0 | trigger_edge (0 = sườn lên, 1 = sườn xuống) |
+| 20 | u8 | — | pattern_value |
+| 21 | u8 | — | pattern_mask |
+| 22 | u16 | — | reserved=0 |
+| 24 | u32 | — | reserved=0 |
+
+Tổng v2 = 28 byte. Firmware nhận cả hai kích thước: 20 byte là manual, 28 byte là
+bản có trigger. Driver v1 gửi 20 byte nên không bị ảnh hưởng.
+
+`trigger_mode`: 0 = manual, 1 = edge, 2 = pattern.
+Mẫu: `(sample & pattern_mask) == (pattern_value & pattern_mask)`. Bit n của sample là
+kênh n. Firmware tự mask `pattern_value`, nên host gửi giá trị chưa mask vẫn cho
+kết quả mong muốn.
 
 Mask dùng để xác nhận kênh được bật trong GUI. Firmware vẫn lấy và truyền đủ tám bit; không nén/tái đánh số kênh. Bit 0=GP0/CH0, …, bit 7=GP7/CH7, kể cả khi một số kênh bị tắt.
 
@@ -75,7 +174,41 @@ Mask dùng để xác nhận kênh được bật trong GUI. Firmware vẫn lấ
 | 22 | u8 | channel_mask, khớp CONFIG |
 | 23 | u8 | flags=0; capture lỗi phải trả ERROR |
 
+Với capture có trigger, `trigger_index` là **vị trí của xung trigger bên trong cửa sổ
+đã gửi**, tức bằng `pretrigger_count`. Host không cần tự tính lại từ dữ liệu thô.
+
 Driver v1 kiểm tra toàn bộ metadata trên trước khi chấp nhận SAMPLES. Không gửi INFO nhiều lần; không gửi SAMPLES trước INFO; tổng mẫu không vượt cấu hình; END chỉ hợp lệ khi đủ mẫu và CRC toàn capture trùng khớp. Mỗi mẫu là một thời điểm, mọi kênh dùng cùng PIO IN. Thời gian `sample_index / sample_rate_hz`, không lấy từ thời điểm USB nhận frame.
+
+### Ngữ nghĩa trigger (firmware v1.1)
+
+Vùng capture của firmware là vùng tuyến tính 262.144 mẫu trong SRAM, DMA ghi liên
+tục nên **không mất mẫu nào** và không cần vòng đệm. CPU quét vùng này theo thời gian
+thực để tìm điều kiện trigger.
+
+Quy tắc:
+
+1. Trigger chỉ được chấp nhận **sau khi vùng pre-trigger đã đầy**, tức từ mẫu có chỉ
+   số `pretrigger` trở đi. Nhờ vậy cửa sổ luôn có đủ lịch sử phía trước.
+2. Khi phát hiện trigger tại mẫu tuyệt đối `T`, firmware chờ tới khi có đủ
+   `count - pretrigger` mẫu sau đó rồi dừng DMA.
+3. Cửa sổ gửi đi là `[T - pretrigger, T + (count - pretrigger))`, tức đúng `count` mẫu
+   và **liên tục trong RAM**, không cần xoay vòng.
+4. `trigger_index = pretrigger`, `pretrigger_count = pretrigger`, `flags` có bit 0
+   (`LAR2_INFO_TRIGGER_FOUND`).
+5. Nếu quét hết vùng capture mà không có trigger: firmware trả ERROR `no trigger`.
+6. Nếu trigger xuất hiện quá muộn, không đủ mẫu phía sau cho cửa sổ: ERROR
+   `trigger too late`.
+
+Giới hạn cần nói rõ trong báo cáo: firmware chỉ chờ trigger trong một vùng capture,
+tức 262.144 mẫu, tương đương **10,49 ms ở 25 MHz** hay **262 ms ở 1 MHz**. Muốn chờ
+ lâu hơn thì phải dùng vòng đệm, khi đó cần xử lý khoảng trống khi nạp lại DMA, hoặc
+dùng chế độ ring của DMA trên RP2350 (giới hạn 32 KB).
+
+### Nhận dạng tính năng
+
+Chuỗi ID trả về cho HELLO là `RP2350-LA/1.1+trg`. Driver v1 chỉ kiểm tra tiền tố
+`RP2350-LA` và độ dài tối thiểu 9 byte nên vẫn kết nối được. Host muốn dùng trigger
+thì kiểm tra hậu tố `+trg` trong chuỗi ID rồi gửi CONFIG 28 byte.
 
 ## Timeout và lỗi
 
@@ -90,3 +223,21 @@ Callback libsigrok có thể kết thúc với dữ liệu một phần mà CLI 
 ## Khác với tài liệu khảo sát ban đầu
 
 Các tài liệu trong `dinhanh/` mới đề xuất khung LAR2, chưa gán type số và chưa định nghĩa CAPS/CONFIG/ACK đầy đủ. File này chốt các giá trị đó, bắt buộc CRC, chốt ERROR dạng chuỗi và chỉ công bố manual capture. Nếu triển khai firmware khác, phải dùng hợp đồng này hoặc sửa đồng bộ cả driver, firmware và emulator.
+
+Phiên bản 1.1 bổ sung trigger cạnh và trigger mẫu bit cùng pre-trigger, theo hợp
+đồng CONFIG 28 byte mở rộng. Driver v1 không đổi, vẫn gửi CONFIG 20 byte và nhận
+capture manual như trước.
+
+## Phím tắt USB (kênh phụ, không phải frame LAR2)
+
+UI trên TFT nhận thêm các ký tự đơn khi parser LAR2 đang rảnh (`parser.used == 0`)
+và ký tự khác `L` — do đó không thể lẫn với header `LAR2`:
+
+| Ký tự | Ý nghĩa |
+|---|---|
+| `u` / `d` / `o` / `b` | nhấn ngắn UP / DOWN / OK / BACK |
+| `U` / `D` / `O` / `B` | nhấn giữ UP / DOWN / OK / BACK |
+
+Đây là đường điều khiển song song với 4 nút vật lý: cả hai cùng đẩy sự kiện vào
+một hàng đợi duy nhất trong `ui.c`. Ký tự lạ bị bỏ qua. Host tool:
+`tools/ui_keys.py`.

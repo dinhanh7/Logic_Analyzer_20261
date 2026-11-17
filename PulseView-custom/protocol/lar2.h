@@ -10,13 +10,82 @@
 #define LAR2_MAX_SAMPLES 262144u
 #define LAR2_NO_TRIGGER UINT32_MAX
 #define LAR2_RATE_COUNT 8
+/* CONFIG payload sizes: v1 is the original manual-only layout, v2 adds the
+ * trigger parameters. Both are accepted by the firmware; a v1 host keeps
+ * working unchanged because it never sends a trigger. */
+#define LAR2_CONFIG_V1_SIZE 20u
+#define LAR2_CONFIG_V2_SIZE 28u
+/* Trigger modes carried in CONFIG.trigger_mode. */
+#define LAR2_TRIGGER_MANUAL 0u
+#define LAR2_TRIGGER_EDGE 1u
+#define LAR2_TRIGGER_PATTERN 2u
+#define LAR2_TRIGGER_UART 3u
+/* Edge polarity carried in CONFIG.trigger_edge. */
+#define LAR2_EDGE_RISING 0u
+#define LAR2_EDGE_FALLING 1u
+/* CAPTURE_INFO flags. */
+#define LAR2_INFO_TRIGGER_FOUND 0x01u
+#define LAR2_INFO_CAPTURE_ERROR 0x02u
+
+/* LAR2 v1.2: ANALYZE runs a job on the last capture and answers with RESULT.
+ * The payload is 8 bytes: op (u8), arg (u16), arg32 (u32), 1 reserved byte.
+ * Every field starts on its own byte boundary, no overlap. */
+#define LAR2_ANALYZE_SIZE 8u
+#define LAR2_ANALYZE_DECODE      0u  /* arg = protocol mask, arg32 = baud (0 = auto) */
+#define LAR2_ANALYZE_SAVE        1u  /* arg = slot */
+#define LAR2_ANALYZE_LOAD        2u  /* arg = slot */
+#define LAR2_ANALYZE_SIG_SAVE    3u
+#define LAR2_ANALYZE_SIG_COMPARE 4u  /* arg32 = tolerated mismatching samples */
+#define LAR2_ANALYZE_DIFF        5u  /* arg = slot */
+#define LAR2_ANALYZE_SESSION     6u  /* arg = slot */
+#define LAR2_ANALYZE_REPLAY      7u  /* stream the current window, no ACK */
+#define LAR2_ANALYZE_PINPROBE    8u  /* arg = 0 pull-down, 1 pull-up, 2 float;
+                                        returns RESULT[1] = CH0..CH7 levels */
+#define LAR2_ANALYZE_DECODE_ALL  9u  /* four protocols, fixed 8-channel test map:
+                                        UART CH0, I2C CH1/CH2, SPI CH3..CH6, CAN CH7.
+                                        arg = UART baud / 100 (0 = 115200)
+                                        arg32 = CAN baud (0 = 250000) */
+#define LAR2_ANALYZE_UI_TEXT     13u /* text currently on the decode screen */
+#define LAR2_ANALYZE_UI_TABLE    14u /* the decode grid as drawn, one row per
+                                        line, columns separated by '|' */
+#define LAR2_ANALYZE_UI_STATE    15u /* proto_sel + dec_auto.proto + badge */
+#define LAR2_ANALYZE_UI_DEMO     12u /* load the built-in mock waveform and show
+                                        the waveform screen, no capture needed */
+#define LAR2_ANALYZE_STREAM_START 16u /* continuous capture to the host. rate and
+                                        mask come from the last CONFIG; arg bit0
+                                        selects RLE block encoding. Capped at
+                                        1 MHz: USB CDC full speed is 1.5 MB/s. */
+#define LAR2_ANALYZE_STREAM_STOP 17u  /* stop streaming; RESULT carries
+                                        samples sent and samples dropped */
+#define LAR2_ANALYZE_RUNTIME     11u /* trigger state, see the REPLY in main.c */
+#define LAR2_ANALYZE_BOOTLOADER  10u /* reboot into the UF2 bootloader so the
+                                        host can flash without pressing BOOTSEL */
+
+/* Protocol selection bits for LAR2_ANALYZE_DECODE. */
+#define LAR2_PROTO_UART 0x01u
+#define LAR2_PROTO_I2C  0x02u
+#define LAR2_PROTO_SPI  0x04u
+#define LAR2_PROTO_CAN  0x08u
+#define LAR2_PROTO_ALL  0x0fu
+
+/* RESULT status byte. */
+#define LAR2_RESULT_OK     0u
+#define LAR2_RESULT_ERROR  1u
+#define LAR2_RESULT_ABSENT 2u
+
+/* Board identity. The host checks the "RP2350-LA" prefix and a minimum
+ * length, so the suffix may advertise firmware features. */
+#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an+str"
 static const uint64_t lar2_rates[LAR2_RATE_COUNT] = {
     1000, 10000, 100000, 250000, 500000, 1000000, 5000000, 25000000
 };
 enum lar2_type {
     LAR2_HELLO=1, LAR2_GET_CAPS=2, LAR2_CONFIG=3, LAR2_ARM=4, LAR2_ABORT=5,
+    LAR2_ANALYZE=6,
     LAR2_ID=0x81, LAR2_CAPS=0x82, LAR2_ACK=0x83,
-    LAR2_INFO=0x90, LAR2_SAMPLES=0x91, LAR2_END=0x92, LAR2_ERROR=0xff
+    LAR2_INFO=0x90, LAR2_SAMPLES=0x91, LAR2_END=0x92, LAR2_RESULT=0x93,
+    LAR2_STREAM_BLOCK=0x94,
+    LAR2_ERROR=0xff
 };
 static inline uint16_t lar2_u16(const uint8_t *p) { return p[0] | ((uint16_t)p[1]<<8); }
 static inline uint32_t lar2_u32(const uint8_t *p) { return lar2_u16(p) | ((uint32_t)lar2_u16(p+2)<<16); }
