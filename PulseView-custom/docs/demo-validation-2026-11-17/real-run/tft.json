@@ -1,0 +1,22 @@
+{
+  "UART": {
+    "text": "UART 115200 8N1: \"LA1234.\"\n",
+    "table": "01|0x4C|'L'|0\n02|0x41|'A'|4us\n03|0x31|'1'|4us\n04|0x32|'2'|4us\n05|0x33|'3'|4us",
+    "badge": "1 0 UART"
+  },
+  "I2C": {
+    "text": "I2C: 0x68 W ACK 0x01 ACK 0x5A ACK\n",
+    "table": "01|0xD0|ADR|0\n02|--|ACK|0\n03|0x01|.|0\n04|--|ACK|0\n05|0x5A|'Z'|0",
+    "badge": "2 0 I2C"
+  },
+  "SPI": {
+    "text": "SPI: DE AD BE EF 00 01 02 03 |\n",
+    "table": "01|0xDE|.|0\n02|0xAD|.|1us\n03|0xBE|.|1us\n04|0xEF|.|1us\n05|0x00|.|1us",
+    "badge": "3 0 SPI"
+  },
+  "CAN": {
+    "text": "CAN ID=0x123 DLC=4 DATA=F2 C1 D2 03 \n",
+    "table": "01|0x01|ID-hi|0\n02|0x23|ID-lo|0\n03|0x04|DLC|12us\n04|0xF2|.|0\n05|0xC1|.|0",
+    "badge": "4 0 CAN"
+  }
+}

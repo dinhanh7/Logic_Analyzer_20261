@@ -90,6 +90,7 @@ static const uint8_t *win_base;
 static uint32_t win_len;
 static uint32_t win_trigger = LAR2_NO_TRIGGER;
 static bool snapshot_valid;
+static bool ui_pending;
 
 /* On-device decode results (returned via ANALYZE DECODE). 1 KB fits the
  * four-protocol simultaneous decode of the test map. */
@@ -761,6 +762,11 @@ static void capture_task(void)
             uint8_t end[8]; lar2_put32(end, win_len); lar2_put32(end + 4, ~crc);
             send_frame(LAR2_END, end, sizeof(end)); sending = false;
             snapshot_valid = true;
+            /* Host captures reuse samples[] too. Keep the TFT's pointer,
+             * trigger and packet cache on that same new window. */
+            if (!ui_pending)
+                ui_set_capture(win_base, win_len, rate,
+                               win_trigger == LAR2_NO_TRIGGER ? 0 : win_trigger, true);
         }
     }
 }
@@ -902,7 +908,6 @@ int main(void)
     irq_set_exclusive_handler(DMA_IRQ_0, stream_dma_isr);
     irq_set_enabled(DMA_IRQ_0, true);
     bool connected = false;
-    bool ui_pending = false;
     while (true) {
         tud_task();
         bool now = tud_cdc_connected();

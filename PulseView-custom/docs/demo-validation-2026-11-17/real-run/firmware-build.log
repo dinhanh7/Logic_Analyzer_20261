@@ -1,0 +1,11 @@
+[  2%] Built target bs2_default
+[  3%] Built target rp2350_la_logic_capture_pio_h
+[  6%] Built target bs2_default_library
+Consolidate compiler generated dependencies of target rp2350_la
+[  8%] Building C object CMakeFiles/rp2350_la.dir/autodetect.c.o
+[  8%] Building C object CMakeFiles/rp2350_la.dir/decoders.c.o
+[  9%] Building C object CMakeFiles/rp2350_la.dir/main.c.o
+[ 10%] Building C object CMakeFiles/rp2350_la.dir/ui.c.o
+[ 11%] Linking C executable rp2350_la.elf
+[100%] Built target rp2350_la
+

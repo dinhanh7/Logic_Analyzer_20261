@@ -1,5 +1,7 @@
 # Validation of the real-capture demo support
 
+**Update:** hardware access is now available and the full suite, ESP32 check and real TFT/PulseView live demo have passed. See [real-run](real-run/README.md) for current results. The blocked logs below are historical.
+
 - `build.log`: Pico 2 firmware and patched PulseView build completed.
 - `demo-tests.log`: 8 Python tests passed, including native Qt/GVariant preset parsing for both recorded and live sessions.
 - `suite-default.log`: normal suite stopped at LeakSanitizer's ptrace limitation.

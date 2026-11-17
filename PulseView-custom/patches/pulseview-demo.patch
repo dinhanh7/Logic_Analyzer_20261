@@ -1,6 +1,13 @@
 --- a/main.cpp
 +++ b/main.cpp
-@@ -344,7 +344,7 @@
+@@ -338,13 +338,14 @@
+ 		} else {
+ 			// Initialise the main window
+ 			pv::MainWindow w(device_manager);
++			if (!qEnvironmentVariable("RP2350_DEMO_REPORT").isEmpty()) w.resize(1440, 940);
+ 			w.show();
+ 
+ 			if (restore_sessions)
  				w.restore_sessions();
  
  			if (open_files.empty())
@@ -22,12 +29,14 @@
  	void restore_sessions();
 --- a/pv/mainwindow.cpp
 +++ b/pv/mainwindow.cpp
-@@ -35,6 +35,14 @@
+@@ -35,6 +35,16 @@
  #include <QHBoxLayout>
  #include <QMessageBox>
  #include <QSettings>
 +#include <QTimer>
 +#include <QFile>
++#include <QSaveFile>
++#include <QAbstractScrollArea>
 +#include <QJsonDocument>
 +#include <QJsonObject>
 +#include <QJsonArray>
@@ -37,7 +46,7 @@
  #include <QShortcut>
  #include <QWidget>
  
-@@ -67,7 +75,7 @@
+@@ -67,7 +77,7 @@
  
  using toolbars::MainBar;
  
@@ -46,7 +55,7 @@
  
  MainWindow::MainWindow(DeviceManager &device_manager, QWidget *parent) :
  	QMainWindow(parent),
-@@ -361,6 +369,60 @@
+@@ -361,6 +371,95 @@
  
  	add_view(views::ViewTypeTrace, *session);
  
@@ -55,17 +64,30 @@
 +	if (!report_path.isEmpty()) {
 +		QTimer *probe = new QTimer(this);
 +		std::weak_ptr<Session> weak_session = session;
-+		connect(probe, &QTimer::timeout, this, [this, weak_session, report_path]() {
++		auto focused = make_shared<bool>(false);
++		auto screenshot_saved = make_shared<bool>(false);
++        connect(session.get(), &Session::capture_state_changed, this,
++            [focused, screenshot_saved](int state) {
++                if (state != Session::Stopped) { *focused = false; *screenshot_saved = false; }
++            });
++		connect(probe, &QTimer::timeout, this, [this, weak_session, report_path, focused, screenshot_saved]() {
 +			auto current = weak_session.lock();
 +			if (!current || current->get_capture_state() != Session::Stopped) return;
 +			QJsonArray decoders, channels;
++			uint64_t active_first = UINT64_MAX, active_last = 0;
++			bool ready = true;
 +			for (auto base : current->signalbases()) {
 +				auto decode = dynamic_pointer_cast<data::DecodeSignal>(base);
 +				if (!decode) { channels.append(base->name()); continue; }
 +				QJsonArray texts;
 +				std::deque<const data::decode::Annotation*> annotations;
 +				decode->get_annotation_subset(annotations, 0, 0, std::numeric_limits<uint64_t>::max());
++				if (annotations.empty()) ready = false;
 +				for (auto annotation : annotations) {
++					if (annotation->visible()) {
++						active_first = std::min(active_first, annotation->start_sample());
++						active_last = std::max(active_last, annotation->end_sample());
++					}
 +					QJsonObject value;
 +					value["class"] = annotation->ann_class_name();
 +					value["text"] = annotation->longest_annotation();
@@ -78,6 +100,22 @@
 +				item["annotations"] = texts;
 +				decoders.append(item);
 +			}
++            // Fit the actual bus activity once, after every decoder has
++            // input. Wait one paint cycle before reporting/screenshotting it.
++            if (!*focused && ready && decoders.size() == 4 && active_last > active_first) {
++                auto view = dynamic_pointer_cast<views::trace::View>(current->main_view());
++                uint64_t pad = (active_last - active_first) / 10;
++                if (view) {
++                    view->zoom_fit(true);
++                    double rate = current->get_samplerate();
++                    int width = std::max(1, view->scrollarea()->viewport()->width());
++                    view->set_scale_offset(double(active_last - active_first + 2 * pad) / rate / width,
++                        util::Timestamp(double(active_first > pad ? active_first - pad : 0) / rate));
++                    view->set_v_offset(0);
++                }
++                *focused = true;
++                return;
++            }
 +			QJsonObject report;
 +			report["session"] = current->name();
 +			if (current->device()) report["device"] = QString::fromStdString(current->device()->display_name(device_manager_));
@@ -94,11 +132,17 @@
 +				} catch (sigrok::Error& error) { config["error"] = error.what(); }
 +				report["device_config"] = config;
 +			}
++			report["toolbar_samples"] = double(current->main_bar()->displayed_sample_count());
++			report["toolbar_samplerate"] = double(current->main_bar()->displayed_sample_rate());
 +			report["channels"] = channels;
 +			report["decoders"] = decoders;
-+			QFile out(report_path);
-+			if (out.open(QIODevice::WriteOnly)) out.write(QJsonDocument(report).toJson());
-+			if (decoders.size() == 4) grab().save(report_path + ".png");
++			if (decoders.size() == 4 && ready && *focused && !*screenshot_saved) {
++                QSaveFile screenshot(report_path + ".png");
++                if (screenshot.open(QIODevice::WriteOnly) && grab().save(&screenshot, "PNG")) *screenshot_saved = screenshot.commit();
++            }
++			report["screenshot_saved"] = *screenshot_saved;
++			QSaveFile out(report_path);
++			if (out.open(QIODevice::WriteOnly)) { out.write(QJsonDocument(report).toJson()); out.commit(); }
 +		});
 +		probe->start(1000);
 +	}
@@ -107,7 +151,7 @@
  	return session;
  }
  
-@@ -417,7 +479,7 @@
+@@ -417,7 +516,7 @@
  	session->load_init_file(open_file_name, open_file_format, open_setup_file_name);
  }
  
@@ -116,7 +160,7 @@
  {
  	// Only add the default session if there would be no session otherwise
  	if (sessions_.size() > 0)
-@@ -445,6 +507,32 @@
+@@ -445,6 +544,32 @@
  		session->select_device(other_device);
  	else
  		session->select_device(demo_device);
@@ -160,3 +204,31 @@
  	tick_period_ = 0;
  	tick_prefix_ = pv::util::SIPrefix::yocto;
  	tick_precision_ = 0;
+--- a/pv/toolbars/mainbar.hpp
++++ b/pv/toolbars/mainbar.hpp
+@@ -102,6 +102,8 @@
+ 	QAction* action_restore_setup() const;
+ 	QAction* action_save_setup() const;
+ 	QAction* action_connect() const;
++	uint64_t displayed_sample_count() const { return sample_count_.value(); }
++	uint64_t displayed_sample_rate() const { return sample_rate_.value(); }
+ 
+ private:
+ 	void run_stop();
+--- a/pv/widgets/sweeptimingwidget.cpp
++++ b/pv/widgets/sweeptimingwidget.cpp
+@@ -193,6 +193,14 @@
+ 			}
+ 		}
+ 
++        // Keep an exact configured count (e.g. 65536) even when it is not
++        // on the 1-2-5 progression. Showing 50k would also change the next Run.
++        if (best_variance != 0 && value_type_ == List) {
++            char *const label = sr_si_string_u64(value, suffix_);
++            list_.addItem(QString::fromUtf8(label), QVariant::fromValue(value));
++            g_free(label);
++            best_match = list_.count() - 1;
++        }
+ 		list_.setCurrentIndex(best_match);
+ 	}
+ }

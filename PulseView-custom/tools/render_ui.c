@@ -195,6 +195,7 @@ static int selftest(void)
                     (unsigned long long)cases[i].ns, b, cases[i].want);
             bad++;
         }
+
     }
     /* 25 MHz: 217 samples is one 115200 bit, 2500 samples is 100 us. */
     ui_format_offset(1217, 1000, 25000000, b, sizeof b);
@@ -246,6 +247,15 @@ static int selftest(void)
             strstr(ui_decode_table(), "0x4C") == NULL ||
             ui_show_capture(5, 1) || ui_show_capture(4, 5)) {
             fprintf(stderr, "real capture presentation/selection failed\n");
+            bad++;
+        }
+        /* A new PC capture while DECODE stays open must replace the packet
+         * cache too, rather than displaying old bytes over new sample RAM. */
+        for (unsigned i = 0; i < sizeof auto_wf; i++) auto_wf[i] |= 1u;
+        ui_set_capture(auto_wf, sizeof auto_wf, 25000000u, 40000u, true);
+        if (strstr(ui_decode_text(), "LA12") ||
+            strstr(ui_decode_table(), "0x4C")) {
+            fprintf(stderr, "decode cache survived replacement capture\n");
             bad++;
         }
     }

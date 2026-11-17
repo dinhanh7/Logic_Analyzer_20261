@@ -1,0 +1,239 @@
+
+bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8)
+sr: [00:00.000012] log: libsigrok loglevel set to 4.
+sr: [00:00.000033] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.
+sr: [00:00.000060] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.
+sr: [00:00.000066] backend: Host: x86_64-pc-linux-gnu, little-endian.
+sr: [00:00.000070] backend: SCPI backends: TCP, RPC, USBTMC.
+sr: [00:00.000073] backend: Firmware search paths:
+sr: [00:00.000089] backend:  - /home/namkhanh/.local/share/sigrok-firmware
+sr: [00:00.000092] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware
+sr: [00:00.000095] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware
+sr: [00:00.000097] backend:  - /usr/share/ubuntu/sigrok-firmware
+sr: [00:00.000099] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000101] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000104] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000106] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000109] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000111] backend:  - /var/lib/snapd/desktop/sigrok-firmware
+sr: [00:00.000113] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware
+sr: [00:00.000115] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware
+sr: [00:00.000118] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000120] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000122] backend:  - /usr/share/sigrok-firmware
+srd: libsigrokdecode loglevel set to 4.
+sr: [00:00.105893] device: rp2350-la: Opening device instance.
+sr: [00:00.207281] session: Using thread-default main context.
+sr: [00:00.207289] session: Starting.
+sr: [00:00.207293] hwdriver: rp2350-la: Starting acquisition.
+sr: [00:00.208119] session: bus: Received SR_DF_HEADER packet.
+cli: Received SR_DF_HEADER.
+sr: [00:00.270811] rp2350-la: RX type=0x90 seq=4 length=24
+sr: [00:00.270844] session: bus: Received SR_DF_META packet.
+cli: Received SR_DF_META.
+cli: Got samplerate 25000000 Hz.
+sr: [00:00.273827] rp2350-la: RX type=0x91 seq=5 length=1024
+sr: [00:00.273844] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.278716] output/srzip: output unit size 1, feed unit size 1.
+sr: [00:00.278725] output/srzip: Matching unit size, passing logic data as is.
+sr: [00:00.278812] rp2350-la: RX type=0x91 seq=6 length=1024
+sr: [00:00.278818] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.278895] rp2350-la: RX type=0x91 seq=7 length=1024
+sr: [00:00.278900] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.280617] rp2350-la: RX type=0x91 seq=8 length=1024
+sr: [00:00.280629] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.283065] rp2350-la: RX type=0x91 seq=9 length=1024
+sr: [00:00.283071] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.285349] rp2350-la: RX type=0x91 seq=10 length=1024
+sr: [00:00.285365] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.287508] rp2350-la: RX type=0x91 seq=11 length=1024
+sr: [00:00.287514] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.290064] rp2350-la: RX type=0x91 seq=12 length=1024
+sr: [00:00.290069] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.292296] rp2350-la: RX type=0x91 seq=13 length=1024
+sr: [00:00.292304] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.294543] rp2350-la: RX type=0x91 seq=14 length=1024
+sr: [00:00.294550] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.297062] rp2350-la: RX type=0x91 seq=15 length=1024
+sr: [00:00.297068] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.299329] rp2350-la: RX type=0x91 seq=16 length=1024
+sr: [00:00.299347] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.301541] rp2350-la: RX type=0x91 seq=17 length=1024
+sr: [00:00.301560] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.304072] rp2350-la: RX type=0x91 seq=18 length=1024
+sr: [00:00.304086] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.306273] rp2350-la: RX type=0x91 seq=19 length=1024
+sr: [00:00.306282] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.308564] rp2350-la: RX type=0x91 seq=20 length=1024
+sr: [00:00.308582] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.311056] rp2350-la: RX type=0x91 seq=21 length=1024
+sr: [00:00.311072] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.313311] rp2350-la: RX type=0x91 seq=22 length=1024
+sr: [00:00.313331] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.315515] rp2350-la: RX type=0x91 seq=23 length=1024
+sr: [00:00.315536] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.318043] rp2350-la: RX type=0x91 seq=24 length=1024
+sr: [00:00.318049] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.320309] rp2350-la: RX type=0x91 seq=25 length=1024
+sr: [00:00.320323] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.322508] rp2350-la: RX type=0x91 seq=26 length=1024
+sr: [00:00.322515] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.325044] rp2350-la: RX type=0x91 seq=27 length=1024
+sr: [00:00.325046] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.327273] rp2350-la: RX type=0x91 seq=28 length=1024
+sr: [00:00.327276] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.329535] rp2350-la: RX type=0x91 seq=29 length=1024
+sr: [00:00.329552] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.332026] rp2350-la: RX type=0x91 seq=30 length=1024
+sr: [00:00.332035] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.334285] rp2350-la: RX type=0x91 seq=31 length=1024
+sr: [00:00.334295] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.336543] rp2350-la: RX type=0x91 seq=32 length=1024
+sr: [00:00.336561] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.339064] rp2350-la: RX type=0x91 seq=33 length=1024
+sr: [00:00.339073] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.341313] rp2350-la: RX type=0x91 seq=34 length=1024
+sr: [00:00.341321] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.343516] rp2350-la: RX type=0x91 seq=35 length=1024
+sr: [00:00.343529] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.345712] rp2350-la: RX type=0x91 seq=36 length=1024
+sr: [00:00.345725] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.345787] session: bus: Received SR_DF_TRIGGER packet.
+cli: Received SR_DF_TRIGGER.
+sr: [00:00.345799] rp2350-la: Trigger at sample 32768 of 65536.
+sr: [00:00.348063] rp2350-la: RX type=0x91 seq=37 length=1024
+sr: [00:00.348080] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.350296] rp2350-la: RX type=0x91 seq=38 length=1024
+sr: [00:00.350317] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.352510] rp2350-la: RX type=0x91 seq=39 length=1024
+sr: [00:00.352519] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.354621] rp2350-la: RX type=0x91 seq=40 length=1024
+sr: [00:00.354629] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.357056] rp2350-la: RX type=0x91 seq=41 length=1024
+sr: [00:00.357071] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.359252] rp2350-la: RX type=0x91 seq=42 length=1024
+sr: [00:00.359260] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.361434] rp2350-la: RX type=0x91 seq=43 length=1024
+sr: [00:00.361442] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.363640] rp2350-la: RX type=0x91 seq=44 length=1024
+sr: [00:00.363654] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.366046] rp2350-la: RX type=0x91 seq=45 length=1024
+sr: [00:00.366055] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.368293] rp2350-la: RX type=0x91 seq=46 length=1024
+sr: [00:00.368302] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.370582] rp2350-la: RX type=0x91 seq=47 length=1024
+sr: [00:00.370598] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.372638] rp2350-la: RX type=0x91 seq=48 length=1024
+sr: [00:00.372650] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.375052] rp2350-la: RX type=0x91 seq=49 length=1024
+sr: [00:00.375061] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.377365] rp2350-la: RX type=0x91 seq=50 length=1024
+sr: [00:00.377378] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.379576] rp2350-la: RX type=0x91 seq=51 length=1024
+sr: [00:00.379589] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.382057] rp2350-la: RX type=0x91 seq=52 length=1024
+sr: [00:00.382071] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.384318] rp2350-la: RX type=0x91 seq=53 length=1024
+sr: [00:00.384334] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.386605] rp2350-la: RX type=0x91 seq=54 length=1024
+sr: [00:00.386618] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.389056] rp2350-la: RX type=0x91 seq=55 length=1024
+sr: [00:00.389072] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.391385] rp2350-la: RX type=0x91 seq=56 length=1024
+sr: [00:00.391393] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.393517] rp2350-la: RX type=0x91 seq=57 length=1024
+sr: [00:00.393525] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.396061] rp2350-la: RX type=0x91 seq=58 length=1024
+sr: [00:00.396069] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.398351] rp2350-la: RX type=0x91 seq=59 length=1024
+sr: [00:00.398367] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.400508] rp2350-la: RX type=0x91 seq=60 length=1024
+sr: [00:00.400521] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.403032] rp2350-la: RX type=0x91 seq=61 length=1024
+sr: [00:00.403046] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.405292] rp2350-la: RX type=0x91 seq=62 length=1024
+sr: [00:00.405309] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.407524] rp2350-la: RX type=0x91 seq=63 length=1024
+sr: [00:00.407532] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.410045] rp2350-la: RX type=0x91 seq=64 length=1024
+sr: [00:00.410049] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.412434] rp2350-la: RX type=0x91 seq=65 length=1024
+sr: [00:00.412458] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.414658] rp2350-la: RX type=0x91 seq=66 length=1024
+sr: [00:00.414672] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.417055] rp2350-la: RX type=0x91 seq=67 length=1024
+sr: [00:00.417070] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.467123] rp2350-la: RX type=0x91 seq=68 length=1024
+sr: [00:00.467144] session: bus: Received SR_DF_LOGIC packet (1024 bytes, unitsize = 1).
+cli: Received SR_DF_LOGIC (1024 bytes, unitsize = 1).
+sr: [00:00.467227] rp2350-la: RX type=0x92 seq=69 length=8
+sr: [00:00.467235] rp2350-la: Capture verified: 65536 samples at 25000000 Hz.
+sr: [00:00.467243] hwdriver: rp2350-la: Stopping acquisition.
+sr: [00:00.467266] session: bus: Received SR_DF_END packet.
+cli: Received SR_DF_END.
+sr: [00:00.470336] session: fd_source_finalize: key 0x7
+sr: [00:00.470370] session: Stopped.
+sr: [00:00.470392] hwdriver: Cleaning up all drivers.

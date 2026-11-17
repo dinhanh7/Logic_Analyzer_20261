@@ -16,6 +16,7 @@ build/tests/test_ui
 python3 tests/test_host_la.py
 python3 tests/test_stream.py
 python3 tests/test_demo.py
+python3 tests/test_esp32_link_unit.py
 # The panel itself has no unit test; the render harness compiles ui.c against
 # stubs and checks the caption formatters, which are the only branchy part of
 # the time ruler.

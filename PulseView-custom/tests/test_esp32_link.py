@@ -78,21 +78,28 @@ def snapshot(d):
     ok = True
     for name, ch, rate, want in SNAPSHOT:
         try:
-            # A trigger puts the burst inside the window at 25 MHz; without it
-            # a 5-10 ms window often lands between the generator's 100 ms
-            # tasks. CAPTURE_BYTES/2 is used because a full-buffer trigger has
-            # no valid window (see fit_trigger_window in main.c).
-            # Keep the trigger in the middle of the window: with a large
-            # count the firmware slides a late trigger to the end, leaving too
-            # few post-trigger samples for a whole UART message.
-            d.configure(rate, 65536, 0xFF, pre=32768,
-                        trigger=(TRIGGER_EDGE, ch, EDGE_FALLING, 0, 0xFF))
-            d.arm()
-            _, info = d.capture(timeout=20)
-            text = d.decode_all(115200, 250000).decode('utf-8', 'replace')
-            ok &= show('snapshot ' + name, want in text,
-                       'trig=%d %s' % (info['trigger_index'],
-                                       text.replace('\n', ' | ')))
+            # A late hardware trigger can leave less post-trigger history
+            # than requested. Retry only that measurable window limitation;
+            # never retry a bad decode from a complete window into a PASS.
+            tail_us = {'UART': 800, 'I2C': 400, 'SPI': 200, 'CAN': 600}[name]
+            for attempt in range(6):
+                d.configure(rate, 65536, 0xFF, pre=32768,
+                            trigger=(TRIGGER_EDGE, ch, EDGE_FALLING, 0, 0xFF))
+                d.arm()
+                samples, info = d.capture(timeout=20)
+                index = info['trigger_index']
+                if len(samples) != 65536 or not info['flags'] & 1 or not 0 <= index < len(samples):
+                    raise RuntimeError('invalid triggered capture metadata')
+                if len(samples) - index < rate * tail_us // 1000000:
+                    print('snapshot %s retry %d/6: trigger=%d leaves too little post-trigger data'
+                          % (name, attempt + 1, index), flush=True)
+                    if attempt == 5:
+                        raise RuntimeError('six captures without enough post-trigger history')
+                    continue
+                text = d.decode_all(115200, 250000).decode('utf-8', 'replace')
+                ok &= show('snapshot ' + name, want in text,
+                           'trig=%d %s' % (index, text.replace('\n', ' | ')))
+                break
         except Exception as exc:
             ok &= show('snapshot ' + name, False, 'ERROR ' + str(exc))
             d.recover()

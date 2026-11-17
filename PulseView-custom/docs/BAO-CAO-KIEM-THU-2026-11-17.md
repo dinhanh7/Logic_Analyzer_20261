@@ -5,13 +5,15 @@
 **Phiên bản mã nguồn được đánh giá:** `576873a`, nhánh `feature/trigger-v2`
 **Phạm vi:** phần mềm, kết nối máy tính, thu tín hiệu, trigger, giải mã, streaming, giao diện và khoảng trống nghiệm thu.
 
-**Đính chính sau phản hồi tiếp theo của người dùng:** hai nhiệm vụ xác minh kết nối GUI PulseView và decode trực tiếp trong GUI chưa được coi là đã thực hiện/nghiệm thu. Những câu “đã quan sát GUI” bên dưới là nội dung bàn giao cũ, không phải kết quả xác minh độc lập của agent. Theo yêu cầu mới, cả hai phải chạy lại trên máy thật. Script và thay đổi hỗ trợ nằm ở `docs/DEMO.md`; hiện chưa có PASS phần cứng/GUI mới cho thay đổi đó.
+**Cách đọc bản cập nhật:** mục 1–11 ghi mốc `576873a` và lần chạy ban đầu; mục 12 cập nhật kiểm chứng board/GUI thật sau khi mở quyền, được ưu tiên khi đánh giá trạng thái hiện tại.
+
+**Lịch sử đính chính, trước khi mở quyền chạy thật:** hai nhiệm vụ xác minh kết nối GUI PulseView và decode trực tiếp trong GUI chưa được coi là đã thực hiện/nghiệm thu. Những câu “đã quan sát GUI” bên dưới là nội dung bàn giao cũ, không phải kết quả xác minh độc lập của agent. Theo yêu cầu mới, cả hai phải chạy lại trên máy thật. Script và thay đổi hỗ trợ nằm ở `docs/DEMO.md`; hiện chưa có PASS phần cứng/GUI mới cho thay đổi đó.
 
 ## 1. Kết luận chính cho người đọc
 
 Sản phẩm đã hoạt động như một bộ phân tích logic mẫu thử có thể sử dụng để thu và đọc tín hiệu số. Pico 2 thu đồng thời 8 kênh, truyền dữ liệu đến máy tính, lưu file và giải mã được UART, I2C, SPI, CAN. Chế độ chụp vào bộ nhớ đã được thử ở mức lấy mẫu 25 triệu mẫu/giây. Chế độ truyền liên tục đã có kết quả 1 triệu mẫu/giây khi nén RLE với nguồn tín hiệu kiểm thử, không ghi nhận mất mẫu trong lần thử được bàn giao.
 
-Phần lõi thu nhận và giải mã có bằng chứng kiểm thử khá tốt: có kiểm tra thuật toán, dữ liệu giả lập độc lập, driver C thực, tín hiệu ESP32 trên phần cứng và các lần lặp tại một số điểm biên. Tuy nhiên, sản phẩm **chưa đủ bằng chứng để kết luận hoàn thành toàn bộ yêu cầu đề tài**. Các điểm còn thiếu quan trọng là kiểm chứng bảo vệ 12 V DC/xung 200 V, nghiệm thu giao diện PulseView đầy đủ 4 decoder trong phiên bản hiện tại, nút bấm và TFT thực tế, cùng bộ hồ sơ bàn giao.
+Phần lõi thu nhận và giải mã có bằng chứng kiểm thử khá tốt: có kiểm tra thuật toán, dữ liệu giả lập độc lập, driver C thực, tín hiệu ESP32 trên phần cứng và các lần lặp tại một số điểm biên. Tuy nhiên, sản phẩm **chưa đủ bằng chứng để kết luận hoàn thành toàn bộ yêu cầu đề tài**. Các điểm còn thiếu quan trọng là kiểm chứng bảo vệ 12 V DC/xung 200 V, nút bấm và hình ảnh TFT thực tế, cùng bộ hồ sơ bàn giao. Luồng PulseView với đầy đủ bốn decoder đã được chạy trực tiếp và lưu ảnh/annotation trong đợt cập nhật mục 12.
 
 Không quy đổi mức hoàn thiện thành một phần trăm chung: một tính năng chưa nghiệm thu như bảo vệ đầu vào không thể được bù bằng số lượng lớn test phần mềm đã đạt. Báo cáo đánh giá riêng từng nhóm chức năng tại mục 10.
 
@@ -268,19 +270,19 @@ Số mẫu raw 500 kHz gần 1,5 triệu phù hợp thời lượng khoảng 3 g
 
 ## 7. Kết nối PulseView và trải nghiệm giao diện
 
-### 7.1. Các bước đã xác nhận ngày 17/11
+### 7.1. Kết nối và cấu hình đã xác nhận trực tiếp
 
-Driver `rp2350-la` nhận thiết bị qua `/dev/ttyACM0`. CLI `--show` liệt kê CH0–CH7, đủ 8 rate từ 1 kHz tới 25 MHz, giới hạn bộ nhớ 262144, các tùy chọn trigger source/slope/pattern. GUI mở được và hiển thị tên **RP2350 Pico 2 / 2 W Logic Analyzer**, 8 kênh, 100 k samples và 1 MHz trong cấu hình đã quan sát.
+Driver `rp2350-la` nhận thiết bị qua `/dev/ttyACM0`. CLI `--show` liệt kê CH0–CH7, đủ 8 rate từ 1 kHz tới 25 MHz, giới hạn bộ nhớ 262144, các tùy chọn trigger source/slope/pattern. GUI mở được và hiển thị tên **RP2350 Pico 2 / 2 W Logic Analyzer**, đủ 8 kênh; đợt kiểm chứng trực tiếp sau cùng dùng 65536 mẫu và 25 MHz, với chữ hiển thị `65.536 k samples` khớp cấu hình thực. Có JSON đọc lại trigger CH0 falling/pre-trigger 50%.
 
 Capture qua driver có trigger CH7 falling, 25 MHz, 65536 mẫu đã được bàn giao là giải mã đủ 4 giao thức bằng wrapper sigrok-cli. Điều này chứng minh stack driver và decoder dùng chung với PulseView làm việc với dữ liệu bộ thu.
 
-### 7.2. Phần GUI còn dang dở
+### 7.2. Phần GUI từng dang dở và kết quả hoàn tất
 
-Đã mở Decoder Selector và thêm UART vào session. Chưa hoàn thành bước chọn channel/baud trong dialog cấu hình rồi thu và thấy annotation cho cả UART/I2C/SPI/CAN trong phiên GUI 8 kênh hiện tại. Hiển thị và thay đổi trigger source/slope trên chính widget GUI cũng chưa có bộ ảnh/nghiệm thu đầy đủ; phần cấu hình này đã được kiểm ở driver/CLI.
+Theo bàn giao cũ, mới mở Decoder Selector và thêm UART vào session, chưa hoàn thành bước chọn channel/baud và xem annotation cả bốn bus. Đợt cập nhật mục 12 đã hoàn thành trực tiếp bằng preset gán kênh/baud, live acquisition trong PulseView, đọc annotation từ GUI và chụp ảnh cửa sổ thật. Hiển thị và thay đổi trigger source/slope trên chính widget GUI cũng chưa có bộ ảnh/nghiệm thu đầy đủ; phần cấu hình này đã được kiểm ở driver/CLI.
 
 Hồ sơ 03/11 có ghi GUI CAN hiển thị ID 0x123 và mở file I2C/gán SCL/SDA để thấy dữ liệu, dùng sơ đồ từng bus cũ. Đây là kết quả lịch sử hữu ích, nhưng chưa thay cho ảnh và quy trình GUI bốn decoder theo map hiện tại. CLI chứng minh thuật toán giải mã, còn cấu hình thuận tiện và annotation hiển thị đúng là một lớp nghiệm thu giao diện riêng.
 
-**Mức hoàn thiện:** kết nối và đường dữ liệu PC đã hoạt động; thao tác GUI đủ quy trình mới đạt một phần. Chưa có xác nhận đầy đủ lưu/mở lại session kèm cấu hình cả bốn decoder, zoom và ảnh chụp hiện tại cho báo cáo.
+**Mức hoàn thiện hiện tại:** kết nối, cấu hình và live decode đủ bốn bus trong GUI đã đạt; ảnh và JSON hiện tại được lưu trong bằng chứng chạy thật. Có file `.pvs` tái lập gán kênh/baud và `capture.sr` thật. Quy trình Save As/Open lại toàn bộ session bằng thao tác menu GUI vẫn chưa có ca nghiệm thu riêng.
 
 ## 8. Màn TFT, nút bấm, chạy song song và chức năng bổ sung
 
@@ -306,7 +308,7 @@ Hồ sơ CAN 03/11 ghi save session 0/1 thành công; load session 1 giải mã 
 
 Đây là kết quả lịch sử trên cấu hình từng bus. Chưa có hồi quy phần cứng hiện tại cho lưu/đọc đầy đủ 8 kênh, mất điện giữa lúc ghi hoặc độ bền flash. Không xếp các chức năng phụ này ngang mức nghiệm thu của đường snapshot/stream đã có script ESP32 hiện hành.
 
-## 9. Kiểm tra thực hiện trong phiên tổng hợp báo cáo
+## 9. Lịch sử chạy đầu phiên, trước khi mở quyền thực thi
 
 Không sửa firmware, driver hay logic test. Chỉ tạo tài liệu và lưu bản sao bằng chứng. Build đã chạy thành công; không flash vì không sửa UI và không có board trong môi trường hiện tại.
 
@@ -333,10 +335,10 @@ Raw log được lưu trong `test-evidence-2026-11-17/current/`; chúng cho phé
 | Lấy mẫu ít nhất 25 MHz | Đã có capture và decode ở cấu hình 25 MHz | Chưa chứng nhận sai số clock, pulse-width tối thiểu hoặc đáp ứng đầu vào toàn dải |
 | Trigger | Hoạt động, có hồi quy sau sửa | Có giới hạn count/pre; trigger CAN cạnh có thể không phải SOF; chưa bao phủ mọi tình huống DMA |
 | Decode UART/I2C/SPI/CAN | Đã kiểm trên waveform giả và ESP32 | Trong các format/map/baud đã thử; chưa nghiệm thu mọi biến thể, error frame, nhiễu hoặc CAN extended |
-| Hiển thị trên PC | Kết nối và dữ liệu đã hoạt động | GUI đầy đủ bốn decoder ở cấu hình cuối còn thiếu minh chứng |
+| Hiển thị trên PC | Đã kiểm chứng live GUI với bốn decoder | Có screenshot, annotation JSON, gán kênh/baud, rate/count/trigger đúng; Save/Open session bằng menu chưa kiểm riêng |
 | Streaming | Hoạt động trong phạm vi đã thử | RLE 1 MHz và raw 500 kHz; raw 1 MHz có drop; chưa test bền dài hạn |
 | Firmware C/C++ SDK, host Python | Đáp ứng cấu trúc triển khai | Pico C/C++ SDK + công cụ host Python; GUI dùng PulseView/Qt |
-| TFT/nút bấm | Phần mềm đã có, nghiệm thu thực tế chưa đủ | Cần ảnh/video và test nút đã hàn trên UI cuối |
+| TFT/nút bấm | Readback trên board đạt; phần vật lý chưa đủ | Text/bảng byte bốn bus đúng, tự đồng bộ sau PC capture; còn ảnh camera panel và test nút đã hàn |
 | Bảo vệ 12 V DC / xung 200 V | Chưa nghiệm thu | Hồ sơ có ý tưởng clamp; thiếu kết quả mạch hoàn chỉnh chịu áp/xung và ảnh hưởng lên tín hiệu |
 | BOM ≤450.000 VNĐ | Có dự toán, chưa chốt nghiệm thu | Hồ sơ cũ ước tính 366.000–445.000 VNĐ; chưa có BOM cuối với số lượng/đơn giá/chứng từ, nhất là mạch bảo vệ |
 | Báo cáo, slide, video ≤3 phút | Đang hoàn thiện | Báo cáo này là báo cáo kiểm thử; chưa thay cho toàn bộ báo cáo đồ án, slide và video |
@@ -348,7 +350,7 @@ Raw log được lưu trong `test-evidence-2026-11-17/current/`; chúng cho phé
 | Ưu tiên | Việc cần hoàn tất | Tiêu chí đóng rõ ràng |
 |---|---|---|
 | 1 | Kiểm chứng bảo vệ đầu vào | Sơ đồ/BOM cuối; định nghĩa biên độ, độ rộng, trở kháng nguồn và số lần xung 200 V; kết quả đo trên mạch bảo vệ, mức tại chân thu, tình trạng trước/sau và ảnh hưởng timing |
-| 1 | GUI demo cuối | Một session có đủ 8 kênh và annotation UART/I2C/SPI/CAN; ảnh cấu hình channel/baud, rate/count/trigger; lưu rồi mở lại được |
+| Đã đạt phần demo | GUI demo cuối | Đã có 8 kênh, bốn decoder, ảnh và JSON cấu hình/annotation. Còn ca Save/Open qua menu nếu cần nghiệm thu thao tác đó |
 | 1 | Hồ sơ bàn giao | Báo cáo đồ án hoàn chỉnh, slide, video không quá 3 phút; dùng đúng thông số và hạn chế đã xác minh |
 | 2 | TFT và nút thật | Ảnh/video 6 màn; mỗi nút nhấn ngắn/dài đúng; giữ OK chụp được; không tràn chữ hoặc kẹt thao tác |
 | 2 | Chốt bằng chứng hồi quy | Full suite và ESP32 trên môi trường có thiết bị; giữ raw capture `.sr`, JSON drop, stdout/stderr và mã commit |
@@ -393,6 +395,20 @@ python3 tools/ui_cycle.py --capture -i 1
 ```
 
 Muốn giải mã SPI ở streaming 1 MHz, đặt ESP32 `set spi 100` trước thu và khôi phục `set spi 1000` sau thu. Không lấy một kết quả UART đúng làm bằng chứng mọi bus trong file đều đúng. Với mỗi lần thu, giữ file `.sr`, JSON chứa số drop, output từng decoder, mã commit và ảnh GUI. Một capture cụ thể có thể thiếu frame nếu burst nằm ngoài cửa sổ; kiểm tra vị trí trigger và đủ số mẫu sau trigger khi tái lập.
+
+## 12. Cập nhật kiểm chứng trực tiếp sau khi mở quyền thực thi
+
+Ngày 17/11/2026, sau khi chuyển phiên sang `danger-full-access`, đã truy cập được Pico 2 tại `/dev/ttyACM0`, ESP32 tại `/dev/ttyUSB0`, desktop 1920×1080 và mạng. Vì vậy trạng thái bị chặn ở mục 9 đã được giải quyết; các kết quả mục 9 vẫn được giữ đúng như lịch sử lần chạy trước.
+
+Đã build/nạp firmware có `+ui18` và chạy trực tiếp script demo. Driver nhận tên `RP2350 Pico 2 / 2 W Logic Analyzer`; có 8 kênh CH0–CH7, cấu hình 25 MHz, 65536 mẫu, trigger falling và pre-trigger 50%. Đã kiểm cả cấu hình đọc từ driver và giá trị toolbar trong GUI; sửa lỗi widget làm tròn count 65536 thành 50k, nay hiển thị đúng `65.536 k samples`.
+
+TFT dùng snapshot thật vừa thu qua driver: text và bảng byte UART `LA1234`, I2C `0x68 W ACK 0x01 ACK 0x5A ACK`, SPI `DE AD BE EF 00 01 02 03`, CAN ID `0x123`/DLC 4 đều đúng. Có kiểm screen ID và badge cho từng protocol. GUI PulseView sau đó tự thu một capture mới, được cấu hình sẵn bốn decoder và sinh annotation đúng cho cả bốn. Đã xem ảnh GUI thật, đủ 8 track và bốn hàng decode; dữ liệu annotation được lấy từ chính tiến trình PulseView, không suy ra từ kết quả CLI.
+
+Toàn bộ `bash scripts/test.sh` PASS trên môi trường đã mở quyền, bao gồm 9 test driver integration, 8 test demo mới và 2 ca kiểm tra retry cửa sổ. Bài ESP32 đạt 4 snapshot + 4 streaming. Một lần thử trước gặp trigger CAN quá muộn và frame bị cắt; raw log lỗi được giữ. Test đã thêm tối đa 6 lần thu lại chỉ khi metadata chứng minh không đủ mẫu sau trigger; không retry dữ liệu sai trong cửa sổ đủ dài để biến lỗi thành PASS.
+
+Bản hoàn thiện `+ui18+sync` rạng sáng 18/11 còn đồng bộ TFT sau mỗi snapshot từ PC, cập nhật cả cửa sổ, trigger và packet cache khi trang DECODE đang mở. Có regression test thay dữ liệu đầu vào khi giữ nguyên trang decode để phát hiện byte cũ còn sót. Hai nhiệm vụ kết nối/decode trực tiếp trên GUI nay có bằng chứng chạy mới. Phần đọc lại TFT đã kiểm trên board thật; màu, backlight và nút vật lý vẫn chưa có camera/phép thử tiếp điểm. Bảo vệ 12 V/200 V, BOM và các yêu cầu độ chính xác đo chưa được bổ sung bằng phép thử mới trong đợt này.
+
+Xem [hướng dẫn demo](DEMO.md) và [bằng chứng chạy thật](demo-validation-2026-11-17/real-run/README.md). Chạy `bash scripts/demo.sh` trên máy cắm hai board để lặp lại quy trình; kết quả PASS/FAIL, log, capture và ảnh được giữ trong `build/demo/`.
 
 ## Phụ lục A. Danh mục 80 ca sweep đã ghi trong hồ sơ
 

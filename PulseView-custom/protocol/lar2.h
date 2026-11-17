@@ -77,7 +77,7 @@
 
 /* Board identity. The host checks the "RP2350-LA" prefix and a minimum
  * length, so the suffix may advertise firmware features. */
-#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an+str+ui18"
+#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an+str+ui18+sync"
 static const uint64_t lar2_rates[LAR2_RATE_COUNT] = {
     1000, 10000, 100000, 250000, 500000, 1000000, 5000000, 25000000
 };

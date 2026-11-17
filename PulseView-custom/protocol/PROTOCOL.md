@@ -255,3 +255,7 @@ END is sent. The command never loads the synthetic UI_DEMO waveform.
 The waveform screens open at FIT. The decode screen recomputes both text and
 packet rows from the capture window and real trigger index. Use UI_TEXT,
 UI_TABLE, UI_STATE and RUNTIME to read back the result. See `docs/DEMO.md`.
+
+Firmware `+ui18+sync` also refreshes the TFT capture pointer, trigger, text
+and packet cache after each completed host snapshot. The decode page stays
+on its selected protocol while displaying the new acquisition.

@@ -1,0 +1,12 @@
+bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8)
+[  1%] Built target rp2350_la_logic_capture_pio_h
+[  3%] Built target bs2_default
+[  6%] Built target bs2_default_library
+Consolidate compiler generated dependencies of target rp2350_la
+[  7%] Building C object CMakeFiles/rp2350_la.dir/main.c.o
+[  8%] Linking C executable rp2350_la.elf
+[100%] Built target rp2350_la
+[  1%] Automatic MOC for target pulseview
+[  1%] Built target pulseview_autogen
+Consolidate compiler generated dependencies of target pulseview
+[100%] Built target pulseview

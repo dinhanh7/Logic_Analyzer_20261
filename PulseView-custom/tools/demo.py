@@ -86,7 +86,7 @@ def write_setup(path, trigger='CH0', live=False):
               ('I2C', 'i2c', [1, 2], []),
               ('SPI', 'spi', [4, 6, 5, 3], []),
               ('CAN', 'can', [7], [('nominal_bitrate', 'x', struct.pack('<q', 250000))])]
-    lines = ['[General]', 'decode_signals=4', 'generated_signals=0', 'views=0', 'meta_objs=0']
+    lines = ['[General]', 'decode_signals=4', 'generated_signals=0', 'views=1', 'meta_objs=0']
     colors = ['4281891832', '4294677052', '4283082880', '4290806780']
     for i in range(8):
         lines += [f'\n[CH{i}]', f'name=CH{i}', 'enabled=true', f'color={colors[i % 4]}']
@@ -109,6 +109,8 @@ def write_setup(path, trigger='CH0', live=False):
     if live:
         lines += ['\n[rp2350]', 'samplerate=25000000', 'samples=65536',
                   f'trigger_source={trigger}', 'autorun=true']
+    lines += ['\n[view0]']
+    lines += [f'CH{i}\\trace_height=24' for i in range(8)]
     Path(path).write_text('\n'.join(lines) + '\n')
 
 
@@ -217,7 +219,8 @@ def pulseview(output, port, path, ch, live):
     args = [str(GUI), '-D', '-s', str(setup)]
     args += ['-d', f'rp2350-la:conn={port}'] if live else ['-i', str(path)]
     with (output / 'pulseview.log').open('w') as log:
-        proc = subprocess.Popen(args, cwd=ROOT, env=env, stdout=log, stderr=log)
+        proc = subprocess.Popen(args, cwd=ROOT, env=env, stdout=log, stderr=log,
+                                start_new_session=True)
     last_error = 'no PulseView annotation report yet'
     retry_at = time.monotonic() + 10
     retries = 0
@@ -228,6 +231,8 @@ def pulseview(output, port, path, ch, live):
         try:
             data = json.loads(report.read_text())
             check_gui_report(data)
+            if data.get('toolbar_samples') != 65536 or data.get('toolbar_samplerate') != 25000000:
+                raise RuntimeError('PulseView toolbar does not show 65536 samples / 25 MHz')
             if live:
                 require(data.get('device', ''), 'RP2350', 'PulseView device')
                 expected = dict(samplerate=25000000, samples=65536,
@@ -236,6 +241,8 @@ def pulseview(output, port, path, ch, live):
                     raise RuntimeError(f'PulseView config mismatch: {data.get("device_config")}')
             if not Path(str(report) + '.png').exists():
                 raise RuntimeError('PulseView screenshot not saved yet')
+            if not data.get('screenshot_saved'):
+                raise RuntimeError('PulseView screenshot is not from this acquisition yet')
             print('PASS annotations generated inside PulseView: UART/I2C/SPI/CAN', flush=True)
             return proc.pid
         except (OSError, ValueError, RuntimeError) as exc:
@@ -284,7 +291,7 @@ def main():
             raise RuntimeError('Board does not advertise eight channels and 25 MHz')
         summary.update(board=ident, capabilities=caps)
         print('PASS HELLO/GET_CAPS:', ident, caps, flush=True)
-        if '+ui18' not in ident:
+        if '+ui18+sync' not in ident:
             if args.no_flash:
                 raise RuntimeError('Firmware needs UI_SHOW_CAPTURE. Run again without --no-flash.')
             run(['cmake', '--build', 'build/firmware-pico2', '-j4'], output / 'firmware-build.log', 180)
@@ -292,7 +299,7 @@ def main():
                 env=dict(os.environ, LA_PORT=args.port))
             dev, ident = open_device(args.port)
             dev.close()
-            require(ident, '+ui18', 'flashed firmware')
+            require(ident, '+ui18+sync', 'flashed firmware')
             summary['board'] = ident
         setup_generator(args.esp32_port, output)
         stdout, stderr = run([CLI, '-d', f'rp2350-la:conn={args.port}', '--show'],

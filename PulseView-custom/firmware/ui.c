@@ -1615,5 +1615,9 @@ void ui_set_capture(const uint8_t *samples, uint32_t len, uint64_t rate,
      * the interesting edge is where the user put it. wave_centre_on() is
      * FIT-safe; indexing zoom_spp[] with a possible ZOOM_FIT was not. */
     wave_centre_on(trigger_index);
-    if (screen == SCR_WAVE_LO || screen == SCR_WAVE_HI) refresh();
+    if (screen == SCR_DECODE) {
+        dec_sel = 0;
+        run_decode();
+        refresh();
+    } else if (screen == SCR_WAVE_LO || screen == SCR_WAVE_HI) refresh();
 }
