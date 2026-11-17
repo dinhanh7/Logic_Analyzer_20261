@@ -116,6 +116,37 @@ phải dùng host tool riêng:
 Không đặt trigger thì vẫn dùng đường capture manual như trước. Chi tiết giao thức ở
 [protocol/PROTOCOL.md](protocol/PROTOCOL.md).
 
+## Chế độ streaming (ghi liên tục, v1.3)
+
+Snapshot chỉ giữ 262.144 mẫu (10,5 ms @ 25 MHz). Chế độ streaming dùng **cùng
+buffer đó** như một ring 4 khe × 64 KB: DMA ghi một khe trong khi CPU gửi các
+khe trước qua USB CDC. Ghi được bao lâu chỉ phụ thuộc dung lượng file trên PC.
+
+```bash
+# ghi 10 s ở 1 MHz, ghi ra file .sr mở bằng PulseView
+python3 tools/stream_capture.py -t 10 -o run.sr
+
+# tín hiệu nhanh đảo liên tục: tắt RLE cho chắc ăn
+python3 tools/stream_capture.py -t 30 -r 500000 --no-rle -o slow.raw
+```
+
+Giới hạn và cách dùng:
+
+- **Tối đa 1 MHz.** USB CDC full speed ~1,2 MB/s, mà 1 mẫu = 1 byte. Trên mức
+  này driver từ chối ngay (`-r 5000000` báo lỗi), muốn nhanh hơn phải snapshot.
+- **Không trigger, không decode trên máy.** Streaming chỉ ghi; decode làm trên
+  PC (PulseView) sau khi có file. Trigger vẫn dùng đường snapshot.
+- **RLE tự chọn**: mỗi block 500 mẫu nén thành cặp `(run, value)`, nếu không
+  lợi thì gửi raw. Đường dây idle hoặc xung vuông nén rất tốt.
+- **Không mất mẫu**: mỗi block mang offset tuyệt đối. Nếu PC chậm làm DMA vượt
+  vòng, thiết bị bỏ khe cũ và ghi số mẫu mất vào `.json` cạnh file, để chỗ đó
+  là mức 0 chứ không ghép dữ liệu cũ vào như liền mạch.
+- TFT đứng yên ở màn cuối trong lúc stream (CPU dành cho USB).
+- Trần tuyệt đối của bộ đếm mẫu PIO là ~71 phút @ 1 MHz.
+
+Kiểm thử không cần board: `python3 tests/test_stream.py` chạy CLI thật trên
+emulator PTY, so từng byte giải nén với tín hiệu mô phỏng.
+
 ## Chạy trên máy hiện tại
 
 Stack đã được build vào `.local/`; toolchain phục vụ build đang nằm trong `.deps/`. Dùng các script bên dưới để nạp đúng thư viện custom thay vì libsigrok của hệ điều hành.
