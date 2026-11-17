@@ -1,0 +1,5 @@
+[  1%] Built target rp2350_la_logic_capture_pio_h
+[  3%] Built target bs2_default
+[  6%] Built target bs2_default_library
+Consolidate compiler generated dependencies of target rp2350_la
+[100%] Built target rp2350_la
