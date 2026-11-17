@@ -8,6 +8,7 @@
 #include <stdbool.h>
 
 #include "ui.h"
+#include "lar2.h"
 #include "tft_st7735.h"
 #include "buttons.h"
 
@@ -185,7 +186,42 @@ static int selftest(void)
     if (strcmp(b, "-8.6u")) { fprintf(stderr, "offset -: got %s\n", b); bad++; }
     ui_format_offset(1000, 1000, 25000000, b, sizeof b);
     if (strcmp(b, "0")) { fprintf(stderr, "offset 0: got %s\n", b); bad++; }
-    if (!bad) printf("render_ui selftest: caption format ok\n");
+
+    /* AUTO must find a bus that sits near the trigger, not just at sample 0.
+     * A triggered capture has most of its pre-trigger window idle, and the
+     * detector only looks at LA_AUTO_WINDOW samples. */
+    {
+        static uint8_t auto_wf[60000];
+        memset(auto_wf, 0, sizeof auto_wf);
+        memset(auto_wf, 0xFF, sizeof auto_wf);      /* all channels idle high */
+        uint32_t pos = 40000;                        /* trigger, far from 0 */
+        for (unsigned k = 0; k < 4; k++) {
+            char c = "LA12"[k];
+            for (uint32_t i = 0; i < 217; i++) auto_wf[pos++] &= ~1u;  /* start */
+            for (int bit = 0; bit < 8; bit++, pos += 217) {
+                uint8_t v = (uint8_t)((c >> bit) & 1u);
+                for (uint32_t i = 0; i < 217; i++)
+                    if (v) auto_wf[pos + i] |= 1u;
+                    else   auto_wf[pos + i] &= ~1u;
+            }
+            for (uint32_t i = 0; i < 217; i++) auto_wf[pos++] |= 1u;   /* stop */
+        }
+        ui_init();
+        ui_load_demo();
+        ui_set_capture(auto_wf, sizeof auto_wf, 25000000u, 40000u, true);
+        ui_handle_command('o'); ui_tick();          /* WAVE CH4-7 */
+        ui_handle_command('o'); ui_tick();          /* DECODE: runs AUTO */
+        if (ui_dec_auto_proto() != LAR2_PROTO_UART) {
+            fprintf(stderr, "AUTO near trigger: got proto %u, want UART\n",
+                    ui_dec_auto_proto());
+            bad++;
+        }
+        if (strstr(ui_decode_text(), "UART") == NULL) {
+            fprintf(stderr, "AUTO near trigger: decode text %s\n", ui_decode_text());
+            bad++;
+        }
+    }
+    if (!bad) printf("render_ui selftest: caption format + AUTO window ok\n");
     return bad ? 1 : 0;
 }
 

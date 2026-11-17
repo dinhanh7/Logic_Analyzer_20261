@@ -163,6 +163,18 @@ static void abort_capture(void)
     estimated_baud = 0;
 }
 
+/* A triggered window needs room both before and after the trigger inside the
+ * same buffer: base = trigger - pretrigger, base + count <= max_prod. With
+ * count == CAPTURE_BYTES that is impossible for any trigger position, so the
+ * capture re-arms forever and ends in "trigger too late". Leave half the RAM
+ * as headroom and cap pretrigger to half the window. */
+static void fit_trigger_window(void)
+{
+    if (trig_mode == LAR2_TRIGGER_MANUAL) return;
+    if (count > CAPTURE_BYTES / 2u) count = CAPTURE_BYTES / 2u;
+    if (pretrigger > count / 2u) pretrigger = count / 2u;
+}
+
 static bool capture_faulted(void)
 {
     return (pio->fdebug & (1u << (PIO_FDEBUG_RXSTALL_LSB + sm))) ||
@@ -335,6 +347,7 @@ static void command(void)
                 /* UART byte trigger: trig_value = target byte */
             } else { error("invalid config"); break; }
             if (pretrigger >= count) { error("invalid config"); break; }
+            fit_trigger_window();
         }
         configured = true; ack(type); break;
     }
@@ -910,6 +923,7 @@ int main(void)
             pretrigger = ui_cfg.pretrigger; trig_mode = ui_cfg.trig_mode;
             trig_channel = ui_cfg.trig_channel; trig_edge = ui_cfg.trig_edge;
             trig_value = ui_cfg.trig_value; trig_mask = ui_cfg.trig_mask;
+            fit_trigger_window();
             trigger_restarts = 0;
             start_capture();
             ui_pending = true;

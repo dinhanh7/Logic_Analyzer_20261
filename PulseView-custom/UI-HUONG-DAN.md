@@ -87,6 +87,11 @@ Các dòng (chữ tiếng Anh trên màn): `Rate`, `Samples`, `Chan`, `Pre-Trig`
 | BACK, nhấn ngắn | → màn 2/5 TRIGGER | Hủy edit, thoát edit |
 | BACK, giữ ≥800 ms | → màn 0 STANDBY | Hủy edit, thoát edit (chưa về chờ) |
 
+> Khi dùng trigger (EDGE/PATTERN/UART), firmware tự giới hạn cửa sổ còn 128K
+> mẫu và pre-trigger tối đa 50% để vừa có mẫu trước lẫn sau vạch trigger trong
+> cùng một buffer 256K. Chọn `262K` ở màn CONFIG vẫn hợp lệ ở chế độ không
+> trigger; với trigger thì thực tế thu 131072 mẫu.
+
 ### Màn 2/5 - TRIGGER
 
 Các dòng: `Mode`, `Chan`, `Condition`, `Baud/Clk`.

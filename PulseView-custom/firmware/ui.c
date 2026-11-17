@@ -707,8 +707,22 @@ static void run_decode(void)
          * bit-time gate needs a concrete UART baud; when the card says AUTO
          * fall back to 115200, which is what the demo uses. */
         uint32_t detect_baud = uart_baud ? uart_baud : 115200u;
-        dec_auto = decoders_autodetect(cap_samples, cap_len, (uint32_t)cap_rate,
-                                       detect_baud, can_baud);
+        /* The detector only looks at the first LA_AUTO_WINDOW samples. On a
+         * triggered capture those can be entirely pre-trigger idle, so start
+         * the scan half a window before the trigger instead. If that finds
+         * nothing, try the start of the buffer before giving up. */
+        uint32_t det_start = 0;
+        if (cap_len > LA_AUTO_WINDOW) {
+            if (cap_trigger > LA_AUTO_WINDOW / 2u)
+                det_start = cap_trigger - LA_AUTO_WINDOW / 2u;
+            if (det_start + LA_AUTO_WINDOW > cap_len)
+                det_start = cap_len - LA_AUTO_WINDOW;
+        }
+        dec_auto = decoders_autodetect(cap_samples + det_start, cap_len - det_start,
+                                       (uint32_t)cap_rate, detect_baud, can_baud);
+        if (!dec_auto.proto && det_start)
+            dec_auto = decoders_autodetect(cap_samples, cap_len, (uint32_t)cap_rate,
+                                           detect_baud, can_baud);
         if (!dec_auto.proto) {
             snprintf(dec_text, sizeof dec_text, "AUTO: no bus found");
             return;
