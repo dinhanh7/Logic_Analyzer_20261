@@ -45,6 +45,8 @@ bool ui_take_capture_request(void);
  * through LAR2_ANALYZE_RUNTIME so a host can verify navigation without eyes
  * on the TFT. The original five ids are unchanged for the cycle test. */
 uint8_t ui_screen_id(void);
+/* Present the last real capture without loading the synthetic demo. */
+bool ui_show_capture(uint8_t screen_id, uint8_t protocol);
 /* Number of UI events dispatched since boot, saturating at 255. */
 uint8_t ui_event_count(void);
 /* Text the decode screen is currently showing. Read-only, valid until the

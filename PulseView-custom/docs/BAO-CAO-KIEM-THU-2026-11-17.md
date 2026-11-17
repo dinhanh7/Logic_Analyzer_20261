@@ -5,6 +5,8 @@
 **Phiên bản mã nguồn được đánh giá:** `576873a`, nhánh `feature/trigger-v2`
 **Phạm vi:** phần mềm, kết nối máy tính, thu tín hiệu, trigger, giải mã, streaming, giao diện và khoảng trống nghiệm thu.
 
+**Đính chính sau phản hồi tiếp theo của người dùng:** hai nhiệm vụ xác minh kết nối GUI PulseView và decode trực tiếp trong GUI chưa được coi là đã thực hiện/nghiệm thu. Những câu “đã quan sát GUI” bên dưới là nội dung bàn giao cũ, không phải kết quả xác minh độc lập của agent. Theo yêu cầu mới, cả hai phải chạy lại trên máy thật. Script và thay đổi hỗ trợ nằm ở `docs/DEMO.md`; hiện chưa có PASS phần cứng/GUI mới cho thay đổi đó.
+
 ## 1. Kết luận chính cho người đọc
 
 Sản phẩm đã hoạt động như một bộ phân tích logic mẫu thử có thể sử dụng để thu và đọc tín hiệu số. Pico 2 thu đồng thời 8 kênh, truyền dữ liệu đến máy tính, lưu file và giải mã được UART, I2C, SPI, CAN. Chế độ chụp vào bộ nhớ đã được thử ở mức lấy mẫu 25 triệu mẫu/giây. Chế độ truyền liên tục đã có kết quả 1 triệu mẫu/giây khi nén RLE với nguồn tín hiệu kiểm thử, không ghi nhận mất mẫu trong lần thử được bàn giao.

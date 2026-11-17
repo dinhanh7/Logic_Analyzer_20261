@@ -106,7 +106,7 @@ static ui_screen screen;
 static uint32_t ui_now_ms;
 static uint8_t blink_phase = 0xFF;
 
-/* Config screen: rows 0..3 are values, row 4 starts the capture. */
+/* Config screen: rows 0..3 are values; holding OK starts the capture. */
 static uint8_t cfg_row;
 static bool cfg_edit;
 static uint8_t rate_idx, count_idx, mask_idx, pre_idx;
@@ -162,15 +162,17 @@ static const char *const rate_lbl[] = {
 };
 #define RATE_N (sizeof(rates) / sizeof(rates[0]))
 
-static const uint32_t counts[] = { 16384, 65536, 131072, 262144 };
-static const char *const count_lbl[] = { "16K", "64K", "131K", "262K" };
+/* Every local capture uses a trigger; expose only windows the capture engine
+ * can honour rather than silently showing 262K and returning 131K. */
+static const uint32_t counts[] = { 16384, 65536, 131072 };
+static const char *const count_lbl[] = { "16K", "64K", "131K" };
 #define COUNT_N (sizeof(counts) / sizeof(counts[0]))
 
 static const uint8_t masks[] = { 0xFF, 0x0F };
 static const char *const mask_lbl[] = { "CH 0-7", "CH 0-3" };
 #define MASK_N (sizeof(masks) / sizeof(masks[0]))
 
-static const uint8_t pre_pct[] = { 0, 25, 50, 75 };
+static const uint8_t pre_pct[] = { 0, 25, 50 };
 #define PRE_N (sizeof(pre_pct) / sizeof(pre_pct[0]))
 
 static const uint32_t bauds[] = { 0, 9600, 115200 };
@@ -390,7 +392,7 @@ static void draw_standby(void)
      * palette constants (declared further down) come into scope. */
     fill(8, 86, 112, 27, RGB565(0x16, 0x20, 0x2C));
     frame_rect(8, 86, 112, 27, RGB565(0x33, 0x41, 0x55));
-    text(14, 91, "Max Fs : 100 MSPS", C_TEXT);
+    text(14, 91, "Max Fs : 25 MSPS", C_TEXT);
     text(14, 102, "Buffer : 256K Pts", C_TEXT);
 
     /* Blinking ready prompt: dim on even 600 ms phases, white on odd. */
@@ -416,7 +418,7 @@ static void draw_config(void)
              cfg_row == 3, cfg_edit && cfg_row == 3, true);
 
     /* No start row: hold OK on any row to arm a capture, short OK edits. */
-    text_center(HINT_Y, "OK:EDIT  HOLD OK:RUN", C_DIM);
+    text_center(HINT_Y, cfg_edit ? "UP/DN:CHANGE OK:SAVE" : "OK:EDIT  HOLD OK:RUN", C_DIM);
 }
 
 /* ---------- screen 2: trigger ---------- */
@@ -1035,7 +1037,7 @@ static void draw_decode(void)
     draw_grid();
 
     /* Footer: what the buttons do here, and what a row is. */
-    text_clip(2, 150, 124, "UP/DN:row  OK:edit", C_DIM, C_BG);
+    text_clip(2, 150, 124, dec_edit ? "UP/DN:change OK:save" : "UP/DN:row  OK:edit", C_DIM, C_BG);
 }
 
 /* ---------- screen switching ---------- */
@@ -1469,9 +1471,9 @@ void ui_load_demo(void)
 void ui_init(void)
 {
     rate_idx = (uint8_t)(RATE_N - 1);               /* 25 MHz */
-    count_idx = 3;                                  /* 262K */
+    count_idx = 1;                                  /* 64K, enough post-trigger UART */
     mask_idx = 0;                                   /* CH 0-7 */
-    pre_idx = 1;                                    /* 25 % */
+    pre_idx = 2;                                    /* 50 % */
     baud_idx = 2;                                   /* 115200 */
     zoom_idx = 4;                                   /* X16: a bit is ~13 px */
     wave_centre_on(cap_trigger);
@@ -1483,7 +1485,7 @@ void ui_init(void)
     apply_config();
     ui_cfg.trig_mode = LAR2_TRIGGER_EDGE;
     ui_cfg.trig_channel = 0;
-    ui_cfg.trig_edge = LAR2_EDGE_RISING;
+    ui_cfg.trig_edge = LAR2_EDGE_FALLING;             /* UART start bit on CH0 */
     ui_cfg.trig_value = 0x55;
     ui_cfg.trig_mask = 0xFF;
 
@@ -1515,6 +1517,21 @@ void ui_tick(void)
 uint8_t ui_screen_id(void)
 {
     return (uint8_t)screen;
+}
+
+bool ui_show_capture(uint8_t screen_id, uint8_t protocol)
+{
+    if (screen_id < SCR_WAVE_LO || screen_id > SCR_DECODE || protocol >= PROTO_N ||
+        !cap_ok || !cap_samples || !cap_len)
+        return false;
+    proto_sel = protocol;
+    baud_idx = 2; /* Bench/demo contract: UART 115200, CAN 250000. */
+    if (screen_id != SCR_DECODE) {
+        zoom_idx = ZOOM_FIT;
+        wave_centre_on(cap_trigger);
+    }
+    enter((ui_screen)screen_id);
+    return true;
 }
 
 uint8_t ui_event_count(void)

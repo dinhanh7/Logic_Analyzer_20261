@@ -301,3 +301,10 @@ Driver hiện dùng POSIX `termios/poll` cho CDC trên Linux (PTY test cũng dù
 - `scripts/`: build, launch, kiểm tra quyền và capture đã xác minh.
 
 Mã tùy chỉnh: GPL-3.0-or-later, xem [LICENSE](LICENSE). PulseView upstream theo GPL-2.0-or-later; giữ thông tin tác giả và giấy phép của từng dự án khi phân phối. Nguồn chính thức: [libsigrok](https://github.com/sigrokproject/libsigrok), [PulseView](https://github.com/sigrokproject/pulseview), [libsigrokdecode](https://github.com/sigrokproject/libsigrokdecode), [Pico SDK](https://github.com/raspberrypi/pico-sdk). Phiên bản đã pin và phạm vi thay đổi xem [THIRD_PARTY.md](THIRD_PARTY.md).
+
+## Demo Pico 2 + ESP32
+
+Run `bash scripts/demo.sh` on the connected desktop. The script checks the
+real capture, TFT decode and annotations generated inside PulseView, and
+keeps logs/screenshots. First use may build demo support and upgrade Pico 2
+firmware. See [demo instructions and verification status](docs/DEMO.md).

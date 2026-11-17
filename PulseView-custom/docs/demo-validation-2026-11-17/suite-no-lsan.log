@@ -1,0 +1,395 @@
+bash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8)
+LAR2 C codec: CRC vector, all lengths, corruption and bounds passed
+matcher throughput: 1055.6 MB/s (need > 25 MB/s for 25 MS/s capture)
+LAR2 trigger matcher: pattern, edge, mask, boundary and throughput checks passed
+text truncation: "0123456789abcde" (15 bytes)
+uart(known baud): UART 115200 8N1: "LA1234"
+uart(auto baud): UART 114865 8N1: "LA1234"
+uart(25MHz): UART 1000000 8N1: "OK"
+i2c: I2C: 0x68 W ACK 0x01 ACK 0x5A ACK
+i2c read: I2C: 0x68 R ACK 0x5A NAK
+spi: SPI: DE AD BE EF |
+can: CAN ID=0x123 DLC=4 DATA=DE AD BE EF 
+map8:
+UART 115200 8N1: "LA"
+I2C: 0x68 W ACK 0x01 ACK 0x5A ACK
+SPI: DE AD |
+CAN ID=0x123 DLC=4 DATA=DE AD BE EF 
+packets uart: n=2
+packets i2c: n=6
+packets spi: n=2
+packets can: n=7
+test_decode: all assertions passed
+UART alone on CH5                  -> UART score=5
+I2C alone on CH6/CH7               -> I2C  score=2
+SPI alone on CH1/2/3               -> SPI  score=4
+CAN alone on CH4                   -> CAN  score=7
+all four at once                   -> CAN  score=7
+all channels idle                  -> none score=0
+plain square wave, no bus          -> none score=0
+random noise on all 8              -> none score=0
+one stray edge on CH3              -> none score=0
+capture too short                  -> none score=0
+no cross-protocol confusion        -> ok
+test_autodetect: all assertions passed
+test_ui: all assertions passed
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.158s
+
+OK
+...
+----------------------------------------------------------------------
+Ran 3 tests in 2.238s
+
+OK
+test_annotation_sample_order_is_used (__main__.DemoChecks.test_annotation_sample_order_is_used) ... ok
+test_generic_bits_do_not_prove_decode (__main__.DemoChecks.test_generic_bits_do_not_prove_decode) ... ok
+test_hidden_annotations_do_not_count (__main__.DemoChecks.test_hidden_annotations_do_not_count) ... ok
+test_missing_hardware_exits_nonzero_and_records_failure (__main__.DemoChecks.test_missing_hardware_exits_nonzero_and_records_failure) ... ok
+test_qsettings_reads_both_recorded_and_live_presets (__main__.DemoChecks.test_qsettings_reads_both_recorded_and_live_presets) ... PASS native Qt/GVariant setup
+PASS native Qt/GVariant setup
+ok
+test_tft_requires_real_bytes_and_ack (__main__.DemoChecks.test_tft_requires_real_bytes_and_ack) ... ok
+test_visible_correct_gui_annotations (__main__.DemoChecks.test_visible_correct_gui_annotations) ... ok
+test_wrong_byte_or_missing_channel_fails (__main__.DemoChecks.test_wrong_byte_or_missing_channel_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.572s
+
+OK
+render_ui selftest: caption format + AUTO window ok
+test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) ... 
+  test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=1000) ... FAIL
+  test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=10000) ... FAIL
+  test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=100000) ... FAIL
+  test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=250000) ... FAIL
+  test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=500000) ... FAIL
+  test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=1000000) ... FAIL
+  test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=5000000) ... FAIL
+  test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=25000000) ... FAIL
+test_capture_wrapper_rejects_invalid_file (__main__.DriverTests.test_capture_wrapper_rejects_invalid_file) ... ok
+test_disabled_channels_preserve_bit_positions (__main__.DriverTests.test_disabled_channels_preserve_bit_positions) ... FAIL
+test_fragmented_maximum_capture (__main__.DriverTests.test_fragmented_maximum_capture) ... FAIL
+test_invalid_config (__main__.DriverTests.test_invalid_config) ... FAIL
+test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) ... 
+  test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='crc') ... FAIL
+  test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='sequence') ... FAIL
+  test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='metadata') ... FAIL
+  test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='capture-crc') ... FAIL
+  test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='truncated') ... FAIL
+test_triggered_capture_pattern (__main__.DriverTests.test_triggered_capture_pattern)
+The pattern trigger path must also work end to end. ... FAIL
+test_triggered_capture_reports_the_trigger (__main__.DriverTests.test_triggered_capture_reports_the_trigger)
+A triggered capture must deliver the samples and mark the trigger ... FAIL
+test_uart_decoder (__main__.DriverTests.test_uart_decoder) ... FAIL
+
+======================================================================
+FAIL: test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=1000)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 40, in test_all_rates_and_odd_lengths
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000018] log: libsigrok loglevel set to 4.\nsr: [00:00.000048] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000072] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000076] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000078] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000079] backend: Firmware search paths:\nsr: [00:00.000102] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000103] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000104] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000105] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000106] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000107] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000108] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000109] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000110] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000111] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000112] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000113] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000114] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000115] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000116] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000264] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=10000)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 40, in test_all_rates_and_odd_lengths
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000006] log: libsigrok loglevel set to 4.\nsr: [00:00.000016] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000026] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000028] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000030] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000031] backend: Firmware search paths:\nsr: [00:00.000040] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000041] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000043] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000044] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000045] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000046] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000047] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000048] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000049] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000050] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000050] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000051] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000052] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000053] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000054] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000108] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=100000)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 40, in test_all_rates_and_odd_lengths
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000033] log: libsigrok loglevel set to 4.\nsr: [00:00.000074] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000096] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000101] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000105] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000107] backend: Firmware search paths:\nsr: [00:00.000124] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000126] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000129] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000131] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000133] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000135] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000137] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000138] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000140] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000142] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000144] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000146] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000148] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000150] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000175] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000278] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=250000)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 40, in test_all_rates_and_odd_lengths
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000010] log: libsigrok loglevel set to 4.\nsr: [00:00.000025] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000058] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000064] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000067] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000069] backend: Firmware search paths:\nsr: [00:00.000088] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000091] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000093] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000095] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000097] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000099] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000100] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000102] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000104] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000106] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000108] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000110] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000112] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000114] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000116] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000214] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=500000)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 40, in test_all_rates_and_odd_lengths
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000009] log: libsigrok loglevel set to 4.\nsr: [00:00.000026] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000043] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000047] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000051] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000053] backend: Firmware search paths:\nsr: [00:00.000068] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000070] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000073] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000075] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000076] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000078] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000080] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000083] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000085] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000087] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000089] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000091] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000093] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000094] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000096] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000194] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=1000000)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 40, in test_all_rates_and_odd_lengths
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000008] log: libsigrok loglevel set to 4.\nsr: [00:00.000022] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000039] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000044] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000048] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000050] backend: Firmware search paths:\nsr: [00:00.000065] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000067] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000070] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000072] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000074] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000075] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000077] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000079] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000081] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000083] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000085] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000087] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000089] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000091] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000092] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000178] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=5000000)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 40, in test_all_rates_and_odd_lengths
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000018] log: libsigrok loglevel set to 4.\nsr: [00:00.000042] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000064] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000069] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000073] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000075] backend: Firmware search paths:\nsr: [00:00.000094] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000097] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000099] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000101] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000104] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000106] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000108] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000110] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000112] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000113] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000115] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000117] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000119] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000121] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000123] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000293] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_all_rates_and_odd_lengths (__main__.DriverTests.test_all_rates_and_odd_lengths) (rate=25000000)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 40, in test_all_rates_and_odd_lengths
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000013] log: libsigrok loglevel set to 4.\nsr: [00:00.000036] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000063] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000070] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000075] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000078] backend: Firmware search paths:\nsr: [00:00.000103] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000107] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000110] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000113] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000116] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000118] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000121] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000123] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000125] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000128] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000130] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000133] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000136] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000139] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000141] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000297] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_disabled_channels_preserve_bit_positions (__main__.DriverTests.test_disabled_channels_preserve_bit_positions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 46, in test_disabled_channels_preserve_bit_positions
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000017] log: libsigrok loglevel set to 4.\nsr: [00:00.000049] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000084] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000090] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000095] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000097] backend: Firmware search paths:\nsr: [00:00.000126] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000129] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000132] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000135] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000138] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000141] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000143] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000146] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000149] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000152] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000154] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000156] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000159] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000161] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000164] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000348] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_fragmented_maximum_capture (__main__.DriverTests.test_fragmented_maximum_capture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 29, in test_fragmented_maximum_capture
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000024] log: libsigrok loglevel set to 4.\nsr: [00:00.000063] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000113] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000125] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000134] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000140] backend: Firmware search paths:\nsr: [00:00.000183] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000190] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000196] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000201] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000206] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000211] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000216] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000221] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000226] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000231] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000236] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000241] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000246] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000251] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000255] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000493] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_invalid_config (__main__.DriverTests.test_invalid_config)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 61, in test_invalid_config
+    self.assertNotEqual(p.returncode,0,p.stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : sr: [00:00.000021] log: libsigrok loglevel set to 4.
+sr: [00:00.000057] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.
+sr: [00:00.000100] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.
+sr: [00:00.000111] backend: Host: x86_64-pc-linux-gnu, little-endian.
+sr: [00:00.000120] backend: SCPI backends: TCP, RPC, USBTMC.
+sr: [00:00.000125] backend: Firmware search paths:
+sr: [00:00.000161] backend:  - /home/namkhanh/.local/share/sigrok-firmware
+sr: [00:00.000167] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware
+sr: [00:00.000172] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware
+sr: [00:00.000178] backend:  - /usr/share/ubuntu/sigrok-firmware
+sr: [00:00.000182] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000188] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000193] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000197] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000202] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000206] backend:  - /var/lib/snapd/desktop/sigrok-firmware
+sr: [00:00.000210] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware
+sr: [00:00.000215] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware
+sr: [00:00.000217] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000219] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000221] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000316] backend: libusb_init() returned LIBUSB_ERROR_OTHER.
+
+
+======================================================================
+FAIL: test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='crc')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 55, in test_reject_corruption_and_incomplete_capture
+    self.assertTrue(any(s in p.stderr for s in ('invalid','sequence gap','timeout')),p.stderr)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : sr: [00:00.000030] log: libsigrok loglevel set to 4.
+sr: [00:00.000066] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.
+sr: [00:00.000105] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.
+sr: [00:00.000113] backend: Host: x86_64-pc-linux-gnu, little-endian.
+sr: [00:00.000119] backend: SCPI backends: TCP, RPC, USBTMC.
+sr: [00:00.000122] backend: Firmware search paths:
+sr: [00:00.000157] backend:  - /home/namkhanh/.local/share/sigrok-firmware
+sr: [00:00.000161] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware
+sr: [00:00.000164] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware
+sr: [00:00.000168] backend:  - /usr/share/ubuntu/sigrok-firmware
+sr: [00:00.000171] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000174] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000177] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000181] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000185] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000188] backend:  - /var/lib/snapd/desktop/sigrok-firmware
+sr: [00:00.000191] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware
+sr: [00:00.000195] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware
+sr: [00:00.000198] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000201] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000204] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000365] backend: libusb_init() returned LIBUSB_ERROR_OTHER.
+
+
+======================================================================
+FAIL: test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='sequence')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 55, in test_reject_corruption_and_incomplete_capture
+    self.assertTrue(any(s in p.stderr for s in ('invalid','sequence gap','timeout')),p.stderr)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : sr: [00:00.000033] log: libsigrok loglevel set to 4.
+sr: [00:00.000089] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.
+sr: [00:00.000162] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.
+sr: [00:00.000173] backend: Host: x86_64-pc-linux-gnu, little-endian.
+sr: [00:00.000182] backend: SCPI backends: TCP, RPC, USBTMC.
+sr: [00:00.000188] backend: Firmware search paths:
+sr: [00:00.000233] backend:  - /home/namkhanh/.local/share/sigrok-firmware
+sr: [00:00.000244] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware
+sr: [00:00.000250] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware
+sr: [00:00.000255] backend:  - /usr/share/ubuntu/sigrok-firmware
+sr: [00:00.000260] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000264] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000269] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000274] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000278] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000283] backend:  - /var/lib/snapd/desktop/sigrok-firmware
+sr: [00:00.000287] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware
+sr: [00:00.000292] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware
+sr: [00:00.000296] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000301] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000306] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000572] backend: libusb_init() returned LIBUSB_ERROR_OTHER.
+
+
+======================================================================
+FAIL: test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='metadata')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 55, in test_reject_corruption_and_incomplete_capture
+    self.assertTrue(any(s in p.stderr for s in ('invalid','sequence gap','timeout')),p.stderr)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : sr: [00:00.000019] log: libsigrok loglevel set to 4.
+sr: [00:00.000045] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.
+sr: [00:00.000091] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.
+sr: [00:00.000096] backend: Host: x86_64-pc-linux-gnu, little-endian.
+sr: [00:00.000100] backend: SCPI backends: TCP, RPC, USBTMC.
+sr: [00:00.000102] backend: Firmware search paths:
+sr: [00:00.000129] backend:  - /home/namkhanh/.local/share/sigrok-firmware
+sr: [00:00.000131] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware
+sr: [00:00.000134] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware
+sr: [00:00.000136] backend:  - /usr/share/ubuntu/sigrok-firmware
+sr: [00:00.000138] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000140] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000143] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000145] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000148] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000150] backend:  - /var/lib/snapd/desktop/sigrok-firmware
+sr: [00:00.000152] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware
+sr: [00:00.000155] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware
+sr: [00:00.000157] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000159] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000162] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000274] backend: libusb_init() returned LIBUSB_ERROR_OTHER.
+
+
+======================================================================
+FAIL: test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='capture-crc')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 55, in test_reject_corruption_and_incomplete_capture
+    self.assertTrue(any(s in p.stderr for s in ('invalid','sequence gap','timeout')),p.stderr)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : sr: [00:00.000028] log: libsigrok loglevel set to 4.
+sr: [00:00.000065] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.
+sr: [00:00.000108] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.
+sr: [00:00.000119] backend: Host: x86_64-pc-linux-gnu, little-endian.
+sr: [00:00.000128] backend: SCPI backends: TCP, RPC, USBTMC.
+sr: [00:00.000133] backend: Firmware search paths:
+sr: [00:00.000169] backend:  - /home/namkhanh/.local/share/sigrok-firmware
+sr: [00:00.000175] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware
+sr: [00:00.000180] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware
+sr: [00:00.000186] backend:  - /usr/share/ubuntu/sigrok-firmware
+sr: [00:00.000190] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000194] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000199] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000203] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000207] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000211] backend:  - /var/lib/snapd/desktop/sigrok-firmware
+sr: [00:00.000216] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware
+sr: [00:00.000220] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware
+sr: [00:00.000224] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000228] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000232] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000486] backend: libusb_init() returned LIBUSB_ERROR_OTHER.
+
+
+======================================================================
+FAIL: test_reject_corruption_and_incomplete_capture (__main__.DriverTests.test_reject_corruption_and_incomplete_capture) (fault='truncated')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 55, in test_reject_corruption_and_incomplete_capture
+    self.assertTrue(any(s in p.stderr for s in ('invalid','sequence gap','timeout')),p.stderr)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : sr: [00:00.000015] log: libsigrok loglevel set to 4.
+sr: [00:00.000038] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.
+sr: [00:00.000068] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.
+sr: [00:00.000074] backend: Host: x86_64-pc-linux-gnu, little-endian.
+sr: [00:00.000079] backend: SCPI backends: TCP, RPC, USBTMC.
+sr: [00:00.000082] backend: Firmware search paths:
+sr: [00:00.000105] backend:  - /home/namkhanh/.local/share/sigrok-firmware
+sr: [00:00.000109] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware
+sr: [00:00.000112] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware
+sr: [00:00.000115] backend:  - /usr/share/ubuntu/sigrok-firmware
+sr: [00:00.000118] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000120] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000123] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware
+sr: [00:00.000125] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000128] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000130] backend:  - /var/lib/snapd/desktop/sigrok-firmware
+sr: [00:00.000132] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware
+sr: [00:00.000135] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware
+sr: [00:00.000137] backend:  - /usr/share/gnome/sigrok-firmware
+sr: [00:00.000140] backend:  - /usr/local/share/sigrok-firmware
+sr: [00:00.000144] backend:  - /usr/share/sigrok-firmware
+sr: [00:00.000284] backend: libusb_init() returned LIBUSB_ERROR_OTHER.
+
+
+======================================================================
+FAIL: test_triggered_capture_pattern (__main__.DriverTests.test_triggered_capture_pattern)
+The pattern trigger path must also work end to end.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 90, in test_triggered_capture_pattern
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000015] log: libsigrok loglevel set to 4.\nsr: [00:00.000038] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000067] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000073] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000079] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000082] backend: Firmware search paths:\nsr: [00:00.000113] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000116] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000120] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000123] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000126] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000129] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000132] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000135] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000137] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000140] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000143] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000146] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000149] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000154] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000157] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000309] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_triggered_capture_reports_the_trigger (__main__.DriverTests.test_triggered_capture_reports_the_trigger)
+A triggered capture must deliver the samples and mark the trigger
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 78, in test_triggered_capture_reports_the_trigger
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000021] log: libsigrok loglevel set to 4.\nsr: [00:00.000056] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000108] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000119] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000128] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000133] backend: Firmware search paths:\nsr: [00:00.000167] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000174] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000179] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000184] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000189] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000194] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000198] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000203] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000207] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000211] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000216] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000220] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000226] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000230] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000234] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000441] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+======================================================================
+FAIL: test_uart_decoder (__main__.DriverTests.test_uart_decoder)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/tests/test_integration.py", line 95, in test_uart_decoder
+    self.assertIn('Capture verified:',p.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Capture verified:' not found in 'sr: [00:00.000008] log: libsigrok loglevel set to 4.\nsr: [00:00.000019] backend: libsigrok 0.6.0-git-0bc2487-dirty/4:0:0.\nsr: [00:00.000030] backend: Libs: glib 2.72.4 (rt: 2.72.4/7204:4), zlib 1.2.11, libzip 1.7.3, minilzo 2.10, libusb-1.0 1.0.25.11695 API 0x01000109.\nsr: [00:00.000033] backend: Host: x86_64-pc-linux-gnu, little-endian.\nsr: [00:00.000035] backend: SCPI backends: TCP, RPC, USBTMC.\nsr: [00:00.000036] backend: Firmware search paths:\nsr: [00:00.000047] backend:  - /home/namkhanh/.local/share/sigrok-firmware\nsr: [00:00.000048] backend:  - /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/.local/share/sigrok-firmware\nsr: [00:00.000049] backend:  - /tmp/.mount_orca-lpndAkl/usr/share/sigrok-firmware\nsr: [00:00.000050] backend:  - /usr/share/ubuntu/sigrok-firmware\nsr: [00:00.000051] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000052] backend:  - /home/namkhanh/.local/share/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000054] backend:  - /var/lib/flatpak/exports/share/sigrok-firmware\nsr: [00:00.000055] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000056] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000057] backend:  - /var/lib/snapd/desktop/sigrok-firmware\nsr: [00:00.000058] backend:  - /home/namkhanh/.nix-profile/share/sigrok-firmware\nsr: [00:00.000059] backend:  - /nix/var/nix/profiles/default/share/sigrok-firmware\nsr: [00:00.000060] backend:  - /usr/share/gnome/sigrok-firmware\nsr: [00:00.000061] backend:  - /usr/local/share/sigrok-firmware\nsr: [00:00.000062] backend:  - /usr/share/sigrok-firmware\nsr: [00:00.000121] backend: libusb_init() returned LIBUSB_ERROR_OTHER.\n'
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.324s
+
+FAILED (failures=19)

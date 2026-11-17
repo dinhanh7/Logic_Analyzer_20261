@@ -14,6 +14,11 @@ if [[ "$mode" != firmware ]]; then
     else
         git -C third_party/pulseview apply --reverse --check "$RP2350_ROOT/patches/pulseview-title.patch"
     fi
+    if git -C third_party/pulseview apply --check "$RP2350_ROOT/patches/pulseview-demo.patch" 2>/dev/null; then
+        git -C third_party/pulseview apply "$RP2350_ROOT/patches/pulseview-demo.patch"
+    else
+        git -C third_party/pulseview apply --reverse --check "$RP2350_ROOT/patches/pulseview-demo.patch"
+    fi
     for component in libsigrok libsigrokdecode sigrok-cli; do
         echo "Building $component (log: build/logs/$component.log)"
         (

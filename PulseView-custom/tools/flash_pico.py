@@ -20,7 +20,7 @@ from lar2 import ANALYZE_BOOTLOADER  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_UF2 = os.path.join(REPO, 'build', 'firmware-pico2', 'rp2350_la.uf2')
-PORT = '/dev/ttyACM0'
+PORT = os.environ.get('LA_PORT', '/dev/ttyACM0')
 
 
 def bootsel_dir():

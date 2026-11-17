@@ -88,6 +88,8 @@ static uint32_t trigger_restarts;
  * must use this window, not samples[0]. */
 static const uint8_t *win_base;
 static uint32_t win_len;
+static uint32_t win_trigger = LAR2_NO_TRIGGER;
+static bool snapshot_valid;
 
 /* On-device decode results (returned via ANALYZE DECODE). 1 KB fits the
  * four-protocol simultaneous decode of the test map. */
@@ -192,6 +194,7 @@ static uint32_t produced_samples(void)
 
 static void start_capture(void)
 {
+    snapshot_valid = false;
     abort_capture();
     pio_sm_config c = logic_capture_program_get_default_config(offset);
     sm_config_set_in_pins(&c, 0);
@@ -321,6 +324,7 @@ static void command(void)
         send_frame(LAR2_CAPS, caps, sizeof(caps)); break;
     }
     case LAR2_CONFIG: {
+        snapshot_valid = false;
         configured = false;
         if (n != LAR2_CONFIG_V1_SIZE && n != LAR2_CONFIG_V2_SIZE) { error("invalid config"); break; }
         if (!lar2_u32(p + 8) || lar2_u32(p + 8) > LAR2_MAX_SAMPLES || !p[16]) { error("invalid config"); break; }
@@ -362,6 +366,19 @@ static void command(void)
         uint32_t arg32 = lar2_u32(p + 3);
         uint8_t result[16] = { LAR2_RESULT_OK, 0, 0, 0, 0, 0, 0, 0 };
         switch (op) {
+        case LAR2_ANALYZE_UI_SHOW_CAPTURE:
+            if (!snapshot_valid || arg < 2 || arg > 4 || arg32 > 4) {
+                error("no real snapshot or invalid UI selection");
+                break;
+            }
+            ui_set_capture(win_base, win_len, rate,
+                           win_trigger == LAR2_NO_TRIGGER ? 0 : win_trigger, true);
+            if (!ui_show_capture((uint8_t)arg, (uint8_t)arg32)) {
+                error("cannot show capture");
+                break;
+            }
+            send_frame(LAR2_RESULT, result, 1);
+            break;
         case LAR2_ANALYZE_DECODE:
             decode_len = 0;
             la_text t; la_text_init(&t, decode_buf, sizeof(decode_buf));
@@ -527,6 +544,7 @@ static void command(void)
 static void start_sending(uint32_t sample_count, uint32_t trigger_index, uint32_t pre,
                           uint8_t flags)
 {
+    win_trigger = trigger_index;
     uint8_t info[24] = {0};
     lar2_put64(info, rate); lar2_put32(info + 8, sample_count);
     lar2_put32(info + 12, trigger_index); lar2_put32(info + 16, pre);
@@ -583,6 +601,7 @@ static void send_stream_slot(const uint8_t *p, uint32_t len, uint32_t offset)
 static bool start_stream(uint64_t r, uint8_t m, bool rle)
 {
     if (r > 1000000) return false;          /* USB CDC cannot keep up */
+    snapshot_valid = false;
     abort_capture();
     rate = r; mask = m;
     count = CAPTURE_BYTES;
@@ -741,6 +760,7 @@ static void capture_task(void)
         } else {
             uint8_t end[8]; lar2_put32(end, win_len); lar2_put32(end + 4, ~crc);
             send_frame(LAR2_END, end, sizeof(end)); sending = false;
+            snapshot_valid = true;
         }
     }
 }
@@ -930,9 +950,11 @@ int main(void)
         }
         stream_task();
         capture_task();
-        if (ui_pending && !capturing) {
+        if (ui_pending && !capturing && !sending) {
             ui_pending = false;
-            ui_set_capture(win_base, win_len, rate, pretrigger, !capture_faulted());
+            bool ok = snapshot_valid && !capture_faulted();
+            ui_set_capture(ok ? win_base : NULL, ok ? win_len : 0, rate,
+                           win_trigger == LAR2_NO_TRIGGER ? 0 : win_trigger, ok);
         }
         /* Streaming owns the CPU budget: a TFT redraw in the middle of a slot
          * can stall USB long enough to overrun the ring. The panel simply

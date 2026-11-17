@@ -162,6 +162,23 @@ static int write_png(const char *path, int scale)
  * so they get checked here instead of by eye on the panel. */
 static int selftest(void)
 {
+    ui_init();
+    if (ui_show_capture(4, 1) || ui_cfg.count != 65536 ||
+        ui_cfg.pretrigger != 32768 || ui_cfg.trig_edge != LAR2_EDGE_FALLING) {
+        fprintf(stderr, "invalid empty capture/default UI configuration\n");
+        return 1;
+    }
+    /* Local capture must never advertise a window that firmware clamps. */
+    ui_handle_command('o'); ui_tick(); /* STANDBY -> CONFIG */
+    ui_handle_command('d'); ui_tick(); /* Samples */
+    ui_handle_command('o'); ui_tick(); /* edit */
+    for (int i = 0; i < 6; i++) {
+        ui_handle_command('d'); ui_tick();
+        if (ui_cfg.count > 131072 || ui_cfg.pretrigger > ui_cfg.count / 2) {
+            fprintf(stderr, "UI offers unsupported trigger window\n");
+            return 1;
+        }
+    }
     static const struct { uint64_t ns; const char *want; } cases[] = {
         { 0, "0ns" }, { 400, "400ns" }, { 999, "999ns" },
         { 1000, "1.0u" }, { 8680, "8.6u" }, { 20000, "20u" }, { 999999, "999u" },
@@ -218,6 +235,17 @@ static int selftest(void)
         }
         if (strstr(ui_decode_text(), "UART") == NULL) {
             fprintf(stderr, "AUTO near trigger: decode text %s\n", ui_decode_text());
+            bad++;
+        }
+        /* Present a caller-owned capture from STANDBY, without replacing it
+         * with the built-in HELLO waveform. Re-entering decode must refresh. */
+        ui_handle_command('O'); ui_tick();
+        if (!ui_show_capture(4, 1) || ui_screen_id() != 4 ||
+            strstr(ui_decode_text(), "LA12") == NULL ||
+            strstr(ui_decode_text(), "HELLO") != NULL ||
+            strstr(ui_decode_table(), "0x4C") == NULL ||
+            ui_show_capture(5, 1) || ui_show_capture(4, 5)) {
+            fprintf(stderr, "real capture presentation/selection failed\n");
             bad++;
         }
     }

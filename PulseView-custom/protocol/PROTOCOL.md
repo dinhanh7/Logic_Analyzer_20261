@@ -241,3 +241,17 @@ và ký tự khác `L` — do đó không thể lẫn với header `LAR2`:
 Đây là đường điều khiển song song với 4 nút vật lý: cả hai cùng đẩy sự kiện vào
 một hàng đợi duy nhất trong `ui.c`. Ký tự lạ bị bỏ qua. Host tool:
 `tools/ui_keys.py`.
+
+### Present the real capture on the TFT (firmware `+ui18`)
+
+`ANALYZE` op **18** (`UI_SHOW_CAPTURE`): `arg` is screen 2 (CH0–3),
+3 (CH4–7), or 4 (decode). `arg32` is selector 0=AUTO, 1=UART, 2=I2C,
+3=SPI, 4=CAN. UART uses 115200 baud; CAN uses 250000, matching the bench.
+Returns `RESULT` with status OK, or `ERROR` if no completed snapshot exists,
+a capture is in progress, or the selection is invalid. CONFIG, a new capture,
+and streaming invalidate the snapshot. The snapshot becomes available after
+END is sent. The command never loads the synthetic UI_DEMO waveform.
+
+The waveform screens open at FIT. The decode screen recomputes both text and
+packet rows from the capture window and real trigger index. Use UI_TEXT,
+UI_TABLE, UI_STATE and RUNTIME to read back the result. See `docs/DEMO.md`.

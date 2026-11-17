@@ -57,6 +57,8 @@
                                         1 MHz: USB CDC full speed is 1.5 MB/s. */
 #define LAR2_ANALYZE_STREAM_STOP 17u  /* stop streaming; RESULT carries
                                         samples sent and samples dropped */
+#define LAR2_ANALYZE_UI_SHOW_CAPTURE 18u /* show last real snapshot: arg=screen
+                                        2/3/4, arg32=0 AUTO,1 UART,2 I2C,3 SPI,4 CAN */
 #define LAR2_ANALYZE_RUNTIME     11u /* trigger state, see the REPLY in main.c */
 #define LAR2_ANALYZE_BOOTLOADER  10u /* reboot into the UF2 bootloader so the
                                         host can flash without pressing BOOTSEL */
@@ -75,7 +77,7 @@
 
 /* Board identity. The host checks the "RP2350-LA" prefix and a minimum
  * length, so the suffix may advertise firmware features. */
-#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an+str"
+#define LAR2_BOARD_ID "RP2350-LA/1.2+trg+an+str+ui18"
 static const uint64_t lar2_rates[LAR2_RATE_COUNT] = {
     1000, 10000, 100000, 250000, 500000, 1000000, 5000000, 25000000
 };

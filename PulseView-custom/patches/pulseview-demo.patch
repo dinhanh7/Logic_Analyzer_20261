@@ -1,0 +1,162 @@
+--- a/main.cpp
++++ b/main.cpp
+@@ -344,7 +344,7 @@
+ 				w.restore_sessions();
+ 
+ 			if (open_files.empty())
+-				w.add_default_session();
++				w.add_default_session(open_setup_file);
+ 			else
+ 				for (string& open_file : open_files)
+ 					w.add_session_with_file(open_file, open_file_format, open_setup_file);
+--- a/pv/mainwindow.hpp
++++ b/pv/mainwindow.hpp
+@@ -95,7 +95,7 @@
+ 	void add_session_with_file(string open_file_name, string open_file_format,
+ 		string open_setup_file_name);
+ 
+-	void add_default_session();
++	void add_default_session(string setup_file = "");
+ 
+ 	void save_sessions();
+ 	void restore_sessions();
+--- a/pv/mainwindow.cpp
++++ b/pv/mainwindow.cpp
+@@ -35,6 +35,14 @@
+ #include <QHBoxLayout>
+ #include <QMessageBox>
+ #include <QSettings>
++#include <QTimer>
++#include <QFile>
++#include <QJsonDocument>
++#include <QJsonObject>
++#include <QJsonArray>
++#include <limits>
++#include "data/decodesignal.hpp"
++#include "data/decode/annotation.hpp"
+ #include <QShortcut>
+ #include <QWidget>
+ 
+@@ -67,7 +75,7 @@
+ 
+ using toolbars::MainBar;
+ 
+-const QString MainWindow::WindowTitle = tr("RP2350 Logic Analyzer - PulseView");
++const QString MainWindow::WindowTitle = tr("PulseView");
+ 
+ MainWindow::MainWindow(DeviceManager &device_manager, QWidget *parent) :
+ 	QMainWindow(parent),
+@@ -361,6 +369,60 @@
+ 
+ 	add_view(views::ViewTypeTrace, *session);
+ 
++#ifdef ENABLE_DECODE
++	const QString report_path = qEnvironmentVariable("RP2350_DEMO_REPORT");
++	if (!report_path.isEmpty()) {
++		QTimer *probe = new QTimer(this);
++		std::weak_ptr<Session> weak_session = session;
++		connect(probe, &QTimer::timeout, this, [this, weak_session, report_path]() {
++			auto current = weak_session.lock();
++			if (!current || current->get_capture_state() != Session::Stopped) return;
++			QJsonArray decoders, channels;
++			for (auto base : current->signalbases()) {
++				auto decode = dynamic_pointer_cast<data::DecodeSignal>(base);
++				if (!decode) { channels.append(base->name()); continue; }
++				QJsonArray texts;
++				std::deque<const data::decode::Annotation*> annotations;
++				decode->get_annotation_subset(annotations, 0, 0, std::numeric_limits<uint64_t>::max());
++				for (auto annotation : annotations) {
++					QJsonObject value;
++					value["class"] = annotation->ann_class_name();
++					value["text"] = annotation->longest_annotation();
++					value["visible"] = annotation->visible();
++					value["sample"] = double(annotation->start_sample());
++					texts.append(value);
++				}
++				QJsonObject item;
++				item["name"] = base->name();
++				item["annotations"] = texts;
++				decoders.append(item);
++			}
++			QJsonObject report;
++			report["session"] = current->name();
++			if (current->device()) report["device"] = QString::fromStdString(current->device()->display_name(device_manager_));
++			auto hw = dynamic_pointer_cast<devices::HardwareDevice>(current->device());
++			if (hw && hw->hardware_device()->driver()->name() == "rp2350-la") {
++				auto dev = hw->hardware_device();
++				QJsonObject config;
++				try {
++					config["samplerate"] = double(g_variant_get_uint64(dev->config_get(sigrok::ConfigKey::SAMPLERATE).gobj()));
++					config["samples"] = double(g_variant_get_uint64(dev->config_get(sigrok::ConfigKey::LIMIT_SAMPLES).gobj()));
++					config["trigger_source"] = QString::fromUtf8(g_variant_get_string(dev->config_get(sigrok::ConfigKey::TRIGGER_SOURCE).gobj(), nullptr));
++					config["trigger_slope"] = QString::fromUtf8(g_variant_get_string(dev->config_get(sigrok::ConfigKey::TRIGGER_SLOPE).gobj(), nullptr));
++					config["pretrigger"] = g_variant_get_double(dev->config_get(sigrok::ConfigKey::HORIZ_TRIGGERPOS).gobj());
++				} catch (sigrok::Error& error) { config["error"] = error.what(); }
++				report["device_config"] = config;
++			}
++			report["channels"] = channels;
++			report["decoders"] = decoders;
++			QFile out(report_path);
++			if (out.open(QIODevice::WriteOnly)) out.write(QJsonDocument(report).toJson());
++			if (decoders.size() == 4) grab().save(report_path + ".png");
++		});
++		probe->start(1000);
++	}
++#endif
++
+ 	return session;
+ }
+ 
+@@ -417,7 +479,7 @@
+ 	session->load_init_file(open_file_name, open_file_format, open_setup_file_name);
+ }
+ 
+-void MainWindow::add_default_session()
++void MainWindow::add_default_session(string setup_file)
+ {
+ 	// Only add the default session if there would be no session otherwise
+ 	if (sessions_.size() > 0)
+@@ -445,6 +507,32 @@
+ 		session->select_device(other_device);
+ 	else
+ 		session->select_device(demo_device);
++
++	// -s works for a live device as well as for an input file. The optional
++	// rp2350 group is used only when that explicitly selected driver is active.
++	if (!setup_file.empty()) {
++		QSettings setup(QString::fromStdString(setup_file), QSettings::IniFormat);
++		if (user_device && user_device->hardware_device()->driver()->name() == "rp2350-la" &&
++			setup.contains("rp2350/samplerate")) {
++			auto dev = user_device->hardware_device();
++			dev->config_set(sigrok::ConfigKey::SAMPLERATE,
++				Glib::Variant<guint64>::create(setup.value("rp2350/samplerate").toULongLong()));
++			dev->config_set(sigrok::ConfigKey::LIMIT_SAMPLES,
++				Glib::Variant<guint64>::create(setup.value("rp2350/samples").toULongLong()));
++			dev->config_set(sigrok::ConfigKey::TRIGGER_SOURCE,
++				Glib::Variant<Glib::ustring>::create(setup.value("rp2350/trigger_source").toString().toStdString()));
++			dev->config_set(sigrok::ConfigKey::TRIGGER_SLOPE,
++				Glib::Variant<Glib::ustring>::create("falling"));
++			dev->config_set(sigrok::ConfigKey::HORIZ_TRIGGERPOS,
++				Glib::Variant<double>::create(0.5));
++			session->main_bar()->update_device_list();
++		}
++		session->restore_setup(setup);
++		if (setup.value("rp2350/autorun", false).toBool())
++			QTimer::singleShot(500, this, [session]() {
++				session->start_capture([](QString msg) { qWarning() << msg; });
++			});
++	}
+ }
+ 
+ void MainWindow::save_sessions()
+--- a/pv/views/trace/view.cpp
++++ b/pv/views/trace/view.cpp
+@@ -288,7 +288,7 @@
+ 	custom_zero_offset_set_ = false;
+ 	updating_scroll_ = false;
+ 	restoring_state_ = false;
+-	always_zoom_to_fit_ = false;
++	always_zoom_to_fit_ = true;
+ 	tick_period_ = 0;
+ 	tick_prefix_ = pv::util::SIPrefix::yocto;
+ 	tick_precision_ = 0;
