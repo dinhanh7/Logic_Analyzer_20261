@@ -1,0 +1,17 @@
+[global]
+sigrok version=0.6.0-git-0bc2487-dirty
+
+[device 1]
+capturefile=logic-1
+total probes=8
+samplerate=25 MHz
+total analog=0
+probe1=CH0
+probe2=CH1
+probe3=CH2
+probe4=CH3
+probe5=CH4
+probe6=CH5
+probe7=CH6
+probe8=CH7
+unitsize=1

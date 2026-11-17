@@ -111,3 +111,8 @@ framebuffer thật: `tft-wave-3.png`, `tft-wave-4.png`, `tft-uart/i2c/spi/can.pn
 Patch libsigrokdecode sửa race tạo session song song; kiểm40session có trong QA.
 Xem [TESTING](../TESTING.md),[TEST-REPORT](TEST-REPORT.md) và [OPINION](../OPINION.md)
 cho số liệu, giới hạn và việc bàn giao.
+
+
+Mặc định script giữ tiến trình launcher sống sau PASS, cho tới khi đóng PulseView,
+để terminal/process supervisor không thu hồi GUI như một tiến trình mồ côi. Dùng
+`--detach-gui` chỉ trong automation cần trả về ngay; QA D3 dùng lựa chọn này.

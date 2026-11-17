@@ -335,6 +335,7 @@ def main():
     parser.add_argument('--esp32-port', default=os.environ.get('ESP32_PORT', '/dev/ttyUSB0'))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--no-gui', action='store_true', help='hardware checks only; GUI is not marked PASS')
+    parser.add_argument('--detach-gui', action='store_true', help='return after verification; automation only')
     parser.add_argument('--recorded', action='store_true', help='show verified real snapshot instead of a new live GUI capture')
     parser.add_argument('--no-flash', action='store_true', help='refuse old firmware instead of upgrading it')
     parser.add_argument('--dwell', type=float, default=2.0, help='seconds per TFT screen')
@@ -395,6 +396,12 @@ def main():
         summary['status'] = 'PASS_HARDWARE_ONLY' if args.no_gui else 'PASS'
         print(f'\n{summary["status"]}: results in {output}', flush=True)
         print('TFT ends on UART; short OK edits PROTO, DOWN changes protocol. PulseView stays open.')
+        if not args.no_gui and not args.detach_gui:
+            # Keep the launcher alive so terminal/process supervisors cannot
+            # collect its GUI as an orphan after the verification completes.
+            (output / 'summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2))
+            print('Demo ready. Close PulseView to finish this script.', flush=True)
+            os.waitpid(summary['pulseview_pid'], 0)
         return 0
     except (Exception, KeyboardInterrupt) as exc:
         summary.update(status='FAIL', error=str(exc) or 'interrupted')

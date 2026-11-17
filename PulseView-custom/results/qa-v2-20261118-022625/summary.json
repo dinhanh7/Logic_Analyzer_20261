@@ -1,0 +1,134 @@
+[
+  {
+    "id": "D1",
+    "objective": "Device capability discovery",
+    "conditions": "actual rp2350-la over USB CDC",
+    "expected": "correct name8channels/8rates",
+    "status": "PASS",
+    "actual": "Driver functions:\n    Logic analyzer\nScan options:\n    conn\nrp2350-la - RP2350 Pico 2 / 2 W Logic Analyzer LAR2 v1 with 8 channels: CH0 CH1 CH2 CH3 CH4 CH5 CH6 CH7\nSupported configuration options:\n    samplerate - supported samplerates:\n      1 kHz\n      10 kHz\n      100 kHz\n      250 kHz\n      500 kHz\n      1 MHz (current)\n      5 MHz\n      25 MHz\n    Maximum number of samples: 262144\n    logic_channels\n    triggersource:  (current)\n    triggerslope: rising (current)\n    triggerpattern:  (current)\n    horiz_triggerpos: 0.000000 (current)\nbash: warning: setlocale: LC_ALL: cannot change locale (C.UTF-8)\n",
+    "seconds": 0.221,
+    "evidence": [
+      "D1-device-show.log"
+    ]
+  },
+  {
+    "id": "D2",
+    "objective": "Driver snapshot and PC decoder E2E",
+    "conditions": "25MHz65536;edgefall;pre50%;realESP32",
+    "expected": "CRCverified and4bus expected data",
+    "status": "PASS",
+    "actual": {
+      "file": "D2/capture.sr",
+      "trigger": "CH0",
+      "rate": 25000000,
+      "count": 65536,
+      "decoder_oracle": "UART/I2C/SPI/CAN payload checked by demo.capture_driver"
+    },
+    "seconds": 5.902,
+    "evidence": [
+      "D2/capture-1-can.log",
+      "D2/capture-1-i2c-data.log",
+      "D2/capture-1-i2c.log",
+      "D2/capture-1-spi.log",
+      "D2/capture-1-uart.log",
+      "D2/capture-1.log",
+      "D2/capture.sr",
+      "D2/esp32-console.log"
+    ]
+  },
+  {
+    "id": "D3",
+    "objective": "PulseView live acquisition and visible annotations",
+    "conditions": "4configured GUIdecoders;native settings;TFT2s/page",
+    "expected": "8waveforms;4visible expected decoder outputs;GUI+root PNG",
+    "status": "PASS",
+    "actual": {
+      "summary": "PASS",
+      "gui": "PASS_LIVE",
+      "config": {
+        "pretrigger": 0.5,
+        "samplerate": 25000000,
+        "samples": 65536,
+        "trigger_slope": "falling",
+        "trigger_source": "CH0"
+      },
+      "annotations": {
+        "UART": 77,
+        "I2C": 33,
+        "SPI": 146,
+        "CAN": 93
+      },
+      "interaction": "Native QSettings channel/baud restoration, actual GUI Run,xdotool focus,X11 screenshot;no CLI substitution"
+    },
+    "seconds": 35.79,
+    "evidence": [
+      "D3-demo.log",
+      "D3-live/capture-1-can.log",
+      "D3-live/capture-1-i2c-data.log",
+      "D3-live/capture-1-i2c.log",
+      "D3-live/capture-1-spi.log",
+      "D3-live/capture-1-uart.log",
+      "D3-live/capture-1.log",
+      "D3-live/capture.sr",
+      "D3-live/device-show.log",
+      "D3-live/esp32-console.log",
+      "D3-live/esp32-stream-console.log",
+      "D3-live/live.pvs",
+      "D3-live/pulseview-config/sigrok/PulseView.conf",
+      "D3-live/pulseview.json",
+      "D3-live/pulseview.json.png",
+      "D3-live/pulseview.log",
+      "D3-live/stream-can.log",
+      "D3-live/stream-i2c.log",
+      "D3-live/stream-spi.log",
+      "D3-live/stream-uart.log",
+      "D3-live/stream.json",
+      "D3-live/stream.log",
+      "D3-live/stream.sr",
+      "D3-live/summary.json",
+      "D3-live/tft-can.json",
+      "D3-live/tft-can.png",
+      "D3-live/tft-i2c.json",
+      "D3-live/tft-i2c.png",
+      "D3-live/tft-spi.json",
+      "D3-live/tft-spi.png",
+      "D3-live/tft-uart.json",
+      "D3-live/tft-uart.png",
+      "D3-live/tft-wave-3.json",
+      "D3-live/tft-wave-3.png",
+      "D3-live/tft-wave-4.json",
+      "D3-live/tft-wave-4.png",
+      "D3-live/tft.json",
+      "D3-root.png"
+    ]
+  },
+  {
+    "id": "D4",
+    "objective": "Sigrok session metadata and binary layout",
+    "conditions": "actual D2.sr;8channels",
+    "expected": "exact probe names/rate/65536one-byte samples",
+    "status": "PASS",
+    "actual": {
+      "probes": 8,
+      "unitsize_derived": 1,
+      "binary_bytes": 65536,
+      "rate": 25000000
+    },
+    "seconds": 0.001,
+    "evidence": [
+      "D4-metadata.txt"
+    ]
+  },
+  {
+    "id": "D5",
+    "objective": "Parallel decoder session lifecycle regression",
+    "conditions": "4threads x10create/start/send/destroy cycles",
+    "expected": "0sessionlookupfailures;annotations generated",
+    "status": "PASS",
+    "actual": "sessions=40 failures=0 annotations=2640",
+    "seconds": 0.177,
+    "evidence": [
+      "D5-session-race.log"
+    ]
+  }
+]

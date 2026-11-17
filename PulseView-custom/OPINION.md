@@ -133,3 +133,11 @@ board thật, cập nhật báo cáo rồi commit/push `feature/trigger-v2`.
 
 Không mở thêm hạng mục phát triển trong phiên hiện tại. Ưu tiên giữ bản demo đã
 chạy thành công cho buổi trình bày ngày mai.
+
+
+### Trạng thái chốt phiên
+
+Full QA:28PASS,0FAIL;5mục thiếu fixture/bằng chứng vẫn giữ BLOCKED/NOT-VERIFIED.
+Demo mặc định đã PASS trên hai board thật, TFT2giây/màn. Launcher giữ sống tới khi
+đóng PulseView; `--detach-gui` chỉ cho automation. Theo yêu cầu cuối, dừng test và
+phát triển tại đây, bàn giao các mục ưu tiên ở trên cho phiên sau.

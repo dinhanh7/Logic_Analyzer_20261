@@ -302,49 +302,49 @@
                 },
                 {
                     "class": "rx-data-bit",
-                    "sample": 46006,
+                    "sample": 46007,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "rx-data-bit",
-                    "sample": 46223,
+                    "sample": 46224,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "rx-data-bit",
-                    "sample": 46440,
+                    "sample": 46441,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "rx-data-bit",
-                    "sample": 46657,
+                    "sample": 46658,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "rx-data-bit",
-                    "sample": 46874,
+                    "sample": 46875,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "rx-data-bit",
-                    "sample": 47091,
+                    "sample": 47092,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "rx-data-bit",
-                    "sample": 47308,
+                    "sample": 47309,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "rx-data-bit",
-                    "sample": 47525,
+                    "sample": 47526,
                     "text": "0",
                     "visible": false
                 },
@@ -458,19 +458,19 @@
                 },
                 {
                     "class": "rx-start",
-                    "sample": 45789,
+                    "sample": 45790,
                     "text": "Start bit",
                     "visible": true
                 },
                 {
                     "class": "rx-data",
-                    "sample": 46006,
+                    "sample": 46007,
                     "text": "0A",
                     "visible": true
                 },
                 {
                     "class": "rx-stop",
-                    "sample": 47742,
+                    "sample": 47743,
                     "text": "Stop bit",
                     "visible": true
                 }
@@ -577,49 +577,49 @@
                 },
                 {
                     "class": "bit",
-                    "sample": 39243,
+                    "sample": 39088,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 39536,
+                    "sample": 39607,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 39825,
+                    "sample": 39896,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 40113,
+                    "sample": 40185,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 40402,
+                    "sample": 40474,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 40692,
+                    "sample": 40763,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 40980,
+                    "sample": 41052,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 41269,
+                    "sample": 41341,
                     "text": "0",
                     "visible": false
                 },
@@ -661,19 +661,19 @@
                 },
                 {
                     "class": "data-write",
-                    "sample": 39243,
+                    "sample": 39088,
                     "text": "Data write: 5A",
                     "visible": true
                 },
                 {
                     "class": "ack",
-                    "sample": 41558,
+                    "sample": 41629,
                     "text": "ACK",
                     "visible": true
                 },
                 {
                     "class": "stop",
-                    "sample": 41988,
+                    "sample": 42060,
                     "text": "Stop",
                     "visible": true
                 }
@@ -684,877 +684,877 @@
             "annotations": [
                 {
                     "class": "miso-bit",
-                    "sample": 43254,
+                    "sample": 43227,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43279,
+                    "sample": 43252,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43304,
+                    "sample": 43277,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43329,
+                    "sample": 43302,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43354,
+                    "sample": 43327,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43379,
+                    "sample": 43352,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43404,
+                    "sample": 43377,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43429,
+                    "sample": 43402,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43454,
+                    "sample": 43427,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43479,
+                    "sample": 43452,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43504,
+                    "sample": 43477,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43529,
+                    "sample": 43502,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43554,
+                    "sample": 43527,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43579,
+                    "sample": 43552,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43604,
+                    "sample": 43577,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43629,
+                    "sample": 43602,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43654,
+                    "sample": 43627,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43679,
+                    "sample": 43652,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43704,
+                    "sample": 43677,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43729,
+                    "sample": 43702,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43754,
+                    "sample": 43727,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43779,
+                    "sample": 43752,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43804,
+                    "sample": 43777,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43829,
+                    "sample": 43802,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43854,
+                    "sample": 43827,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43879,
+                    "sample": 43852,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43904,
+                    "sample": 43877,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43929,
+                    "sample": 43902,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43954,
+                    "sample": 43927,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 43979,
+                    "sample": 43952,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44004,
+                    "sample": 43977,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44029,
+                    "sample": 44002,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44054,
+                    "sample": 44027,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44079,
+                    "sample": 44052,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44104,
+                    "sample": 44077,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44129,
+                    "sample": 44102,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44154,
+                    "sample": 44127,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44179,
+                    "sample": 44152,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44204,
+                    "sample": 44177,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44229,
+                    "sample": 44202,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44254,
+                    "sample": 44227,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44279,
+                    "sample": 44252,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44304,
+                    "sample": 44277,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44329,
+                    "sample": 44302,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44354,
+                    "sample": 44327,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44379,
+                    "sample": 44352,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44404,
+                    "sample": 44377,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44429,
+                    "sample": 44402,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44454,
+                    "sample": 44427,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44479,
+                    "sample": 44452,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44504,
+                    "sample": 44477,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44529,
+                    "sample": 44502,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44554,
+                    "sample": 44527,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44579,
+                    "sample": 44552,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44604,
+                    "sample": 44577,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44629,
+                    "sample": 44602,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44654,
+                    "sample": 44627,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44679,
+                    "sample": 44652,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44704,
+                    "sample": 44677,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44729,
+                    "sample": 44702,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44754,
+                    "sample": 44727,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44779,
+                    "sample": 44752,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44804,
+                    "sample": 44777,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-bit",
-                    "sample": 44829,
+                    "sample": 44802,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "miso-data",
-                    "sample": 43254,
+                    "sample": 43227,
                     "text": "FF",
                     "visible": false
                 },
                 {
                     "class": "miso-data",
-                    "sample": 43454,
+                    "sample": 43427,
                     "text": "FF",
                     "visible": false
                 },
                 {
                     "class": "miso-data",
-                    "sample": 43654,
+                    "sample": 43627,
                     "text": "FF",
                     "visible": false
                 },
                 {
                     "class": "miso-data",
-                    "sample": 43854,
+                    "sample": 43827,
                     "text": "FF",
                     "visible": false
                 },
                 {
                     "class": "miso-data",
-                    "sample": 44054,
+                    "sample": 44027,
                     "text": "FF",
                     "visible": false
                 },
                 {
                     "class": "miso-data",
-                    "sample": 44254,
+                    "sample": 44227,
                     "text": "FF",
                     "visible": false
                 },
                 {
                     "class": "miso-data",
-                    "sample": 44454,
+                    "sample": 44427,
                     "text": "FF",
                     "visible": false
                 },
                 {
                     "class": "miso-data",
-                    "sample": 44654,
+                    "sample": 44627,
                     "text": "FF",
                     "visible": false
                 },
                 {
                     "class": "miso-transfer",
-                    "sample": 43242,
+                    "sample": 43214,
                     "text": "FF FF FF FF FF FF FF FF",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43254,
+                    "sample": 43227,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43279,
+                    "sample": 43252,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43304,
+                    "sample": 43277,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43329,
+                    "sample": 43302,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43354,
+                    "sample": 43327,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43379,
+                    "sample": 43352,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43404,
+                    "sample": 43377,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43429,
+                    "sample": 43402,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43454,
+                    "sample": 43427,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43479,
+                    "sample": 43452,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43504,
+                    "sample": 43477,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43529,
+                    "sample": 43502,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43554,
+                    "sample": 43527,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43579,
+                    "sample": 43552,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43604,
+                    "sample": 43577,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43629,
+                    "sample": 43602,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43654,
+                    "sample": 43627,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43679,
+                    "sample": 43652,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43704,
+                    "sample": 43677,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43729,
+                    "sample": 43702,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43754,
+                    "sample": 43727,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43779,
+                    "sample": 43752,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43804,
+                    "sample": 43777,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43829,
+                    "sample": 43802,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43854,
+                    "sample": 43827,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43879,
+                    "sample": 43852,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43904,
+                    "sample": 43877,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43929,
+                    "sample": 43902,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43954,
+                    "sample": 43927,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 43979,
+                    "sample": 43952,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44004,
+                    "sample": 43977,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44029,
+                    "sample": 44002,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44054,
+                    "sample": 44027,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44079,
+                    "sample": 44052,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44104,
+                    "sample": 44077,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44129,
+                    "sample": 44102,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44154,
+                    "sample": 44127,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44179,
+                    "sample": 44152,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44204,
+                    "sample": 44177,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44229,
+                    "sample": 44202,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44254,
+                    "sample": 44227,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44279,
+                    "sample": 44252,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44304,
+                    "sample": 44277,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44329,
+                    "sample": 44302,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44354,
+                    "sample": 44327,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44379,
+                    "sample": 44352,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44404,
+                    "sample": 44377,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44429,
+                    "sample": 44402,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44454,
+                    "sample": 44427,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44479,
+                    "sample": 44452,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44504,
+                    "sample": 44477,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44529,
+                    "sample": 44502,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44554,
+                    "sample": 44527,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44579,
+                    "sample": 44552,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44604,
+                    "sample": 44577,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44629,
+                    "sample": 44602,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44654,
+                    "sample": 44627,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44679,
+                    "sample": 44652,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44704,
+                    "sample": 44677,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44729,
+                    "sample": 44702,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44754,
+                    "sample": 44727,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44779,
+                    "sample": 44752,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44804,
+                    "sample": 44777,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-bit",
-                    "sample": 44829,
+                    "sample": 44802,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "mosi-data",
-                    "sample": 43254,
+                    "sample": 43227,
                     "text": "DE",
                     "visible": true
                 },
                 {
                     "class": "mosi-data",
-                    "sample": 43454,
+                    "sample": 43427,
                     "text": "AD",
                     "visible": true
                 },
                 {
                     "class": "mosi-data",
-                    "sample": 43654,
+                    "sample": 43627,
                     "text": "BE",
                     "visible": true
                 },
                 {
                     "class": "mosi-data",
-                    "sample": 43854,
+                    "sample": 43827,
                     "text": "EF",
                     "visible": true
                 },
                 {
                     "class": "mosi-data",
-                    "sample": 44054,
+                    "sample": 44027,
                     "text": "00",
                     "visible": true
                 },
                 {
                     "class": "mosi-data",
-                    "sample": 44254,
+                    "sample": 44227,
                     "text": "01",
                     "visible": true
                 },
                 {
                     "class": "mosi-data",
-                    "sample": 44454,
+                    "sample": 44427,
                     "text": "02",
                     "visible": true
                 },
                 {
                     "class": "mosi-data",
-                    "sample": 44654,
+                    "sample": 44627,
                     "text": "03",
                     "visible": true
                 },
                 {
                     "class": "mosi-transfer",
-                    "sample": 43242,
+                    "sample": 43214,
                     "text": "DE AD BE EF 00 01 02 03",
                     "visible": false
                 }
@@ -1565,547 +1565,547 @@
             "annotations": [
                 {
                     "class": "bit",
-                    "sample": 31489,
+                    "sample": 31600,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 31589,
+                    "sample": 31700,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 31689,
+                    "sample": 31800,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 31789,
+                    "sample": 31900,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 31889,
+                    "sample": 32000,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 31989,
+                    "sample": 32100,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32089,
+                    "sample": 32200,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32189,
+                    "sample": 32300,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32289,
+                    "sample": 32400,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32389,
+                    "sample": 32500,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32489,
+                    "sample": 32600,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32589,
+                    "sample": 32700,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32689,
+                    "sample": 32800,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32789,
+                    "sample": 32900,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32889,
+                    "sample": 33000,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 32989,
+                    "sample": 33100,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33089,
+                    "sample": 33200,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33189,
+                    "sample": 33300,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33289,
+                    "sample": 33400,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33389,
+                    "sample": 33500,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33489,
+                    "sample": 33600,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33589,
+                    "sample": 33700,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33689,
+                    "sample": 33800,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33789,
+                    "sample": 33900,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33889,
+                    "sample": 34000,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 33989,
+                    "sample": 34100,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34089,
+                    "sample": 34200,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34189,
+                    "sample": 34300,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34289,
+                    "sample": 34400,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34389,
+                    "sample": 34500,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34489,
+                    "sample": 34600,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34589,
+                    "sample": 34700,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34689,
+                    "sample": 34800,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34789,
+                    "sample": 34900,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34889,
+                    "sample": 35000,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 34989,
+                    "sample": 35100,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35089,
+                    "sample": 35200,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35189,
+                    "sample": 35300,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35289,
+                    "sample": 35400,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35389,
+                    "sample": 35500,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35489,
+                    "sample": 35600,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35589,
+                    "sample": 35700,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35689,
+                    "sample": 35800,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35789,
+                    "sample": 35900,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35889,
+                    "sample": 36000,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 35989,
+                    "sample": 36100,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36089,
+                    "sample": 36200,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36189,
+                    "sample": 36300,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36289,
+                    "sample": 36400,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36389,
+                    "sample": 36500,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36489,
+                    "sample": 36600,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36589,
+                    "sample": 36700,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36689,
+                    "sample": 36800,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36789,
+                    "sample": 36900,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36889,
+                    "sample": 37000,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 36989,
+                    "sample": 37100,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37089,
+                    "sample": 37200,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37189,
+                    "sample": 37300,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37289,
+                    "sample": 37400,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37389,
+                    "sample": 37500,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37489,
+                    "sample": 37600,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37589,
+                    "sample": 37700,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37689,
+                    "sample": 37800,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37789,
+                    "sample": 37900,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37889,
+                    "sample": 38000,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 37989,
+                    "sample": 38100,
                     "text": "0",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38089,
+                    "sample": 38200,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38189,
+                    "sample": 38300,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38289,
+                    "sample": 38400,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38389,
+                    "sample": 38500,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38489,
+                    "sample": 38600,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38589,
+                    "sample": 38700,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38689,
+                    "sample": 38800,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38789,
+                    "sample": 38900,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38889,
+                    "sample": 39000,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "bit",
-                    "sample": 38989,
+                    "sample": 39100,
                     "text": "1",
                     "visible": false
                 },
                 {
                     "class": "sof",
-                    "sample": 31489,
+                    "sample": 31600,
                     "text": "Start of frame",
                     "visible": true
                 },
                 {
                     "class": "id",
-                    "sample": 31589,
+                    "sample": 31700,
                     "text": "Identifier: 291 (0x123)",
                     "visible": true
                 },
                 {
                     "class": "rtr",
-                    "sample": 32689,
+                    "sample": 32800,
                     "text": "Remote transmission request: data frame",
                     "visible": true
                 },
                 {
                     "class": "ide",
-                    "sample": 32789,
+                    "sample": 32900,
                     "text": "Identifier extension bit: standard frame",
                     "visible": true
                 },
                 {
                     "class": "reserved-bit",
-                    "sample": 32889,
+                    "sample": 33000,
                     "text": "Reserved bit 0: 0",
                     "visible": true
                 },
                 {
                     "class": "dlc",
-                    "sample": 32989,
+                    "sample": 33100,
                     "text": "Data length code: 4",
                     "visible": true
                 },
                 {
                     "class": "data",
-                    "sample": 33389,
+                    "sample": 33500,
                     "text": "Data byte 0: 0xd4",
                     "visible": true
                 },
                 {
                     "class": "data",
-                    "sample": 34189,
+                    "sample": 34300,
                     "text": "Data byte 1: 0xa3",
                     "visible": true
                 },
                 {
                     "class": "data",
-                    "sample": 34989,
+                    "sample": 35100,
                     "text": "Data byte 2: 0xb4",
                     "visible": true
                 },
                 {
                     "class": "data",
-                    "sample": 35789,
+                    "sample": 35900,
                     "text": "Data byte 3: 0xe5",
                     "visible": true
                 },
                 {
                     "class": "crc-sequence",
-                    "sample": 36589,
+                    "sample": 36700,
                     "text": "CRC-15 sequence: 0x72ca",
                     "visible": true
                 },
                 {
                     "class": "crc-delimiter",
-                    "sample": 38089,
+                    "sample": 38200,
                     "text": "CRC delimiter: 1",
                     "visible": true
                 },
                 {
                     "class": "ack-slot",
-                    "sample": 38189,
+                    "sample": 38300,
                     "text": "ACK slot: NACK",
                     "visible": true
                 },
                 {
                     "class": "ack-delimiter",
-                    "sample": 38289,
+                    "sample": 38400,
                     "text": "ACK delimiter: 1",
                     "visible": true
                 },
                 {
                     "class": "eof",
-                    "sample": 38389,
+                    "sample": 38500,
                     "text": "End of frame",
                     "visible": true
                 }

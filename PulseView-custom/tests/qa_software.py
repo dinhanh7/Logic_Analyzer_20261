@@ -30,7 +30,7 @@ def register(ctx):
         output=ctx.out/'D3-live'
         env=dict(os.environ,DISPLAY=os.environ.get('DISPLAY',':0'))
         p=subprocess.run(['bash','scripts/demo.sh','--port',ctx.args.port,'--esp32-port',ctx.args.esp32_port,
-                          '--dwell','2','--output',str(output)],cwd=ROOT,env=env,text=True,capture_output=True,timeout=210)
+                          '--dwell','2','--detach-gui','--output',str(output)],cwd=ROOT,env=env,text=True,capture_output=True,timeout=210)
         ctx.save('D3-demo.log',p.stdout+p.stderr);require_run(p)
         summary=json.loads((output/'summary.json').read_text());assert summary['status']=='PASS',summary
         report=json.loads((output/'pulseview.json').read_text());demo.check_gui_report(report)

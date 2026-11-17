@@ -136,3 +136,12 @@ Ghi chú A3: nhãn conditions ghi34 là typo của harness; số thực ở actu
 **PASS / PASS_LIVE**, tự đóng GUI demo trước và giữ GUI mới mở. Mỗi màn TFT mặc định2giây.
 Bằng chứng: [summary](../results/demo-final/summary.json), [terminal](../results/demo-final/terminal.log),
 [ảnh GUI](../results/demo-final/pulseview.json.png), [desktop](../results/demo-final/desktop.png).
+
+
+## Chốt bàn giao
+
+Theo yêu cầu dừng kiểm thử, không mở thêm phép thử. Run full giữ kết quả28PASS,
+0FAIL,2BLOCKED,3NOT-VERIFIED. Sau đó nhómDđã chạy5/5PASS và demo unit8/8PASS
+cho thay đổi giữ launcher sống tới khi đóng PulseView; automation dùng `--detach-gui`.
+Bằng chứng follow-up: [run D](../results/qa-v2-20261118-022625/summary.json).
+Tài liệu làm slide: [TESTING](../TESTING.md); việc phiên sau: [OPINION](../OPINION.md).

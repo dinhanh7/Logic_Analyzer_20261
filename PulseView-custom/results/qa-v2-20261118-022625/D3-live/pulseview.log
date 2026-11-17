@@ -1,0 +1,44 @@
+
+(process:238373): Gtk-WARNING **: 02:27:03.320: Locale not supported by C library.
+	Using the fallback 'C' locale.
+Setting "General_Language" changed to QVariant(QString, "en")
+Setting "General_Theme" changed to QVariant(int, 0)
+Setting "General_Style" changed to QVariant(QString, "")
+Setting "General_SaveWithSetup" changed to QVariant(bool, true)
+Setting "View_ZoomToFitAfterAcq" changed to QVariant(bool, true)
+Setting "View_AllowVerticalDragging" changed to QVariant(bool, true)
+Setting "View_ColoredBG" changed to QVariant(bool, true)
+Setting "View_ShowSamplingPoints" changed to QVariant(bool, true)
+Setting "View_FillSignalHighAreas" changed to QVariant(bool, true)
+Setting "View_DefaultDivHeight" changed to QVariant(int, 63)
+Setting "View_DefaultLogicHeight" changed to QVariant(int, 42)
+Setting "View_ShowHoverMarker" changed to QVariant(bool, true)
+Setting "View_KeepRulerItemSelected" changed to QVariant(bool, false)
+Setting "View_SnapDistance" changed to QVariant(int, 15)
+Setting "View_CursorShowInterval" changed to QVariant(bool, true)
+Setting "View_CursorShowFrequency" changed to QVariant(bool, true)
+Setting "Dec_ExportFormat" changed to QVariant(QString, "%s %d: %r: %1")
+Setting "Log_BufferSize" changed to QVariant(int, 500)
+Setting "Log_NotifyOfStacktrace" changed to QVariant(bool, true)
+Setting "View_FillSignalHighAreaColor" changed to QVariant(uint, 201326592)
+Setting "View_CursorFillColor" changed to QVariant(uint, 4292667379)
+srd: Failed to load decoder iec: missing or malformed 'tags' attribute
+srd: Failed to load decoder gpib: missing or malformed 'tags' attribute
+srd: Failed to load decoder max7219: annotation class/row IDs contain duplicates
+"UART": "No input data"
+"I2C": "No input data"
+"SPI": "No input data"
+"CAN": "No input data"
+"UART": Error cleared
+"UART": "No input data"
+"I2C": Error cleared
+"I2C": "No input data"
+"SPI": Error cleared
+"SPI": "No input data"
+"CAN": Error cleared
+"CAN": "No input data"
+"UART": Input data available, error cleared
+"I2C": Input data available, error cleared
+"SPI": Input data available, error cleared
+"CAN": Input data available, error cleared
+Acquisition took 0.46 s

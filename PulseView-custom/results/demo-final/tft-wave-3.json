@@ -2,7 +2,7 @@
   "source": "RP2350 TFT framebuffer",
   "width": 128,
   "height": 160,
-  "frame_version": 981,
+  "frame_version": 1018,
   "rgb565_sha256": "5c256afa16fd9e97d15d7b91899e250c208feb791ab294751d554eb5134c6772",
   "view": {
     "start": 31872,

@@ -1,0 +1,3 @@
+streaming at 1000000 Hz, 8 channels, RLE on; Ctrl+C to stop
+wrote /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/results/qa-v2-20261118-022625/D3-live/stream.sr: 5966136 samples @ 1000000 Hz, 0 dropped, 6.172 s; VERIFIED
+

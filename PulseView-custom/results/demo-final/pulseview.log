@@ -38,4 +38,4 @@ srd: Failed to load decoder max7219: annotation class/row IDs contain duplicates
 "I2C": Input data available, error cleared
 "SPI": Input data available, error cleared
 "CAN": Input data available, error cleared
-Acquisition took 0.22 s
+Acquisition took 0.19 s

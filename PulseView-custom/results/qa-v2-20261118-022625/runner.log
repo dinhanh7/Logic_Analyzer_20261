@@ -1,0 +1,13 @@
+D1    PASS          Driver functions:
+    Logic analyzer
+Scan options:
+    conn
+rp2350-la - RP2350 Pico 2 / 2 W Logic Analyzer LAR2 v1 with 8 channels: CH0 CH1 CH2 CH3 CH
+PASS driver capture + PC UART/I2C/SPI/CAN (attempt 1)
+D2    PASS          {'file': 'D2/capture.sr', 'trigger': 'CH0', 'rate': 25000000, 'count': 65536, 'decoder_oracle': 'UART/I2C/SPI/CAN payload checked by demo.capture_driv
+D3    PASS          {'summary': 'PASS', 'gui': 'PASS_LIVE', 'config': {'pretrigger': 0.5, 'samplerate': 25000000, 'samples': 65536, 'trigger_slope': 'falling', 'trigger_s
+D4    PASS          {'probes': 8, 'unitsize_derived': 1, 'binary_bytes': 65536, 'rate': 25000000}
+D5    PASS          sessions=40 failures=0 annotations=2640
+
+ {'PASS': 5} Evidence: /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/results/qa-v2-20261118-022625
+Exit 0 means no executed FAIL; BLOCKED/NOT-VERIFIED never certify the product.

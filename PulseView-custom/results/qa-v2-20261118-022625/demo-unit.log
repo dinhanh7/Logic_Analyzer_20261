@@ -1,0 +1,15 @@
+test_annotation_sample_order_is_used (__main__.DemoChecks.test_annotation_sample_order_is_used) ... ok
+test_generic_bits_do_not_prove_decode (__main__.DemoChecks.test_generic_bits_do_not_prove_decode) ... ok
+test_hidden_annotations_do_not_count (__main__.DemoChecks.test_hidden_annotations_do_not_count) ... ok
+test_missing_hardware_exits_nonzero_and_records_failure (__main__.DemoChecks.test_missing_hardware_exits_nonzero_and_records_failure) ... ok
+test_qsettings_reads_both_recorded_and_live_presets (__main__.DemoChecks.test_qsettings_reads_both_recorded_and_live_presets) ... PASS native Qt/GVariant setup
+PASS native Qt/GVariant setup
+ok
+test_tft_requires_real_bytes_and_ack (__main__.DemoChecks.test_tft_requires_real_bytes_and_ack) ... ok
+test_visible_correct_gui_annotations (__main__.DemoChecks.test_visible_correct_gui_annotations) ... ok
+test_wrong_byte_or_missing_channel_fails (__main__.DemoChecks.test_wrong_byte_or_missing_channel_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.802s
+
+OK

@@ -432,3 +432,8 @@ caseđã chạy; cácBLOCKED/NOT-VERIFIEDvẫn giữ nguyên. XemOPINIONđể ph
 Điều kiện A3 trong run gốc có nhãn34vector bị ghi nhầm; actual JSON và log xác nhận
 **32vector ×2 =64lượt**. Đây là lỗi nhãn harness, không có34vector được nhận PASS.
 Lần demo mặc định cuối và ảnh mới nhất được gom tại [results/demo-final](results/demo-final/).
+
+
+**Cách kết thúc demo:** sau PASS, launcher mặc định chờ tới khi đóng PulseView.
+Điều này giữ GUI gắn với phiên trình diễn thay vì để thành tiến trình mồ côi.
+`--detach-gui` chỉ phục vụ automation; ngày mai dùng lệnh mặc định ở trên.

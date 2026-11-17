@@ -116,4 +116,6 @@ i2c-1: Write
 i2c-1: Address write: 68
 i2c-1: Write
 i2c-1: Address write: 68
+i2c-1: Write
+i2c-1: Address write: 68
 

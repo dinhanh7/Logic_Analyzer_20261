@@ -1,7 +1,7 @@
 {
   "rate": 1000000,
-  "samples": 5966480,
-  "received_samples": 5966480,
+  "samples": 5966208,
+  "received_samples": 5966208,
   "mask": 255,
   "channels": [
     0,
@@ -14,21 +14,21 @@
     7
   ],
   "dropped": 0,
-  "seconds": 6.1705375669989735,
+  "seconds": 6.171381428001041,
   "rle": true,
-  "blocks": 12200,
+  "blocks": 12199,
   "raw_blocks": 0,
-  "rle_blocks": 12200,
-  "wire_bytes": 334823,
-  "host_mib_s": 0.05174785700192836,
-  "start_reply_seconds": 0.03463908599951537,
-  "stop_counters_hex": "00900a5b0000000000900a5b00000000009a0a5b0000000000",
+  "rle_blocks": 12199,
+  "wire_bytes": 335330,
+  "host_mib_s": 0.05181912870747516,
+  "start_reply_seconds": 0.03483739300281741,
+  "stop_counters_hex": "0080095b000000000080095b00000000008a095b0000000000",
   "valid": true,
   "error": null,
-  "device_sent": 5966480,
+  "device_sent": 5966208,
   "device_dropped": 0,
-  "device_captured": 5966480,
+  "device_captured": 5966208,
   "hardware_faults": 0,
-  "capture_seconds": 5.96649,
-  "effective_sample_rate": 999998.3239727209
+  "capture_seconds": 5.966218,
+  "effective_sample_rate": 999998.323896311
 }

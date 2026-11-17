@@ -7,10 +7,10 @@
       "source": "RP2350 TFT framebuffer",
       "width": 128,
       "height": 160,
-      "frame_version": 985,
+      "frame_version": 1022,
       "rgb565_sha256": "db266999c783c03f4d826360794a71203b89d458cf6ac29335a7d5c7906e24a8",
       "view": {
-        "start": 43204,
+        "start": 43132,
         "visible": 224,
         "count": 65536,
         "trigger": 32768,
@@ -30,7 +30,7 @@
       "source": "RP2350 TFT framebuffer",
       "width": 128,
       "height": 160,
-      "frame_version": 987,
+      "frame_version": 1024,
       "rgb565_sha256": "26106f8ed67c956bf7be1cca7a434dd07849b9c6e95eab6dc03359a85ae4399d",
       "view": {
         "start": 31872,
@@ -53,8 +53,8 @@
       "source": "RP2350 TFT framebuffer",
       "width": 128,
       "height": 160,
-      "frame_version": 989,
-      "rgb565_sha256": "a55baf38a1772161c34ee200f7d7baa2c1ae3c66fc5764af1d9155e930b969d7",
+      "frame_version": 1026,
+      "rgb565_sha256": "c2f63db5be36ce83bba83cc491da084d0fe80de14539a751d7ebd4f8d29d2b30",
       "view": {
         "start": 31872,
         "visible": 3584,
@@ -69,15 +69,15 @@
     }
   },
   "CAN": {
-    "text": "CAN ID=0x123 DLC=4 DATA=3F 0E 1F 50 \n",
-    "table": "01|0x01|ID-hi|0\n02|0x23|ID-lo|0\n03|0x04|DLC|12u\n04|0x3F|'?'|0\n05|0x0E|.|0",
+    "text": "CAN ID=0x123 DLC=4 DATA=40 0F 20 51 \n",
+    "table": "01|0x01|ID-hi|0\n02|0x23|ID-lo|0\n03|0x04|DLC|12u\n04|0x40|'@'|0\n05|0x0F|.|0",
     "badge": "4 0 CAN",
     "framebuffer": {
       "source": "RP2350 TFT framebuffer",
       "width": 128,
       "height": 160,
-      "frame_version": 991,
-      "rgb565_sha256": "c295e46fbe1513c21bc892a3795532171b89d469ac04bb611d718f7c63d9fd72",
+      "frame_version": 1028,
+      "rgb565_sha256": "92b48bc437a45269289ce8d6f5309234dda2557012b4d8362d9f0eab5920988c",
       "view": {
         "start": 31872,
         "visible": 3584,

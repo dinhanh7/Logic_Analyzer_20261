@@ -1,0 +1,94 @@
+{
+  "UART": {
+    "text": "UART 115200 8N1: \"LA1234.\"\n",
+    "table": "01|0x4C|'L'|0\n02|0x41|'A'|4.3u\n03|0x31|'1'|4.3u\n04|0x32|'2'|4.4u\n05|0x33|'3'|4.3u",
+    "badge": "1 0 UART",
+    "framebuffer": {
+      "source": "RP2350 TFT framebuffer",
+      "width": 128,
+      "height": 160,
+      "frame_version": 1004,
+      "rgb565_sha256": "db266999c783c03f4d826360794a71203b89d458cf6ac29335a7d5c7906e24a8",
+      "view": {
+        "start": 43139,
+        "visible": 224,
+        "count": 65536,
+        "trigger": 32768,
+        "rate": 25000000,
+        "screen": 4,
+        "zoom": 1,
+        "protocol": 1,
+        "events": 0
+      }
+    }
+  },
+  "I2C": {
+    "text": "I2C: 0x68 W ACK 0x01 ACK 0x5A ACK\n",
+    "table": "01|0xD0|ADR|0\n02|--|ACK|0\n03|0x01|.|0\n04|--|ACK|0\n05|0x5A|'Z'|0",
+    "badge": "2 0 I2C",
+    "framebuffer": {
+      "source": "RP2350 TFT framebuffer",
+      "width": 128,
+      "height": 160,
+      "frame_version": 1006,
+      "rgb565_sha256": "26106f8ed67c956bf7be1cca7a434dd07849b9c6e95eab6dc03359a85ae4399d",
+      "view": {
+        "start": 31872,
+        "visible": 3584,
+        "count": 65536,
+        "trigger": 32768,
+        "rate": 25000000,
+        "screen": 4,
+        "zoom": 5,
+        "protocol": 2,
+        "events": 0
+      }
+    }
+  },
+  "SPI": {
+    "text": "SPI: DE AD BE EF 00 01 02 03 |\n",
+    "table": "01|0xDE|.|0\n02|0xAD|.|1.0u\n03|0xBE|.|1.0u\n04|0xEF|.|1.0u\n05|0x00|.|1.0u",
+    "badge": "3 0 SPI",
+    "framebuffer": {
+      "source": "RP2350 TFT framebuffer",
+      "width": 128,
+      "height": 160,
+      "frame_version": 1008,
+      "rgb565_sha256": "d34025eb7a1a2d6e1cd51462318a0eec342abc7f79964abfd115e5c85b2f8698",
+      "view": {
+        "start": 31872,
+        "visible": 3584,
+        "count": 65536,
+        "trigger": 32768,
+        "rate": 25000000,
+        "screen": 4,
+        "zoom": 5,
+        "protocol": 3,
+        "events": 0
+      }
+    }
+  },
+  "CAN": {
+    "text": "CAN ID=0x123 DLC=4 DATA=40 0F 20 51 \n",
+    "table": "01|0x01|ID-hi|0\n02|0x23|ID-lo|0\n03|0x04|DLC|12u\n04|0x40|'@'|0\n05|0x0F|.|0",
+    "badge": "4 0 CAN",
+    "framebuffer": {
+      "source": "RP2350 TFT framebuffer",
+      "width": 128,
+      "height": 160,
+      "frame_version": 1010,
+      "rgb565_sha256": "c27c469f21476b2888a99d4fa5c1d62e9d94bf8abcb95dc3c6ff3fe1e157a657",
+      "view": {
+        "start": 31872,
+        "visible": 3584,
+        "count": 65536,
+        "trigger": 32768,
+        "rate": 25000000,
+        "screen": 4,
+        "zoom": 5,
+        "protocol": 4,
+        "events": 0
+      }
+    }
+  }
+}

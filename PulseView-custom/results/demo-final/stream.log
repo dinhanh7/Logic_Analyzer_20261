@@ -1,3 +1,3 @@
 streaming at 1000000 Hz, 8 channels, RLE on; Ctrl+C to stop
-wrote /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/build/demo/20261118-021651/stream.sr: 5966480 samples @ 1000000 Hz, 0 dropped, 6.171 s; VERIFIED
+wrote /home/namkhanh/EmbeddedSystem/Code/Logic_Analyzer_20261/PulseView-custom/build/demo/20261118-022724/stream.sr: 5966208 samples @ 1000000 Hz, 0 dropped, 6.171 s; VERIFIED
 
